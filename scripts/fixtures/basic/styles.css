@@ -1,0 +1,10 @@
+@import 'tailwindcss/theme.css' layer(theme);
+@import '@codex-proxy/ui/tailwind.css';
+@import 'tailwindcss/utilities.css' layer(utilities) source('./');
+
+body {
+  margin: 0;
+  background: var(--cp-color-bg-layout);
+  color: var(--cp-color-text);
+  font-family: var(--cp-font-family);
+}

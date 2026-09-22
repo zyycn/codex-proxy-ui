@@ -1,0 +1,75 @@
+@import 'tailwindcss/theme.css' layer(theme);
+@import '@codex-proxy/ui/tailwind.css';
+@import 'tailwindcss/utilities.css' layer(utilities) source('../../');
+@reference '../../../src/styles/base.css';
+
+:root {
+  --vp-c-brand-1: #4c6fda;
+  --vp-c-brand-2: #6483e3;
+  --vp-c-brand-3: #4c6fda;
+  --vp-sidebar-width: 260px;
+}
+
+.dark {
+  --vp-c-brand-1: #91a8f6;
+  --vp-c-brand-2: #7894ed;
+}
+
+/* 文档外壳复用组件库的原生滚动条，不接管滚动行为或覆盖交互示例。 */
+html,
+.VPSidebar,
+.vp-doc div[class*='language-'] pre {
+  @apply cp-scrollbar;
+}
+
+.VPSidebar:hover,
+.VPSidebar:focus-within,
+.vp-doc div[class*='language-'] pre:hover {
+  scrollbar-color: var(--cp-scrollbar-thumb-hover-bg) transparent;
+}
+
+@media (forced-colors: active) {
+  html,
+  .VPSidebar,
+  .vp-doc div[class*='language-'] pre {
+    scrollbar-color: auto;
+  }
+}
+
+.demo {
+  margin: 24px 0;
+  padding: 24px;
+  border-radius: var(--cp-border-radius-lg, 12px);
+  background: var(--cp-color-bg-layout);
+  color: var(--cp-color-text);
+  font-family: var(--cp-font-family);
+  font-size: var(--cp-font-size);
+}
+
+.demo-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.demo-stack {
+  display: grid;
+  gap: 16px;
+}
+.demo-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.demo-wide {
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .demo {
+    padding: 16px;
+  }
+  .demo-columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

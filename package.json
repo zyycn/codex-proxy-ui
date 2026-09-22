@@ -1,0 +1,99 @@
+{
+  "name": "@codex-proxy/ui",
+  "type": "module",
+  "version": "0.1.0",
+  "packageManager": "pnpm@11.7.0",
+  "description": "Vue 3 components, design tokens and theme utilities built with TypeScript",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/zyycn/codex-proxy-ui#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zyycn/codex-proxy-ui.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zyycn/codex-proxy-ui/issues"
+  },
+  "style": "./dist/styles.css",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    ".": {
+      "development": "./src/index.ts",
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./theme": {
+      "development": "./src/theme/index.ts",
+      "types": "./dist/types/theme/index.d.ts",
+      "import": "./dist/theme/index.js"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./tailwind.css": "./src/styles/tailwind.css",
+    "./*": {
+      "development": "./src/components/*/index.ts",
+      "types": "./dist/types/components/*/index.d.ts",
+      "import": "./dist/components/*/index.js"
+    }
+  },
+  "module": "./dist/index.js",
+  "types": "./dist/types/index.d.ts",
+  "files": [
+    "LICENSE",
+    "README.md",
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "vitepress dev playground --host 127.0.0.1 --port 5176",
+    "build:playground": "vue-tsc -p playground/tsconfig.json --noEmit && vitepress build playground",
+    "preview": "vitepress preview playground --host 127.0.0.1 --port 5176",
+    "build": "vite build && vue-tsc -p tsconfig.build.json --emitDeclarationOnly",
+    "prepack": "pnpm build",
+    "lint": "eslint src playground scripts *.ts *.json .github",
+    "lint:fix": "pnpm lint --fix",
+    "typecheck": "vue-tsc -p tsconfig.json --noEmit && tsc -p tsconfig.node.json",
+    "check:package": "node scripts/check-package.ts"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0"
+  },
+  "dependencies": {
+    "@ant-design/colors": "^8.0.1",
+    "@ant-design/fast-color": "^3.0.1",
+    "@lucide/vue": "^1.47.0",
+    "@vueuse/core": "^15.0.0",
+    "@vueuse/integrations": "^15.0.0",
+    "dompurify": "^3.4.15",
+    "es-toolkit": "^1.52.0",
+    "gsap": "^3.15.0",
+    "marked": "^18.0.13",
+    "sortablejs": "^1.15.7"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^9.5.1",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^26.6.2",
+    "@types/sortablejs": "^1.15.9",
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "@vitejs/plugin-vue": "^6.0.9",
+    "@vue/tsconfig": "^0.9.1",
+    "eslint": "^10.11.0",
+    "eslint-plugin-format": "^2.0.1",
+    "eslint-plugin-vuejs-accessibility": "^2.6.0",
+    "search-insights": "^2.17.3",
+    "tailwindcss": "^4.3.3",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
+    "vite": "^8.3.0",
+    "vitepress": "1.6.4",
+    "vue": "^3.5.43",
+    "vue-tsc": "^3.3.11"
+  }
+}
