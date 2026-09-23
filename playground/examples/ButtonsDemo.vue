@@ -22,12 +22,32 @@ const count = ref(0)
     </div>
     <div class="demo-row">
       <BaseIconButton label="刷新示例" @click="count++">
-        <RefreshCw :size="16" />
+        <RefreshCw />
       </BaseIconButton>
       <BaseIconButton label="下载示例" disabled>
         <Download :size="16" />
       </BaseIconButton>
       <span>已操作 {{ count }} 次</span>
+    </div>
+    <div class="demo-row">
+      <BaseIconButton size="sm" label="小号默认图标">
+        <RefreshCw />
+      </BaseIconButton>
+      <BaseIconButton size="md" label="中号默认图标">
+        <RefreshCw />
+      </BaseIconButton>
+      <BaseIconButton size="lg" label="大号默认图标">
+        <RefreshCw />
+      </BaseIconButton>
+      <BaseIconButton size="sm" label="自定义 18 像素图标">
+        <RefreshCw :size="18" />
+      </BaseIconButton>
+      <BaseIconButton size="sm" label="自定义加载图标" loading>
+        <template #loading>
+          <RefreshCw :size="18" class="animate-spin motion-reduce:animate-none" />
+        </template>
+        <RefreshCw :size="18" />
+      </BaseIconButton>
     </div>
   </div>
 </template>

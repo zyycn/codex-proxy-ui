@@ -38,7 +38,7 @@ const trackClasses = computed(() => [
     ? 'bg-cp-bg-container-disabled shadow-none'
     : model.value
       ? 'bg-cp-primary shadow-cp-tertiary'
-      : 'bg-cp-fill-tertiary shadow-cp-tertiary',
+      : 'bg-(--cp-switch-unchecked-bg) shadow-cp-tertiary',
 ])
 const thumbClasses = computed(() => [
   'absolute top-0.5 z-10 size-5 rounded-full bg-cp-white shadow-cp-tertiary transition-[left] duration-180 ease-out motion-reduce:transition-none',
@@ -46,7 +46,7 @@ const thumbClasses = computed(() => [
 ])
 const inlineTextClasses = computed(() => [
   'pointer-events-none absolute inset-0 flex min-w-0 select-none items-center justify-center overflow-hidden text-[10px] leading-none font-heavy transition-[padding,color] duration-180 motion-reduce:transition-none',
-  model.value ? 'text-cp-white' : 'text-cp-text-secondary',
+  model.value ? 'text-cp-white' : props.disabled ? 'text-cp-text-secondary' : 'text-(--cp-switch-unchecked-color)',
   model.value ? 'pr-6 pl-1' : 'pr-1 pl-6',
 ])
 const inactiveTextClasses = computed(() => [

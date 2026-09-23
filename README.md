@@ -9,17 +9,13 @@
 
 ## 安装
 
-需要 Vue 3.5+。首个版本尚未公开发布，目前可从本仓库生成安装包：
+需要 Vue 3.5+。安装固定版本的 GitHub Release 包：
 
 ```bash
-pnpm install --frozen-lockfile
-pnpm pack --pack-destination artifacts
-
-# 在你的 Vue 应用中安装
-pnpm add /path/to/codex-proxy-ui/artifacts/codex-proxy-ui-0.1.0.tgz
+pnpm add https://github.com/zyycn/codex-proxy-ui/releases/download/v0.1.0/codex-proxy-ui-0.1.0.tgz
 ```
 
-公开发布后可通过 `pnpm add @codex-proxy/ui` 安装。
+包名仍为 `@codex-proxy/ui`，导入路径不变。提交消费方锁文件以固定下载地址及完整性摘要；Release 同时提供 `.sha256` 校验文件。当前通过 GitHub Release 分发，尚未发布到 npm registry。
 
 ## 快速开始
 
@@ -120,4 +116,4 @@ pnpm check:package
 
 TypeScript 使用[官方双版本方案](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/#running-side-by-side-with-typescript-60)：`@typescript/native` 指向 TypeScript 7，提供 `tsc` 检查构建脚本；`typescript` 指向官方 `@typescript/typescript6` 兼容包，提供 `vue-tsc` 与 ESLint 仍需的编译器 API。Vue SFC 的类型检查与声明生成继续由 `vue-tsc` 完成，不跳过检查。
 
-发布配置见 [.github/workflows/release.yml](.github/workflows/release.yml)。版本标签为 `v<package.json.version>`；首次发布前需要确认包与仓库归属并配置 npm trusted publishing。
+发布配置见 [.github/workflows/release.yml](.github/workflows/release.yml)。更新 `package.json` 和中文 `release/notes.md` 后，从 `main` 推送 `v<package.json.version>` 标签；工作流通过质量与独立消费检查后发布 `.tgz` 和校验文件，无需 npm 凭据。

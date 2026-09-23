@@ -54,7 +54,7 @@ const sizeClasses: Record<TextareaSize, string> = {
 }
 
 const textareaClasses = computed(() => [
-  'cp-scrollbar w-full rounded-cp border-0 text-cp-text shadow-cp-input outline-none transition-[background-color,box-shadow,color] duration-160 placeholder:text-cp-text-quaternary motion-reduce:transition-none',
+  'cp-scrollbar w-full rounded-cp border-0 text-cp-text shadow-cp-input outline-none transition-[background-color,box-shadow,color] duration-160 placeholder:font-normal placeholder:text-cp-text-quaternary motion-reduce:transition-none',
   'leading-[1.55] font-emphasis',
   sizeClasses[props.size],
   props.disabled

@@ -240,6 +240,17 @@ function chooseActive() {
   chooseOption(option, activeIndex.value)
 }
 
+function handleEscape(event: KeyboardEvent) {
+  if (!open.value)
+    return
+
+  // 先关闭下拉层，避免同一次按键继续关闭外层弹窗。
+  event.preventDefault()
+  event.stopPropagation()
+  closeMenu()
+  triggerRef.value?.focus()
+}
+
 function handleTriggerKeydown(event: KeyboardEvent) {
   if (props.disabled)
     return
@@ -275,7 +286,7 @@ function handleTriggerKeydown(event: KeyboardEvent) {
   }
 
   if (event.key === 'Escape') {
-    closeMenu()
+    handleEscape(event)
   }
 }
 
@@ -394,6 +405,7 @@ useEventListener(window, 'scroll', updatePopoverPositionThrottled, { capture: tr
                   @focus="handleOptionFocus(index)"
                   @mousedown.prevent
                   @click="chooseOption(option, index)"
+                  @keydown.esc="handleEscape"
                 >
                   <span class="min-w-0 truncate" :class="option.description ? 'max-w-1/2 shrink-0' : 'flex-1'">{{ option.label }}</span>
                   <span

@@ -14,17 +14,14 @@ concurrency:
 jobs:
   release:
     runs-on: ubuntu-latest
-    environment: npm
     permissions:
       contents: write
-      id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '24'
-          registry-url: https://registry.npmjs.org
           package-manager-cache: false
       - name: Validate release version
         run: node --input-type=module -e 'import pkg from "./package.json" with { type:"json" }; if (process.env.GITHUB_REF_NAME !== "v" + pkg.version) throw new Error("Tag must match package.json version")'
@@ -34,12 +31,11 @@ jobs:
       - run: pnpm build:playground
       - run: pnpm check:package
       - run: pnpm pack --pack-destination artifacts
-      - name: Publish package
+      - name: Checksum package
         run: |
           version="$(node -p 'require("./package.json").version')"
-          tag=latest
-          if [[ "$version" == *-* ]]; then tag=next; fi
-          npm publish "artifacts/codex-proxy-ui-${version}.tgz" --access public --tag "$tag"
+          cd artifacts
+          sha256sum "codex-proxy-ui-${version}.tgz" > "codex-proxy-ui-${version}.tgz.sha256"
       - name: Publish downloadable archive
         env:
           GH_TOKEN: ${{ github.token }}
@@ -47,4 +43,8 @@ jobs:
           version="$(node -p 'require("./package.json").version')"
           flags=()
           if [[ "$version" == *-* ]]; then flags+=(--prerelease); fi
-          gh release create "$GITHUB_REF_NAME" "artifacts/codex-proxy-ui-${version}.tgz" --verify-tag --title "$GITHUB_REF_NAME" --generate-notes "${flags[@]}"
+          gh release create "$GITHUB_REF_NAME" \
+            "artifacts/codex-proxy-ui-${version}.tgz" \
+            "artifacts/codex-proxy-ui-${version}.tgz.sha256" \
+            --repo "$GITHUB_REPOSITORY" --verify-tag --title "$GITHUB_REF_NAME" \
+            --notes-file release/notes.md "${flags[@]}"

@@ -23,7 +23,7 @@ import {
   LIGHT_SHADOW_BASE,
 } from '../core/constants'
 
-type SurfaceComponentMap = Omit<ThemeComponentMap, `buttonPrimary${string}` | 'tableRowSelectedHoverBg'>
+type SurfaceComponentMap = Omit<ThemeComponentMap, `buttonPrimary${string}` | `switchUnchecked${string}` | 'tableRowSelectedHoverBg'>
 
 const SHADOW_MAP_DERIVERS = {
   light: deriveLightShadowMap,
@@ -107,8 +107,12 @@ export function deriveThemeComponentMap(
     ? deriveLightComponentMap(surfaces, fills, primary, error, shadowStrength)
     : deriveDarkComponentMap(surfaces, primary, error, shadowStrength)
   const buttonPrimaryBg = ensureContrast(primary.colorPrimary, primary.colorTextLightSolid, 4.5)
+  // 关闭态复用主题的中性轮廓色，与卡片区分但不额外加深。
+  const switchUncheckedBg = surfaces.colorBorder
   return {
     ...components,
+    switchUncheckedBg,
+    switchUncheckedColor: ensureContrast(surfaces.colorTextSecondary, switchUncheckedBg, 4.5),
     // 暗色选中行只轻微提亮，保留原有蓝灰色温和选中语义。
     tableRowSelectedHoverBg: fills
       ? primary.colorPrimaryContainerHover

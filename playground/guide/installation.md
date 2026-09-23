@@ -1,10 +1,12 @@
 # 安装与按需使用
 
-UI 首包尚未公开发布，本地可先用 `pnpm pack` 生成 `.tgz` 安装
+从 GitHub Release 安装固定版本，包名与导入路径保持 `@codex-proxy/ui`
 
 ```bash
-pnpm add /path/to/codex-proxy-ui-0.1.0.tgz
+pnpm add https://github.com/zyycn/codex-proxy-ui/releases/download/v0.1.0/codex-proxy-ui-0.1.0.tgz
 ```
+
+提交消费方锁文件以固定下载地址和完整性摘要，Release 提供独立的 `.sha256` 校验文件。当前不通过 npm registry 分发；本地开发仍可使用 `pnpm pack` 或[源码联调](./development)。
 
 ## 组件入口
 

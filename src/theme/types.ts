@@ -219,6 +219,8 @@ export interface ThemeComponentMap {
   layoutSiderShadow: string
   scrollbarThumbBg: string
   scrollbarThumbHoverBg: string
+  switchUncheckedBg: string
+  switchUncheckedColor: string
 }
 
 export interface FunctionalColorMap {

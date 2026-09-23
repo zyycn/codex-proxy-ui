@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { LoaderCircle } from '@lucide/vue'
+import { LoaderCircle, setLucideProps, useLucideProps } from '@lucide/vue'
 import { computed } from 'vue'
 
 type IconButtonVariant = 'primary' | 'secondary' | 'filled' | 'success' | 'ghost' | 'destructive'
@@ -45,16 +45,24 @@ const variantClasses: Record<IconButtonVariant, string> = {
 }
 
 const sizeClasses: Record<IconButtonSize, string> = {
-  sm: 'size-cp-control-sm [&>svg]:size-3.5',
-  md: 'size-cp-control [&>svg]:size-4',
-  lg: 'size-cp-control-lg [&>svg]:size-4.5',
+  sm: 'size-cp-control-sm',
+  md: 'size-cp-control',
+  lg: 'size-cp-control-lg',
 }
 
-const spinnerSizes: Record<IconButtonSize, number> = {
+const iconSizes: Record<IconButtonSize, number> = {
   sm: 14,
   md: 16,
   lg: 18,
 }
+
+// 只提供默认值，保留图标自身的 size 和尺寸类，避免 CSS 覆盖调用方设置。
+setLucideProps({
+  ...useLucideProps(),
+  get size() {
+    return iconSizes[props.size]
+  },
+})
 
 const classes = computed(() => [
   'inline-grid shrink-0 touch-manipulation place-items-center rounded-cp border-0 leading-none outline-none transition-[background-color,box-shadow,color,opacity,transform] duration-150 motion-safe:active:scale-[0.96] motion-reduce:transition-none',
@@ -81,7 +89,7 @@ const classes = computed(() => [
       class="inline-grid place-items-center [&>svg]:block [&>svg]:origin-center [&>svg]:transform-view [&>svg]:will-change-transform"
     >
       <slot name="loading">
-        <LoaderCircle class="animate-spin motion-reduce:animate-none" :size="spinnerSizes[size]" />
+        <LoaderCircle class="animate-spin motion-reduce:animate-none" />
       </slot>
     </span>
     <span v-else class="inline-grid place-items-center">
