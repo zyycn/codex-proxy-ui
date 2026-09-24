@@ -73,7 +73,7 @@
     "dompurify": "^3.4.15",
     "es-toolkit": "^1.52.0",
     "gsap": "^3.15.0",
-    "marked": "^18.0.13",
+    "marked": "^18.0.14",
     "sortablejs": "^1.15.7"
   },
   "devDependencies": {
