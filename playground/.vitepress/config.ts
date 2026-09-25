@@ -59,7 +59,7 @@ export default defineConfig({
       postcssIsolateStyles({
         includeFiles: [/vitepress\/dist\/client\/theme-default\/styles\/(?:base|components\/vp-doc)\.css/u],
         // 浮层被 Teleport 到 body，仍需避开文档基线，而不是给示例组件加覆盖样式。
-        prefix: ':not(:where(.vp-raw, .vp-raw *, [role="presentation"], [role="presentation"] *, [role="status"], [role="status"] *, [role="alert"], [role="alert"] *))',
+        prefix: ':not(:where(.vp-raw, .vp-raw *, [data-cp-overlay], [data-cp-overlay] *, [role="presentation"], [role="presentation"] *, [role="status"], [role="status"] *, [role="alert"], [role="alert"] *))',
       }),
     ] } },
     server: { watch: { ignored: ['**/.vitepress/dist/**'] } },

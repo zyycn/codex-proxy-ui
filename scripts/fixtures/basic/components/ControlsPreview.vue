@@ -5,6 +5,7 @@ import { shallowRef } from 'vue'
 const name = shallowRef('请求工作台')
 const order = shallowRef(0)
 const status = shallowRef('enabled')
+const selected = shallowRef(['enabled', 'disabled'])
 const options = [{ label: '已启用', value: 'enabled' }, { label: '已停用', value: 'disabled' }]
 </script>
 
@@ -25,6 +26,9 @@ const options = [{ label: '已启用', value: 'enabled' }, { label: '已停用',
           <BaseSelect v-model="status" :options="options" class="w-full" />
         </BaseFormItem>
       </div>
+      <BaseFormItem label="多个状态">
+        <BaseSelect v-model="selected" :options="options" multiple filterable collapse-tags collapse-tags-tooltip class="w-full" />
+      </BaseFormItem>
       <div class="flex flex-wrap gap-2">
         <BaseTag>管理页面</BaseTag>
         <BaseTag>请求中间件</BaseTag>
