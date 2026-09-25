@@ -12,7 +12,7 @@
 需要 Vue 3.5+。安装固定版本的 GitHub Release 包：
 
 ```bash
-pnpm add https://github.com/zyycn/codex-proxy-ui/releases/download/v0.1.1/codex-proxy-ui-0.1.1.tgz
+pnpm add https://github.com/zyycn/codex-proxy-ui/releases/download/v0.2.0/codex-proxy-ui-0.2.0.tgz
 ```
 
 包名仍为 `@codex-proxy/ui`，导入路径不变。提交消费方锁文件以固定下载地址及完整性摘要；Release 同时提供 `.sha256` 校验文件。当前通过 GitHub Release 分发，尚未发布到 npm registry。

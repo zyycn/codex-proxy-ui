@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { CSSProperties } from 'vue'
-import { onClickOutside, useEventListener, useThrottleFn, whenever } from '@vueuse/core'
+import { onClickOutside, useEventListener, useResizeObserver, whenever } from '@vueuse/core'
 import { clamp } from 'es-toolkit'
 import { computed, nextTick, onBeforeUnmount, ref, shallowRef, useAttrs, watch } from 'vue'
 
@@ -257,8 +257,6 @@ function popoverArrowPosition(options: {
   }
 }
 
-const updatePopoverPositionThrottled = useThrottleFn(updatePopoverPosition, 32, true)
-
 async function openPopover() {
   if (props.disabled || open.value)
     return
@@ -367,8 +365,9 @@ useEventListener(viewportTarget, 'keydown', (event) => {
     closePopover()
   }
 })
-useEventListener(viewportTarget, 'resize', updatePopoverPositionThrottled)
-useEventListener(viewportTarget, 'scroll', updatePopoverPositionThrottled, { capture: true })
+useEventListener(viewportTarget, 'resize', updatePopoverPosition)
+useEventListener(viewportTarget, 'scroll', updatePopoverPosition, { capture: true, passive: true })
+useResizeObserver([rootRef, popoverRef], updatePopoverPosition)
 onBeforeUnmount(() => {
   clearHoverOpenTimer()
   clearHoverCloseTimer()
@@ -391,6 +390,7 @@ onBeforeUnmount(() => {
         <div
           v-if="open"
           ref="popoverRef"
+          data-cp-overlay
           :class="popoverClasses"
           :style="popoverStyle"
         >
