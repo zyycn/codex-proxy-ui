@@ -2,6 +2,7 @@
 import { BaseCheckbox } from '@codex-proxy/ui/checkbox'
 import { BaseTable, BaseTableColumnSettings, BaseTablePagination, defineTableColumns, useTableColumns } from '@codex-proxy/ui/table'
 import { computed, shallowRef } from 'vue'
+import DemoPlayground from '../.vitepress/theme/DemoPlayground.vue'
 
 const currentPage = shallowRef(1)
 const pageSize = shallowRef(5)
@@ -22,7 +23,7 @@ function changePageSize(value: number) {
 </script>
 
 <template>
-  <div class="demo-stack">
+  <DemoPlayground wide>
     <div class="flex items-center justify-between gap-3">
       <BaseCheckbox v-model="loading" label="加载状态" show-label />
       <BaseTableColumnSettings :options="columnOptions" @change="setColumnVisible" @reorder="setColumnOrder" @reset="resetColumns" />
@@ -31,5 +32,5 @@ function changePageSize(value: number) {
       <BaseTable :columns="visibleColumns" :rows="pageRows" :loading="loading" row-key="id" />
     </div>
     <BaseTablePagination :pagination="pagination" :loading="loading" @page-change="currentPage = $event" @page-size-change="changePageSize" />
-  </div>
+  </DemoPlayground>
 </template>

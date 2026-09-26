@@ -1,3 +1,4 @@
+export { default as BaseTable } from './BaseTable.vue'
 export { default as BaseTableColumnSettings } from './BaseTableColumnSettings.vue'
 export { default as BaseTablePagination } from './BaseTablePagination.vue'
 export {
@@ -16,7 +17,6 @@ export type {
   TableColumnSize,
   TableRow,
 } from './columns'
-export { default as BaseTable } from './index.vue'
 export {
   getCurrentPage,
   getPagerItems,

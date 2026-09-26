@@ -1,52 +1,43 @@
 <script setup lang="ts">
-import { BaseCheckbox, BaseForm, BaseFormItem, BaseNumberInput, BaseRadio, BaseSelect, BaseSwitch } from '@codex-proxy/ui'
+import { BaseCheckbox, BaseFormItem, BaseNumberInput, BaseSelect } from '@codex-proxy/ui'
 import { ref } from 'vue'
+import DemoPlayground from '../.vitepress/theme/DemoPlayground.vue'
 
-const status = ref('enabled')
-const approved = ref(false)
-const enabled = ref(true)
-const scope = ref('selected')
-const options = [{ label: '已启用', value: 'enabled' }, { label: '已停用', value: 'disabled' }]
-const maxCollapseTags = ref(1)
+const single = ref('production')
 const selected = ref(['production', 'testing', 'team'])
-const expanded = ref(['production', 'testing'])
+const multiple = ref(true)
+const filterable = ref(true)
+const collapse = ref(true)
 const disabled = ref(false)
+const loading = ref(false)
+const maxCollapseTags = ref(1)
 const groups = [
   { label: '生产环境', value: 'production' },
   { label: '测试环境', value: 'testing' },
   { label: '团队共享', value: 'team' },
   { label: '开发环境', value: 'development' },
-  { label: '长名称分组用于验证窄窗口中的标签截断与完整提示', value: 'long' },
   { label: '暂停使用', value: 'paused', disabled: true },
 ]
 </script>
 
 <template>
-  <BaseForm>
-    <BaseFormItem label="状态">
-      <BaseSelect v-model="status" :options="options" class="demo-wide" />
+  <DemoPlayground>
+    <BaseFormItem label="账号分组">
+      <BaseSelect v-if="multiple" v-model="selected" :options="groups" multiple :filterable="filterable" :collapse-tags="collapse" collapse-tags-tooltip :max-collapse-tags="maxCollapseTags" :disabled="disabled" :loading="loading" class="demo-wide" />
+      <BaseSelect v-else v-model="single" :options="groups" :filterable="filterable" :disabled="disabled" :loading="loading" class="demo-wide" />
     </BaseFormItem>
-    <BaseFormItem label="显示标签数量">
-      <BaseNumberInput v-model="maxCollapseTags" :min="1" :max="5" label="显示标签数量" />
-    </BaseFormItem>
-    <BaseFormItem label="账号分组（折叠多选）">
-      <BaseSelect v-model="selected" :options="groups" multiple filterable collapse-tags collapse-tags-tooltip :max-collapse-tags="maxCollapseTags" :disabled="disabled" placeholder="选择分组" class="demo-wide" />
-    </BaseFormItem>
-    <BaseFormItem label="账号分组（展开标签）">
-      <BaseSelect v-model="expanded" :options="groups" multiple :disabled="disabled" class="demo-wide" />
-    </BaseFormItem>
-    <div class="demo-row">
-      <BaseSwitch v-model="disabled" label="禁用多选" />
-      <span>禁用多选</span>
-    </div>
-    <div class="demo-row">
-      <BaseCheckbox v-model="approved" label="允许修改响应头" show-label />
-      <BaseSwitch v-model="enabled" label="启用配置" />
-      <span>{{ enabled ? '已启用' : '已停用' }}</span>
-    </div>
-    <div class="demo-row">
-      <BaseRadio v-model="scope" name="demo-scope" value="selected" label="指定请求" show-label />
-      <BaseRadio v-model="scope" name="demo-scope" value="all" label="全部请求" show-label />
-    </div>
-  </BaseForm>
+    <template #controls>
+      <BaseCheckbox v-model="multiple" label="多选" show-label />
+      <BaseCheckbox v-model="filterable" label="可搜索" show-label />
+      <BaseCheckbox v-model="disabled" label="禁用" show-label />
+      <BaseCheckbox v-model="loading" label="加载中" show-label />
+      <template v-if="multiple">
+        <BaseCheckbox v-model="collapse" label="折叠标签" show-label />
+        <div v-if="collapse" class="demo-control">
+          <span>可见标签</span>
+          <BaseNumberInput v-model="maxCollapseTags" label="可见标签数量" :min="1" :max="4" />
+        </div>
+      </template>
+    </template>
+  </DemoPlayground>
 </template>

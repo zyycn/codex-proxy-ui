@@ -1,34 +1,32 @@
-import { existsSync, readdirSync } from 'node:fs'
+import { globSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { fileURLToPath, URL } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
-import { defineConfig } from 'vite'
+import { defineConfig, normalizePath } from 'vite'
+import pkg from './package.json' with { type: 'json' }
 
-const externalDependency = /^(?:vue|@ant-design\/colors|@ant-design\/fast-color|@lucide\/vue|@vueuse\/core|@vueuse\/integrations|dompurify|es-toolkit|gsap|marked|sortablejs)(?:\/|$)/u
+const sourceRoot = fileURLToPath(new URL('./src', import.meta.url))
+const dependencies = Object.keys({ ...pkg.dependencies, ...pkg.peerDependencies })
+const entry = Object.fromEntries(
+  globSync(['index.ts', 'theme/index.ts', 'styles/index.ts', 'components/*/index.ts', 'vite.ts'], { cwd: sourceRoot })
+    .map(file => [normalizePath(file.slice(0, -3)), resolve(sourceRoot, file)]),
+)
 
 export default defineConfig({
   plugins: [vue(), tailwindcss()],
   build: {
-    cssCodeSplit: false,
     lib: {
-      entry: {
-        'index': fileURLToPath(new URL('./src/index.ts', import.meta.url)),
-        'theme/index': fileURLToPath(new URL('./src/theme/index.ts', import.meta.url)),
-        'styles': fileURLToPath(new URL('./src/styles/index.ts', import.meta.url)),
-        ...Object.fromEntries(readdirSync(new URL('./src/components', import.meta.url)).filter(name => existsSync(new URL(`./src/components/${name}/index.ts`, import.meta.url))).map(name => [
-          `components/${name}/index`,
-          fileURLToPath(new URL(`./src/components/${name}/index.ts`, import.meta.url)),
-        ])),
-      },
+      entry,
       formats: ['es'],
-      fileName: (_format, entryName) => `${entryName}.js`,
       cssFileName: 'styles',
     },
     rolldownOptions: {
-      external: externalDependency,
+      // 依赖由消费方提供；Node 内建模块只供独立的 Vite 入口使用。
+      external: id => id.startsWith('node:') || dependencies.some(name => id === name || id.startsWith(`${name}/`)),
       output: {
         preserveModules: true,
-        preserveModulesRoot: fileURLToPath(new URL('./src', import.meta.url)),
+        preserveModulesRoot: sourceRoot,
         entryFileNames: '[name].js',
       },
     },

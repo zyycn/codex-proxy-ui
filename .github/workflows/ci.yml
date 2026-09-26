@@ -23,4 +23,4 @@ jobs:
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm build:playground
-      - run: pnpm check:package
+      - run: pnpm build

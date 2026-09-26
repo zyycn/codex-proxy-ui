@@ -1,1 +1,1 @@
-export { default as BaseColorPicker } from './index.vue'
+export { default as BaseColorPicker } from './BaseColorPicker.vue'

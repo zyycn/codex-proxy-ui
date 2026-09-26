@@ -7,25 +7,41 @@ pnpm install --frozen-lockfile
 pnpm dev
 ```
 
-文档使用 VitePress，组件示例直接引用源码，HMR 由 Vite 和官方 Vue 插件处理
+文档使用 VitePress，通过共用适配器引用源码，HMR 由 Vite 和官方 Vue 插件处理。
 
 ## 在其他应用中联调
 
-在消费方运行 `pnpm link /path/to/codex-proxy-ui`。pnpm 11 会修改消费方的 overrides 与锁文件，恢复版本依赖时应移除对应的本地覆盖，不要撤销其他修改。
+应用保留已安装的 UI 依赖，通过 Vite 适配器指定本地 UI 仓库，不需要修改依赖或锁文件：
 
-UI 包的 `development` 条件入口指向 TypeScript 与 Vue 源码，Vite 开发服务直接编译并监听变更，不需要启动额外监听脚本
+```ts
+import CodexProxyUI from '@codex-proxy/ui/vite'
+import tailwindcss from '@tailwindcss/vite'
+import vue from '@vitejs/plugin-vue'
+import { defineConfig } from 'vite'
 
-消费方保留 `resolve.dedupe: ['vue']`，避免本地链接引入两份 Vue；TypeScript 可通过 `paths: { "vue": ["./node_modules/vue"] }` 统一到应用的 Vue 类型（相对应用 tsconfig）。
+export default defineConfig(({ mode }) => ({
+  plugins: [
+    vue(),
+    tailwindcss(),
+    CodexProxyUI({
+      source: mode === 'source'
+        ? new URL('../codex-proxy-ui/', import.meta.url)
+        : undefined,
+    }),
+  ],
+}))
+```
 
-`styles.css` 始终提供编译好的 CSS，普通使用者无需 Tailwind。需要实时生成新增 utility 时，使用 Tailwind 4 并导入 [样式集成入口](./installation#样式边界)，它会直接监听组件源码。修改基础 CSS 和 token 时可在本库文档中即时预览，或先运行 `pnpm build` 更新消费方的完整样式。
+本地 UI 仓库也需安装自身依赖。运行 `vite --mode source` 后，适配器读取该仓库 `package.json` 的 `codex-proxy-source` 导出条件，映射组件、主题和样式入口；Vue 与图标依赖统一使用应用中的实例，UI 源码排除预构建，文件访问范围保留应用配置并加入 UI 仓库。
+
+源码模式使用 Tailwind 4 编译基础样式和新增 utility，应用应导入 [样式集成入口](./installation#样式边界)。普通模式的 `styles.css` 使用完整编译产物，使用者无需 Tailwind。
+
+Vite 适配器负责运行时解析。需要检查未发布源码的类型时，在独立的源码 tsconfig 中将 UI 公开入口映射到本地源码，并通过 `paths: { "vue": ["./node_modules/vue"] }` 统一 Vue 类型；日常类型检查继续使用已安装包的声明。
 
 ## 生产构建
 
 ```bash
 pnpm build
-pnpm check:package
 ```
 
-生产模式使用保留模块边界的 ESM 和 `.d.ts`，不会读取开发环境源码入口
-
-`check:package` 使用独立消费项目检查真实发布包，不依赖文档站的源码 alias
+普通开发和生产构建都使用保留模块边界的 ESM 和 `.d.ts`，不会自动选择源码入口。`vite build --mode source` 可验证本地源码的生产构建；应用应为联调产物设置单独输出目录。

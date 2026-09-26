@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { Minus, Plus } from '@lucide/vue'
-import { computed, inject, useAttrs } from 'vue'
+import { computed, useAttrs } from 'vue'
 
-import { formFieldKey } from '../form/context'
+import { useFormField } from '../form/useFormField'
 import BaseIconButton from '../icon-button/BaseIconButton.vue'
 
 defineOptions({ inheritAttrs: false })
@@ -29,10 +29,7 @@ const props = withDefaults(
 
 const model = defineModel<number>({ required: true })
 const attrs = useAttrs()
-const field = inject(formFieldKey, null)
-const controlId = computed(() => typeof attrs.id === 'string' ? attrs.id : field?.controlId.value)
-const describedBy = computed(() => [attrs['aria-describedby'], field?.describedBy.value].filter(Boolean).join(' ') || undefined)
-const invalid = computed(() => Boolean(field?.invalid.value || attrs['aria-invalid'] === true || attrs['aria-invalid'] === 'true'))
+const { controlId, invalid, describedBy, required } = useFormField(attrs)
 
 const rootAttrs = computed(() => ({ class: attrs.class, style: attrs.style }))
 const controlAttrs = computed(() =>
@@ -101,7 +98,7 @@ function stepBy(direction: -1 | 1) {
         :aria-label="label"
         :aria-describedby="describedBy"
         :aria-invalid="invalid || undefined"
-        :aria-required="field?.required.value || undefined"
+        :aria-required="required"
         :min="min"
         :max="max"
         :step="step"

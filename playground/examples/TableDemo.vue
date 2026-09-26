@@ -3,6 +3,7 @@ import { BaseCheckbox } from '@codex-proxy/ui/checkbox'
 import { BaseSegmented } from '@codex-proxy/ui/segmented'
 import { BaseTable, defineTableColumns } from '@codex-proxy/ui/table'
 import { computed, shallowRef } from 'vue'
+import DemoPlayground from '../.vitepress/theme/DemoPlayground.vue'
 
 const state = shallowRef('ready')
 const showHeaderWhenEmpty = shallowRef(true)
@@ -26,11 +27,7 @@ const columns = defineTableColumns<typeof rows[number]>([
 </script>
 
 <template>
-  <div class="demo-stack">
-    <div class="demo-row">
-      <BaseSegmented v-model="state" :options="states" label="表格状态" />
-      <BaseCheckbox v-model="showHeaderWhenEmpty" label="空数据时保留表头" show-label />
-    </div>
+  <DemoPlayground wide>
     <div class="h-56">
       <BaseTable
         :key="state === 'initial' ? 'initial' : 'loaded'"
@@ -41,5 +38,11 @@ const columns = defineTableColumns<typeof rows[number]>([
         row-key="id"
       />
     </div>
-  </div>
+    <template #controls>
+      <div class="demo-row">
+        <BaseSegmented v-model="state" :options="states" label="表格状态" />
+        <BaseCheckbox v-model="showHeaderWhenEmpty" label="空数据时保留表头" show-label />
+      </div>
+    </template>
+  </DemoPlayground>
 </template>

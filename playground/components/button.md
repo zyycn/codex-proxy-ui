@@ -1,25 +1,61 @@
 <script setup lang="ts">
-import ButtonsDemo from '../examples/ButtonsDemo.vue'
+import ButtonDemo from '../examples/ButtonDemo.vue'
 </script>
 
 # Button 按钮
 
-区分主要、次要、禁用与加载状态，纯图标操作提供可访问名称
+触发操作，区分主要、次要与危险动作
 
 ## 交互示例
 
 <ClientOnly>
-  <div class="vp-raw demo">
-    <ButtonsDemo />
-  </div>
+  <ButtonDemo />
 </ClientOnly>
+
+::: details 查看用法代码
+
+```vue
+<script setup lang="ts">
+import { BaseButton } from '@codex-proxy/ui'
+import { ref } from 'vue'
+
+const count = ref(0)
+</script>
+
+<template>
+  <BaseButton variant="primary" @click="count++">
+    已保存 {{ count }} 次
+  </BaseButton>
+</template>
+```
+
+:::
 
 ## 使用要点
 
-`variant` 控制操作层级，`loading` 防止重复提交，图标按钮必须提供 `label`
+`variant` 决定强调程度，`loading` 会同时禁用重复点击
 
-`BaseIconButton` 为 Lucide 图标提供默认尺寸：`sm` 为 14px、`md` 为 16px、`lg` 为 18px，可通过图标自身的 `size` 或尺寸类覆盖，按钮点击区域保持不变
+## API
 
-## 示例源码
+### 属性
 
-<<< ../examples/ButtonsDemo.vue
+| 属性                 | 类型                                                             | 默认值        | 说明                 |
+| -------------------- | ---------------------------------------------------------------- | ------------- | -------------------- |
+| `variant`            | `'primary' \| 'secondary' \| 'soft' \| 'ghost' \| 'destructive'` | `'secondary'` | 按钮样式             |
+| `size`               | `'sm' \| 'md' \| 'lg'`                                           | `'md'`        | 尺寸                 |
+| `loading / disabled` | `boolean`                                                        | `false`       | 加载或禁用时阻止点击 |
+| `type`               | `'button' \| 'submit' \| 'reset'`                                | `'button'`    | 原生按钮类型         |
+
+### 事件
+
+| 事件    | 说明                                  |
+| ------- | ------------------------------------- |
+| `click` | 原生 MouseEvent，加载与禁用时不会触发 |
+
+### 插槽
+
+| 插槽      | 说明     |
+| --------- | -------- |
+| `default` | 按钮文字 |
+| `icon`    | 前置图标 |
+| `loading` | 加载图标 |

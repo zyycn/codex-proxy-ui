@@ -36,39 +36,137 @@ html,
   }
 }
 
-.demo {
-  margin: 24px 0;
-  padding: 24px;
-  border-radius: var(--cp-border-radius-lg, 12px);
+.demo-playground {
+  margin: 20px 0;
+  overflow: visible;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 12px;
   background: var(--cp-color-bg-layout);
   color: var(--cp-color-text);
   font-family: var(--cp-font-family);
   font-size: var(--cp-font-size);
 }
 
+.demo-stage {
+  display: flex;
+  min-height: 200px;
+  align-items: center;
+  justify-content: center;
+  padding: 36px;
+}
+
+.demo-preview {
+  display: grid;
+  width: 100%;
+  max-width: 420px;
+  gap: 16px;
+}
+
+.demo-preview-wide {
+  max-width: none;
+}
+
+.demo-preview > button {
+  justify-self: center;
+}
+
+.demo-controls {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 20px;
+  align-items: baseline;
+  padding: 16px 20px;
+  border-top: 1px solid var(--vp-c-divider);
+  border-radius: 0 0 12px 12px;
+  background: var(--cp-color-bg-container);
+}
+
+.demo-controls-label {
+  color: var(--cp-color-text-tertiary);
+  font-size: 12px;
+}
+
+.demo-controls-fields,
+.demo-control,
 .demo-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 12px;
 }
+
+.demo-controls-fields {
+  gap: 16px 24px;
+}
+
+.demo-control > span,
+.demo-value {
+  color: var(--cp-color-text-secondary);
+  font-size: 12px;
+}
+
 .demo-stack {
   display: grid;
   gap: 16px;
 }
+
 .demo-columns {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
 }
+
 .demo-wide {
   width: 100%;
 }
 
+.vp-doc .custom-block.details {
+  border: 1px solid var(--vp-c-divider);
+  background: transparent;
+}
+
+.VPSidebar .group + .group {
+  margin-top: 0;
+  padding-top: 8px;
+}
+
+.VPSidebar .group > .VPSidebarItem.level-0 {
+  padding-bottom: 8px;
+}
+
+.VPSidebar .VPSidebarItem.is-link > .item {
+  margin-bottom: 4px;
+}
+
+.VPSidebar .VPSidebarItem.is-link > .items {
+  margin-block: 6px;
+}
+
+.VPSidebar .VPSidebarItem.is-link > .item > .link {
+  padding-inline: 10px;
+  border-radius: 6px;
+  transition: background-color 0.15s;
+}
+
+.VPSidebar .VPSidebarItem.is-link > .item > .link:where(:hover, :focus-visible) {
+  background: var(--vp-c-default-soft);
+}
+
+.VPSidebar .VPSidebarItem.is-active:not(:has(.items .is-active)) > .item > .link {
+  background: var(--vp-c-brand-soft);
+}
+
 @media (max-width: 640px) {
-  .demo {
+  .demo-stage {
+    padding: 24px 16px;
+  }
+
+  .demo-controls {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
     padding: 16px;
   }
+
   .demo-columns {
     grid-template-columns: minmax(0, 1fr);
   }

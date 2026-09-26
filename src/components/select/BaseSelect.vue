@@ -1,38 +1,20 @@
 <script setup lang="ts" generic="Multiple extends boolean = false">
-import type { CSSProperties } from 'vue'
-import type { SelectOption } from './types'
-
+import type { SelectOption, SelectProps, SelectSize, SelectValue } from './types'
 import { Check, ChevronDown, LoaderCircle } from '@lucide/vue'
-import { onClickOutside, useEventListener, useResizeObserver } from '@vueuse/core'
-import { clamp } from 'es-toolkit'
-import { computed, inject, nextTick, ref, useAttrs, useId, watch } from 'vue'
+import { computed, useAttrs, useTemplateRef } from 'vue'
 import BaseEmpty from '../empty/BaseEmpty.vue'
-import { formFieldKey } from '../form/context'
+import { useFormField } from '../form/useFormField'
 import BaseInput from '../input/BaseInput.vue'
 import BaseScrollbar from '../scrollbar/BaseScrollbar.vue'
 import BaseSelectTags from './BaseSelectTags.vue'
-
-type SelectSize = 'sm' | 'md' | 'lg'
-type SelectValue<M extends boolean> = M extends true ? string[] : string
+import { useSelect } from './useSelect'
 
 defineOptions({
   inheritAttrs: false,
 })
 
 const props = withDefaults(
-  defineProps<{
-    options: SelectOption[]
-    size?: SelectSize
-    disabled?: boolean
-    placeholder?: string
-    emptyText?: string
-    multiple?: Multiple & boolean
-    filterable?: boolean
-    collapseTags?: boolean
-    collapseTagsTooltip?: boolean
-    maxCollapseTags?: number
-    loading?: boolean
-  }>(),
+  defineProps<SelectProps<Multiple>>(),
   {
     size: 'md',
     disabled: false,
@@ -44,31 +26,34 @@ const props = withDefaults(
 
 const model = defineModel<SelectValue<Multiple>>({ required: true })
 const attrs = useAttrs()
-const field = inject(formFieldKey, null)
-
-const rootRef = ref<HTMLElement | null>(null)
-const triggerRef = ref<HTMLButtonElement | null>(null)
-const controlRef = ref<HTMLElement | null>(null)
-const searchRef = ref<HTMLElement | null>(null)
-const search = ref('')
-const popoverRef = ref<HTMLElement | null>(null)
-const listboxRef = ref<HTMLElement | null>(null)
-const scrollbarRef = ref<InstanceType<typeof BaseScrollbar> | null>(null)
-const open = ref(false)
-const activeIndex = ref(-1)
-const popoverStyle = ref<CSSProperties>({})
-const popoverMaxHeight = ref('244px')
-const selectId = `base-select-${useId()}`
-const controlId = computed(() => (typeof attrs.id === 'string' ? attrs.id : (field?.controlId.value ?? selectId)))
-const invalid = computed(() =>
-  Boolean(field?.invalid.value || attrs['aria-invalid'] === true || attrs['aria-invalid'] === 'true'),
-)
-const describedBy = computed(
-  () =>
-    [typeof attrs['aria-describedby'] === 'string' ? attrs['aria-describedby'] : undefined, field?.describedBy.value]
-      .filter(Boolean)
-      .join(' ') || undefined,
-)
+const rootRef = useTemplateRef<HTMLElement>('rootRef')
+const triggerRef = useTemplateRef<HTMLButtonElement>('triggerRef')
+const controlRef = useTemplateRef<HTMLElement>('controlRef')
+const searchRef = useTemplateRef<HTMLElement>('searchRef')
+const popoverRef = useTemplateRef<HTMLElement>('popoverRef')
+const listboxRef = useTemplateRef<HTMLElement>('listboxRef')
+const scrollbarRef = useTemplateRef<InstanceType<typeof BaseScrollbar>>('scrollbarRef')
+const {
+  selectId,
+  open,
+  search,
+  activeIndex,
+  popoverStyle,
+  popoverMaxHeight,
+  selectedValues,
+  selectedOptions,
+  selectionLabel,
+  displayed,
+  selectedOption,
+  optionId,
+  toggleMenu,
+  handleTriggerKeydown,
+  removeOption,
+  handleOptionFocus,
+  chooseOption,
+  handleEscape,
+} = useSelect(props, model, { rootRef, triggerRef, controlRef, searchRef, popoverRef, listboxRef, scrollbarRef })
+const { controlId, invalid, describedBy, required } = useFormField(attrs, selectId)
 const rootAttrs = computed(() => ({ class: attrs.class, style: attrs.style }))
 const triggerAttrs = computed(() =>
   Object.fromEntries(
@@ -107,16 +92,6 @@ const sizeConfig: Record<
   },
 }
 
-const selectedValues = computed<string[]>(() => Array.isArray(model.value) ? model.value : [model.value])
-const selectedOptions = computed(() => selectedValues.value.map(value => props.options.find(option => option.value === value) ?? { value, label: value }))
-const selectionLabel = computed(() => selectedOptions.value.map(option => option.label).join('、'))
-const displayed = computed(() => props.loading
-  ? []
-  : props.options.filter(option =>
-      !props.filterable || `${option.label} ${option.description ?? ''}`.toLocaleLowerCase().includes(search.value.toLocaleLowerCase()),
-    ))
-const selectedOption = computed(() => props.options.find(option => option.value === model.value))
-
 const triggerClasses = computed(() => [
   'relative inline-flex w-full min-w-0 items-center gap-2 overflow-visible border-0 text-left font-emphasis leading-none shadow-cp-input outline-none transition-[background-color,box-shadow,color] duration-[160ms]',
   props.multiple ? sizeConfig[props.size].multiple : sizeConfig[props.size].trigger,
@@ -133,209 +108,6 @@ const triggerClasses = computed(() => [
           ],
 ])
 
-function optionId(index: number) {
-  return `${selectId}-option-${index}`
-}
-
-function enabledIndexes() {
-  return displayed.value.flatMap((option, index) => (option.disabled ? [] : [index]))
-}
-
-function selectedIndex() {
-  return displayed.value.findIndex(option => selectedValues.value.includes(option.value))
-}
-
-function setActiveToSelected() {
-  const selected = selectedIndex()
-  if (selected >= 0 && !displayed.value[selected]?.disabled) {
-    activeIndex.value = selected
-    return
-  }
-
-  activeIndex.value = enabledIndexes()[0] ?? -1
-}
-
-function updatePopoverPosition() {
-  if (!open.value || !controlRef.value || !listboxRef.value)
-    return
-
-  const rect = controlRef.value.getBoundingClientRect()
-  const gap = 6
-  const searchHeight = searchRef.value?.offsetHeight ?? 0
-  const menuHeight = Math.min(listboxRef.value.scrollHeight, 244) + searchHeight
-  const belowSpace = window.innerHeight - rect.bottom - gap - 8
-  const aboveSpace = rect.top - gap - 8
-  const placeAbove = belowSpace < menuHeight && aboveSpace > belowSpace
-  const availableHeight = Math.max(placeAbove ? aboveSpace : belowSpace, 0)
-  const maxHeight = Math.min(menuHeight, availableHeight)
-  const top = placeAbove
-    ? Math.max(8, rect.top - maxHeight - gap)
-    : Math.min(rect.bottom + gap, window.innerHeight - maxHeight - 8)
-  const left = clamp(rect.left, 8, window.innerWidth - rect.width - 8)
-
-  // 原生锚点由浏览器随滚动合成，避免 body 浮层等待主线程坐标更新。
-  const nativeAnchor = CSS.supports('top', 'anchor(bottom)')
-  popoverMaxHeight.value = `${Math.max(0, maxHeight - searchHeight)}px`
-  popoverStyle.value = {
-    positionAnchor: nativeAnchor ? `--${selectId}` : undefined,
-    positionVisibility: nativeAnchor ? 'anchors-visible' : undefined,
-    left: nativeAnchor ? 'anchor(left)' : `${left}px`,
-    top: nativeAnchor
-      ? placeAbove ? `calc(anchor(top) - ${maxHeight + gap}px)` : `calc(anchor(bottom) + ${gap}px)`
-      : `${top}px`,
-    width: nativeAnchor ? 'anchor-size(width)' : `${rect.width}px`,
-    maxWidth: 'calc(100vw - 16px)',
-  }
-}
-
-function scrollActiveIntoView() {
-  const wrap = scrollbarRef.value?.wrapRef
-  const option = listboxRef.value?.children[activeIndex.value]
-  if (!open.value || !wrap || !option)
-    return
-
-  // 只滚动菜单自身，避免键盘定位选项时带动弹窗或页面滚动。
-  const wrapRect = wrap.getBoundingClientRect()
-  const optionRect = option.getBoundingClientRect()
-  if (optionRect.top < wrapRect.top)
-    wrap.scrollTop -= wrapRect.top - optionRect.top
-  else if (optionRect.bottom > wrapRect.bottom)
-    wrap.scrollTop += optionRect.bottom - wrapRect.bottom
-}
-
-async function openMenu() {
-  if (props.disabled || open.value)
-    return
-
-  search.value = ''
-  open.value = true
-  setActiveToSelected()
-  await nextTick()
-  updatePopoverPosition()
-  await nextTick()
-  scrollActiveIntoView()
-  searchRef.value?.querySelector('input')?.focus()
-}
-
-function closeMenu() {
-  open.value = false
-}
-
-function toggleMenu() {
-  if (open.value) {
-    closeMenu()
-    return
-  }
-
-  void openMenu()
-}
-
-function moveActive(delta: number) {
-  const indexes = enabledIndexes()
-  if (indexes.length === 0)
-    return
-
-  const current = indexes.indexOf(activeIndex.value)
-  const next = current === -1 ? (delta > 0 ? 0 : indexes.length - 1) : current + delta
-  activeIndex.value = indexes[(next + indexes.length) % indexes.length]
-  // 只有键盘导航主动定位；鼠标悬停不能把半露出的选项滚入视口。
-  scrollActiveIntoView()
-}
-
-function handleOptionFocus(index: number) {
-  const option = displayed.value[index]
-  if (!option || option.disabled)
-    return
-
-  activeIndex.value = index
-  scrollActiveIntoView()
-}
-
-function chooseOption(option: SelectOption, index: number) {
-  if (props.disabled || option.disabled)
-    return
-
-  model.value = (props.multiple
-    ? selectedValues.value.includes(option.value)
-      ? selectedValues.value.filter(value => value !== option.value)
-      : [...selectedValues.value, option.value]
-    : option.value) as SelectValue<Multiple>
-  activeIndex.value = index
-  if (!props.multiple) {
-    closeMenu()
-    triggerRef.value?.focus()
-  }
-}
-
-function chooseActive() {
-  const option = displayed.value[activeIndex.value]
-  if (!option)
-    return
-
-  chooseOption(option, activeIndex.value)
-}
-
-function removeOption(value: string) {
-  if (props.disabled || props.options.find(option => option.value === value)?.disabled)
-    return
-  model.value = selectedValues.value.filter(item => item !== value) as SelectValue<Multiple>
-}
-
-function handleEscape(event: KeyboardEvent) {
-  if (!open.value)
-    return
-
-  // 先关闭下拉层，避免同一次按键继续关闭外层弹窗。
-  event.preventDefault()
-  event.stopPropagation()
-  closeMenu()
-  triggerRef.value?.focus()
-}
-
-function handleTriggerKeydown(event: KeyboardEvent) {
-  if (props.disabled || event.isComposing)
-    return
-
-  if (event.key === 'ArrowDown') {
-    event.preventDefault()
-    if (!open.value) {
-      void openMenu()
-      return
-    }
-    moveActive(1)
-    return
-  }
-
-  if (event.key === 'ArrowUp') {
-    event.preventDefault()
-    if (!open.value) {
-      void openMenu()
-      return
-    }
-    moveActive(-1)
-    return
-  }
-
-  const searching = event.target instanceof HTMLInputElement
-  if (event.key === 'Enter' || (event.key === ' ' && !searching)) {
-    event.preventDefault()
-    if (!open.value) {
-      void openMenu()
-      return
-    }
-    chooseActive()
-    return
-  }
-
-  if (event.key === 'Escape')
-    handleEscape(event)
-  if (event.key === 'Tab') {
-    if (searching)
-      triggerRef.value?.focus()
-    closeMenu()
-  }
-}
-
 function optionClasses(option: SelectOption, index: number) {
   return [
     'flex w-full shrink-0 touch-manipulation items-center gap-2 rounded-cp-sm border-0 px-3 text-left font-emphasis leading-none outline-none transition-colors motion-reduce:transition-none',
@@ -349,43 +121,6 @@ function optionClasses(option: SelectOption, index: number) {
           : 'cursor-pointer bg-transparent text-cp-text hover:bg-cp-bg-text-hover',
   ]
 }
-
-watch(
-  () => [displayed.value, props.size],
-  async () => {
-    if (!open.value)
-      return
-    setActiveToSelected()
-    await nextTick()
-    updatePopoverPosition()
-    await nextTick()
-    scrollActiveIntoView()
-  },
-)
-
-watch(model, async () => {
-  await nextTick()
-  updatePopoverPosition()
-})
-watch(() => props.loading, async (loading) => {
-  if (loading || !open.value)
-    return
-  await nextTick()
-  // 重试操作结束后其按钮会卸载，将键盘焦点交还给仍存在的选择控件。
-  if (open.value && (document.activeElement === document.body || popoverRef.value?.contains(document.activeElement)))
-    (searchRef.value?.querySelector('input') ?? triggerRef.value)?.focus()
-})
-watch(() => props.disabled, (disabled) => {
-  if (disabled)
-    closeMenu()
-})
-
-onClickOutside(rootRef, closeMenu, { ignore: [popoverRef] })
-// 滚动事件随浏览器绘制更新，额外节流会让固定定位的弹层落后于输入框。
-const viewportTarget = computed(() => open.value ? window : null)
-useEventListener(viewportTarget, 'resize', updatePopoverPosition)
-useEventListener(viewportTarget, 'scroll', updatePopoverPosition, { capture: true, passive: true })
-useResizeObserver([controlRef, listboxRef, searchRef], updatePopoverPosition)
 </script>
 
 <template>
@@ -404,7 +139,7 @@ useResizeObserver([controlRef, listboxRef, searchRef], updatePopoverPosition)
         :aria-activedescendant="open && activeIndex >= 0 ? optionId(activeIndex) : undefined"
         :aria-describedby="describedBy"
         :aria-invalid="invalid || undefined"
-        :aria-required="field?.required.value || undefined"
+        :aria-required="required"
         @click="toggleMenu"
         @keydown="handleTriggerKeydown"
       >
