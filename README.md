@@ -30,7 +30,7 @@
 从 [GitHub Releases](https://github.com/zyycn/codex-proxy-ui/releases) 选择固定版本的安装包
 
 ```bash
-pnpm add https://github.com/zyycn/codex-proxy-ui/releases/download/v0.2.0/codex-proxy-ui-0.2.0.tgz
+pnpm add https://github.com/zyycn/codex-proxy-ui/releases/download/v0.3.0/codex-proxy-ui-0.3.0.tgz
 ```
 
 包名为 `@codex-proxy/ui`，当前通过 GitHub Release 分发，尚未发布到 npm registry
