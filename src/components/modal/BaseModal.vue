@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { AlertCircle, AlertTriangle, CheckCircle2, Info, X } from '@lucide/vue'
 import { useResizeObserver } from '@vueuse/core'
-import { nextTick, onBeforeUnmount, useId, useTemplateRef, watch } from 'vue'
+import { nextTick, onBeforeUnmount, shallowRef, useId, useTemplateRef, watch } from 'vue'
 
 import BaseIconButton from '../icon-button/BaseIconButton.vue'
 import BaseScrollbar from '../scrollbar/BaseScrollbar.vue'
@@ -32,6 +32,7 @@ const props = withDefaults(
 )
 
 const open = defineModel<boolean>({ default: false })
+const rendered = shallowRef(false)
 const panel = useTemplateRef<HTMLElement>('panel')
 const titleId = useId()
 const descriptionId = useId()
@@ -100,6 +101,14 @@ function closeModal() {
   if (!props.dismissible)
     return
   open.value = false
+}
+
+function finishLeave() {
+  if (open.value)
+    return
+  // 保留子组件到退场完成，避免 Teleport 内容先卸载导致面板收缩。
+  rendered.value = false
+  resetPosition()
 }
 
 function focusableElements(root: ParentNode | null = panel.value): HTMLElement[] {
@@ -175,6 +184,7 @@ watch(
   open,
   async (isOpen) => {
     if (isOpen) {
+      rendered.value = true
       previouslyFocused
         = document.activeElement instanceof HTMLElement ? document.activeElement : null
       acquireScrollLock()
@@ -201,9 +211,10 @@ onBeforeUnmount(() => {
 
 <template>
   <Teleport to="body">
-    <Transition name="cp-modal" @after-leave="resetPosition">
+    <Transition name="cp-modal" @after-leave="finishLeave">
       <div
-        v-if="open"
+        v-if="rendered"
+        v-show="open"
         class="fixed inset-0 z-50 grid place-items-center overflow-hidden p-3 sm:p-6"
         role="presentation"
         @keydown="handleKeydown"
