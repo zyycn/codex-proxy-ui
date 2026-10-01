@@ -18,6 +18,8 @@ import ConfirmModalDemo from '../examples/ConfirmModalDemo.vue'
 
 监听 `confirm` 执行操作，成功后由调用方关闭弹窗；异步操作期间设置 `loading`，以避免重复提交
 
+确认对象与提示内容在退出期间保持不变，内部内容在动画结束后自动卸载。调用方可在下次打开时替换确认对象，仅在需要额外收尾时监听 `afterLeave`
+
 `confirmText`、`cancelText` 定义按钮文案，`confirmDisabled` 禁用确认
 
 ::: details 查看用法代码
@@ -75,6 +77,7 @@ function confirm() {
 | `update:modelValue` | boolean，打开状态变化                                     |
 | `confirm`           | 点击确认时触发，由调用方完成操作并关闭                    |
 | `cancel`            | 点击取消按钮时触发，遮罩、Escape 和关闭图标只更新打开状态 |
+| `afterLeave`        | 退出动画完成后触发，可执行必要的业务收尾                  |
 
 ### 插槽
 

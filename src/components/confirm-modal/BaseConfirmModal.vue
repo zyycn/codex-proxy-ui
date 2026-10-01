@@ -24,6 +24,7 @@ const props = withDefaults(
 const emit = defineEmits<{
   confirm: []
   cancel: []
+  afterLeave: []
 }>()
 const open = defineModel<boolean>({ default: false })
 function handleCancel() {
@@ -49,6 +50,7 @@ function handleConfirm() {
     :tone="destructive ? 'danger' : 'warning'"
     role="alertdialog"
     :dismissible="!loading"
+    @after-leave="emit('afterLeave')"
   >
     <div
       v-if="$slots.default"

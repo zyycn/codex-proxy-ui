@@ -6,6 +6,7 @@ import { nextTick, onBeforeUnmount, shallowRef, useId, useTemplateRef, watch } f
 import BaseIconButton from '../icon-button/BaseIconButton.vue'
 import BaseScrollbar from '../scrollbar/BaseScrollbar.vue'
 import { lockBodyScroll, unlockBodyScroll } from './bodyScrollLock'
+import { getModalFocusTarget, rememberModalFocus } from './modalFocus'
 import { useModalDrag } from './useModalDrag'
 
 type ModalSize = 'sm' | 'md' | 'md-wide' | 'lg' | 'xl'
@@ -31,6 +32,7 @@ const props = withDefaults(
   },
 )
 
+const emit = defineEmits<{ afterLeave: [] }>()
 const open = defineModel<boolean>({ default: false })
 const rendered = shallowRef(false)
 const panel = useTemplateRef<HTMLElement>('panel')
@@ -104,11 +106,14 @@ function closeModal() {
 }
 
 function finishLeave() {
-  if (open.value)
+  if (open.value || !rendered.value)
     return
   // 保留子组件到退场完成，避免 Teleport 内容先卸载导致面板收缩。
   rendered.value = false
   resetPosition()
+  releaseScrollLock()
+  restorePreviousFocus()
+  emit('afterLeave')
 }
 
 function focusableElements(root: ParentNode | null = panel.value): HTMLElement[] {
@@ -175,8 +180,12 @@ function releaseScrollLock() {
 }
 
 function restorePreviousFocus() {
-  if (previouslyFocused?.isConnected)
-    previouslyFocused.focus()
+  // 连续打开另一弹窗时，旧窗口的退场不能抢走新窗口已经取得的焦点。
+  const active = document.activeElement
+  const focusStayedInModal = active === document.body || active === document.documentElement || panel.value?.contains(active)
+  const target = getModalFocusTarget(previouslyFocused)
+  if (focusStayedInModal && target?.isConnected)
+    target.focus()
   previouslyFocused = null
 }
 
@@ -184,11 +193,16 @@ watch(
   open,
   async (isOpen) => {
     if (isOpen) {
+      if (!rendered.value) {
+        previouslyFocused = getModalFocusTarget(document.activeElement)
+      }
       rendered.value = true
-      previouslyFocused
-        = document.activeElement instanceof HTMLElement ? document.activeElement : null
       acquireScrollLock()
       await nextTick()
+      if (panel.value)
+        rememberModalFocus(panel.value, previouslyFocused, () => open.value)
+      if (!open.value)
+        return
       const first = focusableElements()[0]
       if (first)
         first.focus()
@@ -197,8 +211,6 @@ watch(
     }
 
     cancelDrag()
-    releaseScrollLock()
-    restorePreviousFocus()
   },
   { immediate: true },
 )
@@ -211,10 +223,11 @@ onBeforeUnmount(() => {
 
 <template>
   <Teleport to="body">
-    <Transition name="cp-modal" @after-leave="finishLeave">
+    <Transition name="cp-modal" persisted @after-leave="finishLeave">
       <div
         v-if="rendered"
         v-show="open"
+        :inert="!open"
         class="fixed inset-0 z-50 grid place-items-center overflow-hidden p-3 sm:p-6"
         role="presentation"
         @keydown="handleKeydown"
