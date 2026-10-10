@@ -1,1 +1,2 @@
-export { default as BaseCheckbox } from './BaseCheckbox.vue'
+export { default as ZCheckbox } from './Checkbox.vue'
+export type * from './types'

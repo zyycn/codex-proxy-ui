@@ -14,7 +14,7 @@ import MenuItemDemo from '../examples/MenuItemDemo.vue'
 
 ## 使用要点
 
-默认插槽提供操作文字，`icon` 插槽放置图标，`tone="destructive"` 标识危险操作
+默认插槽提供操作文字，`icon` 插槽放置图标，`type="danger"` 标识危险操作
 
 `disabled` 与 `loading` 阻止点击，组件是按钮，不负责菜单容器的定位与开关
 
@@ -22,19 +22,19 @@ import MenuItemDemo from '../examples/MenuItemDemo.vue'
 
 ```vue
 <script setup lang="ts">
-import { BaseMenuItem } from '@codex-proxy/ui'
+import { ZMenuItem } from '@codex-proxy/ui'
 import { ref } from 'vue'
 
 const action = ref('尚未操作')
 </script>
 
 <template>
-  <BaseMenuItem @click="action = '编辑'">
+  <ZMenuItem @click="action = '编辑'">
     编辑
-  </BaseMenuItem>
-  <BaseMenuItem tone="destructive" @click="action = '移除'">
+  </ZMenuItem>
+  <ZMenuItem type="danger" @click="action = '移除'">
     移除
-  </BaseMenuItem>
+  </ZMenuItem>
   <output aria-label="当前操作">{{ action }}</output>
 </template>
 ```
@@ -45,10 +45,10 @@ const action = ref('尚未操作')
 
 ### 属性
 
-| 属性                 | 类型                         | 默认值      | 说明                 |
-| -------------------- | ---------------------------- | ----------- | -------------------- |
-| `tone`               | `'neutral' \| 'destructive'` | `'neutral'` | 普通或危险操作       |
-| `disabled / loading` | `boolean`                    | `false`     | 禁用或加载时阻止点击 |
+| 属性                 | 类型                    | 默认值      | 说明                 |
+| -------------------- | ----------------------- | ----------- | -------------------- |
+| `type`               | `'default' \| 'danger'` | `'default'` | 普通或危险操作       |
+| `disabled / loading` | `boolean`               | `false`     | 禁用或加载时阻止点击 |
 
 ### 事件
 

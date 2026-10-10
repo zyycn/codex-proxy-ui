@@ -16,7 +16,7 @@ import type {
   ThemeSemanticMap,
   ThemeSurfaceMap,
 } from '../types'
-import { normalizeHexColor } from '../../color'
+import { normalizeHexColor } from '../../shared/utils/color'
 import {
   compositeOnBackground,
   ensureContrast,

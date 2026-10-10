@@ -3,7 +3,7 @@
 从 GitHub Release 安装固定版本，包名与导入路径保持 `@codex-proxy/ui`
 
 ```bash
-pnpm add https://github.com/zyycn/codex-proxy-ui/releases/download/v0.3.2/codex-proxy-ui-0.3.2.tgz
+pnpm add https://github.com/zyycn/codex-proxy-ui/releases/download/v0.4.0/codex-proxy-ui-0.4.0.tgz
 ```
 
 提交消费方锁文件以固定下载地址和完整性摘要，Release 提供独立的 `.sha256` 校验文件
@@ -14,9 +14,9 @@ pnpm add https://github.com/zyycn/codex-proxy-ui/releases/download/v0.3.2/codex-
 根入口支持静态具名导入和 tree-shaking，也提供独立组件入口
 
 ```ts
-import { BaseButton } from '@codex-proxy/ui'
+import { ZButton } from '@codex-proxy/ui'
 // 或只加载指定组件入口
-import { BaseButton as Button } from '@codex-proxy/ui/button'
+import { ZButton as Button } from '@codex-proxy/ui/button'
 import '@codex-proxy/ui/styles.css'
 ```
 

@@ -16,15 +16,15 @@ import RadioDemo from '../examples/RadioDemo.vue'
 
 ```vue
 <script setup lang="ts">
-import { BaseRadio } from '@codex-proxy/ui'
+import { ZRadio } from '@codex-proxy/ui'
 import { ref } from 'vue'
 
 const scope = ref('selected')
 </script>
 
 <template>
-  <BaseRadio v-model="scope" name="scope" value="selected" label="指定请求" show-label />
-  <BaseRadio v-model="scope" name="scope" value="all" label="全部请求" show-label />
+  <ZRadio v-model="scope" name="scope" value="selected" label="指定请求" />
+  <ZRadio v-model="scope" name="scope" value="all" label="全部请求" />
 </template>
 ```
 
@@ -38,12 +38,13 @@ const scope = ref('selected')
 
 ### 属性
 
-| 属性                   | 类型      | 默认值  | 说明                           |
-| ---------------------- | --------- | ------- | ------------------------------ |
-| `v-model`              | `string`  | 必填    | 当前选中值                     |
-| `value / name / label` | `string`  | 必填    | 选项值、原生分组名与可访问名称 |
-| `showLabel`            | `boolean` | `false` | 显示名称文字                   |
-| `disabled`             | `boolean` | `false` | 禁用此选项                     |
+| 属性       | 类型      | 默认值  | 说明       |
+| ---------- | --------- | ------- | ---------- |
+| `v-model`  | `string`  | 必填    | 当前选中值 |
+| `disabled` | `boolean` | `false` | 禁用此选项 |
+
+| `value` | `string \| number` | 必填 | 选项值 |
+| `name / label` | `string` | — | 分组名和可见标签；隐藏名称使用 aria-label |
 
 ### 事件
 
@@ -53,6 +54,5 @@ const scope = ref('selected')
 
 ### 插槽
 
-| 插槽      | 说明                             |
-| --------- | -------------------------------- |
-| `default` | 自定义可见标签，优先于 showLabel |
+| 插槽 | 说明 |
+| ---- | ---- |

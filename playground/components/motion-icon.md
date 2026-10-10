@@ -22,15 +22,15 @@ import MotionIconDemo from '../examples/MotionIconDemo.vue'
 
 ```vue
 <script setup lang="ts">
-import { BaseMotionIcon } from '@codex-proxy/ui'
+import { ZMotionIcon } from '@codex-proxy/ui'
 </script>
 
 <template>
-  <BaseMotionIcon variant="brand" aria-label="品牌图标" style="display: inline-grid; padding: 12px">
+  <ZMotionIcon variant="brand" aria-label="品牌图标" style="display: inline-grid; padding: 12px">
     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
       <path d="m12 3 3 6 6 3-6 3-3 6-3-6-6-3 6-3Z" />
     </svg>
-  </BaseMotionIcon>
+  </ZMotionIcon>
 </template>
 ```
 

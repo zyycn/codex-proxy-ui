@@ -5,7 +5,7 @@ import type {
 } from '../types'
 import { generate } from '@ant-design/colors'
 import { FastColor } from '@ant-design/fast-color'
-import { normalizeHexColor } from '../../color'
+import { normalizeHexColor } from '../../shared/utils/color'
 import {
   BLACK,
   DEFAULT_CUSTOM_THEME_COLOR,

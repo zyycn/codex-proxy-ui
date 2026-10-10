@@ -18,24 +18,26 @@ import ScrollbarDemo from '../examples/ScrollbarDemo.vue'
 
 `alwaysVisible` 控制滚动条常显，`scroll` 事件返回 `scrollTop` 与 `scrollLeft`
 
+滚动由原生容器处理，滚动条隐藏时不接收鼠标操作；自定义轨道只处理点击与拖动
+
 ::: details 查看用法代码
 
 ```vue
 <script setup lang="ts">
-import { BaseScrollbar } from '@codex-proxy/ui'
+import { ZScrollbar } from '@codex-proxy/ui'
 import { ref } from 'vue'
 
 const scrollTop = ref(0)
 </script>
 
 <template>
-  <BaseScrollbar height="224px" horizontal @scroll="scrollTop = $event.scrollTop">
+  <ZScrollbar height="224px" horizontal @scroll="scrollTop = $event.scrollTop">
     <div style="min-width: 600px">
       <p v-for="index in 20" :key="index">
         示例内容 {{ index }}
       </p>
     </div>
-  </BaseScrollbar>
+  </ZScrollbar>
   <output aria-label="滚动位置">已滚动 {{ Math.round(scrollTop) }} px</output>
 </template>
 ```

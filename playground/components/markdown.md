@@ -20,13 +20,13 @@ import MarkdownDemo from '../examples/MarkdownDemo.vue'
 
 ```vue
 <script setup lang="ts">
-import { BaseMarkdown } from '@codex-proxy/ui'
+import { ZMarkdown } from '@codex-proxy/ui'
 
 const source = '### 请求工作台\n\n通过 **显式授权** 使用插件能力'
 </script>
 
 <template>
-  <BaseMarkdown :source="source" />
+  <ZMarkdown :source="source" />
 </template>
 ```
 

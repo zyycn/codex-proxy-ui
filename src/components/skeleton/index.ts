@@ -1,1 +1,2 @@
-export { default as BaseSkeleton } from './BaseSkeleton.vue'
+export { default as ZSkeleton } from './Skeleton.vue'
+export type * from './types'

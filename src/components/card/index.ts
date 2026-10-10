@@ -1,1 +1,2 @@
-export { default as BaseCard } from './BaseCard.vue'
+export { default as ZCard } from './Card.vue'
+export type * from './types'

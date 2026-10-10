@@ -1,1 +1,2 @@
-export { default as BaseSegmented } from './BaseSegmented.vue'
+export { default as ZSegmented } from './Segmented.vue'
+export type * from './types'

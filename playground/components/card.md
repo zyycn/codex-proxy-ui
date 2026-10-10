@@ -16,13 +16,13 @@ import CardDemo from '../examples/CardDemo.vue'
 
 ```vue
 <script setup lang="ts">
-import { BaseCard } from '@codex-proxy/ui'
+import { ZCard } from '@codex-proxy/ui'
 </script>
 
 <template>
-  <BaseCard title="请求工作台" description="管理页面与请求中间件">
+  <ZCard title="请求工作台" description="管理页面与请求中间件">
     <p>将相关内容放在同一张卡片中</p>
-  </BaseCard>
+  </ZCard>
 </template>
 ```
 

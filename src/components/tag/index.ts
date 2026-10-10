@@ -1,1 +1,2 @@
-export { default as BaseTag } from './BaseTag.vue'
+export { default as ZTag } from './Tag.vue'
+export type * from './types'

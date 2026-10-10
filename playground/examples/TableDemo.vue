@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { BaseCheckbox } from '@codex-proxy/ui/checkbox'
-import { BaseSegmented } from '@codex-proxy/ui/segmented'
-import { BaseTable, defineTableColumns } from '@codex-proxy/ui/table'
+import { ZCheckbox } from '@codex-proxy/ui/checkbox'
+import { ZSegmented } from '@codex-proxy/ui/segmented'
+import { defineTableColumns, ZTable } from '@codex-proxy/ui/table'
 import { computed, shallowRef } from 'vue'
 import DemoPlayground from '../.vitepress/theme/DemoPlayground.vue'
 
@@ -29,10 +29,10 @@ const columns = defineTableColumns<typeof rows[number]>([
 <template>
   <DemoPlayground wide>
     <div class="h-56">
-      <BaseTable
+      <ZTable
         :key="state === 'initial' ? 'initial' : 'loaded'"
         :columns="columns"
-        :rows="state === 'ready' ? rows : []"
+        :data="state === 'ready' ? rows : []"
         :loading="loading"
         :show-header-when-empty="showHeaderWhenEmpty"
         row-key="id"
@@ -40,8 +40,8 @@ const columns = defineTableColumns<typeof rows[number]>([
     </div>
     <template #controls>
       <div class="demo-row">
-        <BaseSegmented v-model="state" :options="states" label="表格状态" />
-        <BaseCheckbox v-model="showHeaderWhenEmpty" label="空数据时保留表头" show-label />
+        <ZSegmented v-model="state" :options="states" aria-label="表格状态" />
+        <ZCheckbox v-model="showHeaderWhenEmpty" label="空数据时保留表头" />
       </div>
     </template>
   </DemoPlayground>

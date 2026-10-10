@@ -16,11 +16,11 @@ import EmptyDemo from '../examples/EmptyDemo.vue'
 
 ```vue
 <script setup lang="ts">
-import { BaseEmpty } from '@codex-proxy/ui'
+import { ZEmpty } from '@codex-proxy/ui'
 </script>
 
 <template>
-  <BaseEmpty title="暂无插件" description="安装插件后即可开始配置" />
+  <ZEmpty title="暂无插件" description="安装插件后即可开始配置" />
 </template>
 ```
 
@@ -39,7 +39,7 @@ import { BaseEmpty } from '@codex-proxy/ui'
 | `title`       | `string`                        | `'暂无数据'` | 空状态标题 |
 | `description` | `string`                        | —            | 补充说明   |
 | `icon`        | `Component`                     | `Inbox`      | 图标组件   |
-| `size`        | `'sm' \| 'md'`                  | `'md'`       | 尺寸       |
+| `size`        | `'small' \| 'default'`          | `'default'`  | 尺寸       |
 | `surface`     | `'subtle' \| 'inset' \| 'none'` | `'subtle'`   | 背景表面   |
 
 ### 插槽

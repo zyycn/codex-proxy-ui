@@ -1,1 +1,2 @@
-export { default as BaseMenuItem } from './BaseMenuItem.vue'
+export { default as ZMenuItem } from './MenuItem.vue'
+export type * from './types'

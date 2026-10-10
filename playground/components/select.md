@@ -14,17 +14,17 @@ import SelectDemo from '../examples/SelectDemo.vue'
 
 ## 使用要点
 
-`BaseSelect` 默认为单选，`v-model` 使用字符串。设置 `multiple` 后使用字符串数组，已选项以可移除标签显示，连续选择时保持菜单打开
+`ZSelect` 默认为单选，`v-model` 使用字符串或数字，单选空值为 undefined。设置 `multiple` 后使用同类型数组，已选项以可移除标签显示，连续选择时保持菜单打开
 
 方向键定位选项，Enter／空格选择，Esc 关闭菜单并保留外层弹窗，Tab 移动到后续控件。搜索框中的空格正常输入，Enter 选择当前结果。标签移除按钮与 `+N` 均可用键盘操作
 
-禁用选项不能选择或移除，禁用整个控件时不可修改。异步选项暂未返回时保留已选值，不自动清空绑定。通过 `BaseFormItem` 或 `aria-label` 提供控件名称
+禁用选项不能选择或移除，禁用整个控件时不可修改。异步选项暂未返回时保留已选值，不自动清空绑定。通过 `ZFormItem` 或 `aria-label` 提供控件名称
 
 ::: details 查看用法代码
 
 ```vue
 <script setup lang="ts">
-import { BaseFormItem, BaseSelect } from '@codex-proxy/ui'
+import { ZFormItem, ZSelect } from '@codex-proxy/ui'
 import { ref } from 'vue'
 
 const selected = ref<string[]>(['production'])
@@ -36,9 +36,9 @@ const options = [
 </script>
 
 <template>
-  <BaseFormItem label="账号分组">
-    <BaseSelect v-model="selected" :options="options" multiple filterable collapse-tags collapse-tags-tooltip />
-  </BaseFormItem>
+  <ZFormItem label="账号分组">
+    <ZSelect v-model="selected" :options="options" multiple filterable collapse-tags collapse-tags-tooltip />
+  </ZFormItem>
 </template>
 ```
 
@@ -48,25 +48,32 @@ const options = [
 
 ### 属性
 
-| 属性                                 | 类型                   | 默认值                  | 说明                                          |
-| ------------------------------------ | ---------------------- | ----------------------- | --------------------------------------------- |
-| `v-model`                            | `string \| string[]`   | 必填                    | 单选使用字符串，多选使用字符串数组            |
-| `options`                            | `SelectOption[]`       | 必填                    | 包含 label、value，可选 description、disabled |
-| `multiple`                           | `boolean`              | `false`                 | 开启多选                                      |
-| `size`                               | `'sm' \| 'md' \| 'lg'` | `'md'`                  | 尺寸                                          |
-| `placeholder / emptyText`            | `string`               | `'请选择' / '暂无选项'` | 占位与空状态文字                              |
-| `disabled / loading / filterable`    | `boolean`              | `false`                 | 禁用、加载与搜索                              |
-| `collapseTags / collapseTagsTooltip` | `boolean`              | `false`                 | 折叠标签与查看其余标签                        |
-| `maxCollapseTags`                    | `number`               | `1`                     | 折叠时保留的标签数，至少显示一项              |
+| 属性                                                   | 类型                              | 默认值                  | 说明                                                                   |
+| ------------------------------------------------------ | --------------------------------- | ----------------------- | ---------------------------------------------------------------------- |
+| `v-model`                                              | `Value \| undefined` 或 `Value[]` | 必填                    | Value 为 string 或 number；单选空值 undefined，多选空值 []，0 是有效值 |
+| `options`                                              | `SelectOption<Value>[]`           | 必填                    | label、value；可选 description、disabled                               |
+| `size`                                                 | `'small' \| 'default' \| 'large'` | `'default'`             | 组件尺寸                                                               |
+| `multiple`                                             | `boolean`                         | `false`                 | 开启多选                                                               |
+| `disabled / loading / filterable / clearable / remote` | `boolean`                         | `false`                 | 禁用、加载、搜索、清空、外部筛选                                       |
+| `placeholder / empty-text`                             | `string`                          | `'请选择' / '暂无选项'` | 占位和空状态                                                           |
+| `collapse-tags / collapse-tags-tooltip`                | `boolean`                         | `false`                 | 折叠标签与溢出提示                                                     |
+| `max-collapse-tags`                                    | `number`                          | `1`                     | 至少显示一个标签                                                       |
+
+`remote` 关闭本地筛选，搜索输入完成后发送查询词；请求、取消和结果顺序由调用方管理。搜索与移除按钮不继承字段的 ID、必填和错误状态
 
 ### 事件
 
-| 事件                | 说明                                     |
-| ------------------- | ---------------------------------------- |
-| `update:modelValue` | string 或 string[]，与 multiple 模式一致 |
+| 事件                         | 参数         | 说明                            |
+| ---------------------------- | ------------ | ------------------------------- |
+| `update:modelValue / change` | 当前模型值   | 模型变化 / 用户选择、移除或清空 |
+| `clear`                      | 无           | 清空选择                        |
+| `remove-tag`                 | `Value`      | 用户移除一个标签                |
+| `visible-change`             | `boolean`    | 菜单显隐变化                    |
+| `query-change`               | `string`     | 搜索输入完成                    |
+| `focus / blur`               | `FocusEvent` | 触发控件焦点变化                |
 
-### 插槽
+### 插槽与实例
 
-| 插槽    | 说明                                |
-| ------- | ----------------------------------- |
-| `empty` | 无匹配选项时显示，接收 `{ search }` |
+- `option({ option, index, selected, disabled })`：自定义选项内容
+- `empty({ search })`：无匹配选项
+- 实例：`focus()`、`blur()`、`clear()`、`open()`、`close()`

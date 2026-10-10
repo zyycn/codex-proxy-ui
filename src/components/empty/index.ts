@@ -1,1 +1,2 @@
-export { default as BaseEmpty } from './BaseEmpty.vue'
+export { default as ZEmpty } from './Empty.vue'
+export type * from './types'

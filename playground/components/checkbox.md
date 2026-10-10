@@ -16,14 +16,14 @@ import CheckboxDemo from '../examples/CheckboxDemo.vue'
 
 ```vue
 <script setup lang="ts">
-import { BaseCheckbox } from '@codex-proxy/ui'
+import { ZCheckbox } from '@codex-proxy/ui'
 import { ref } from 'vue'
 
 const checked = ref(false)
 </script>
 
 <template>
-  <BaseCheckbox v-model="checked" label="允许修改响应头" show-label />
+  <ZCheckbox v-model="checked" label="允许修改响应头" />
 </template>
 ```
 
@@ -37,13 +37,12 @@ const checked = ref(false)
 
 ### 属性
 
-| 属性            | 类型      | 默认值  | 说明                   |
-| --------------- | --------- | ------- | ---------------------- |
-| `v-model`       | `boolean` | `false` | 选中状态               |
-| `label`         | `string`  | 必填    | 可访问名称             |
-| `showLabel`     | `boolean` | `false` | 显示名称文字           |
-| `indeterminate` | `boolean` | `false` | 半选外观，不改写绑定值 |
-| `disabled`      | `boolean` | `false` | 禁止修改               |
+| 属性            | 类型      | 默认值  | 说明                              |
+| --------------- | --------- | ------- | --------------------------------- |
+| `v-model`       | `boolean` | `false` | 选中状态                          |
+| `label`         | `string`  | —       | 可见标签；隐藏标签使用 aria-label |
+| `indeterminate` | `boolean` | `false` | 半选外观，不改写绑定值            |
+| `disabled`      | `boolean` | `false` | 禁止修改                          |
 
 ### 事件
 

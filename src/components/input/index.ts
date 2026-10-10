@@ -1,1 +1,2 @@
-export { default as BaseInput } from './BaseInput.vue'
+export { default as ZInput } from './Input.vue'
+export type * from './types'

@@ -15,16 +15,16 @@ import TableToolsDemo from '../examples/TableToolsDemo.vue'
 
 ## 使用要点
 
-`columns` 描述列，`rows` 提供数据，`rowKey` 保持行身份稳定
+`columns` 描述列，`data` 提供数据，`row-key` 保持行身份稳定
 
 `loading` 显示内置加载反馈，无需注册指令，刷新时会保留已有数据
-`showHeaderWhenEmpty` 控制空数据和初次加载时是否保留表头
+`show-header-when-empty` 控制空数据和初次加载时是否保留表头
 
 ::: details 查看用法代码
 
 ```vue
 <script setup lang="ts">
-import { BaseTable, defineTableColumns } from '@codex-proxy/ui'
+import { defineTableColumns, ZTable } from '@codex-proxy/ui'
 
 const rows = [
   { id: 'workbench', name: '请求工作台', version: '0.1.0' },
@@ -38,7 +38,7 @@ const columns = defineTableColumns<typeof rows[number]>([
 
 <template>
   <div style="height: 280px">
-    <BaseTable :columns="columns" :rows="rows" row-key="id" />
+    <ZTable :columns="columns" :data="rows" row-key="id" />
   </div>
 </template>
 ```
@@ -57,7 +57,7 @@ const columns = defineTableColumns<typeof rows[number]>([
 
 ```vue
 <script setup lang="ts">
-import { BaseTable, BaseTableColumnSettings, BaseTablePagination, defineTableColumns, useTableColumns } from '@codex-proxy/ui'
+import { defineTableColumns, useTableColumns, ZPagination, ZTable, ZTableColumnSettings } from '@codex-proxy/ui'
 import { computed, ref } from 'vue'
 
 const currentPage = ref(1)
@@ -78,25 +78,23 @@ function changePageSize(value: number) {
 </script>
 
 <template>
-  <BaseTableColumnSettings :options="columnOptions" @change="setColumnVisible" @reorder="setColumnOrder" @reset="resetColumns" />
+  <ZTableColumnSettings :options="columnOptions" @change="setColumnVisible" @reorder="setColumnOrder" @reset="resetColumns" />
   <div style="height: 320px">
-    <BaseTable :columns="visibleColumns" :rows="pageRows" row-key="id" />
+    <ZTable :columns="visibleColumns" :data="pageRows" row-key="id" />
   </div>
-  <BaseTablePagination :pagination="pagination" :loading="false" @page-change="currentPage = $event" @page-size-change="changePageSize" />
+  <ZPagination v-bind="pagination" @current-change="currentPage = $event" @size-change="changePageSize" />
 </template>
 ```
 
 :::
 
-### 分页 {#pagination}
+### 分页
 
-`BaseTablePagination` 接收 `pagination`，包含 `currentPage`、`pageSize`、`total` 与可选的 `pageSizes`
-
-通过 `pageChange`、`pageSizeChange` 更新数据，`loading` 禁用翻页操作
+[ZPagination](./pagination.md) 使用独立的页码与条数模型，数据请求和条数变化时的页码处理由调用方负责
 
 ### 列设置 {#columns}
 
-`BaseTableColumnSettings` 的 `options` 描述列，`change`、`reorder`、`reset` 处理显隐、顺序与恢复默认
+`ZTableColumnSettings` 的 `options` 描述列，`change`、`reorder`、`reset` 处理显隐、顺序与恢复默认
 
 与 `useTableColumns` 配合，可按独立的 `tableId` 在本地保留列偏好，设置 `hideable: false` 保留必要列
 
@@ -106,23 +104,27 @@ function changePageSize(value: number) {
 
 ### 属性
 
-| 属性                                           | 类型                                           | 默认值       | 说明                            |
-| ---------------------------------------------- | ---------------------------------------------- | ------------ | ------------------------------- |
-| `columns`                                      | `BaseTableColumn<Row>[]`                       | 必填         | 列定义                          |
-| `rows`                                         | `Row[]`                                        | 必填         | 当前页数据                      |
-| `rowKey`                                       | `string \| ((row, index) => string \| number)` | `'id'`       | 稳定行标识                      |
-| `selectedRowKeys / expandedRowKeys`            | `(string \| number)[]`                         | `[]`         | 选中行样式与展开行              |
-| `density`                                      | `'compact' \| 'default'`                       | `'default'`  | 表格密度                        |
-| `loading`                                      | `boolean`                                      | `false`      | 加载状态，刷新时保留已有行      |
-| `emptyText`                                    | `string`                                       | `'暂无数据'` | 空状态文字                      |
-| `showHeaderWhenEmpty / scrollbarAlwaysVisible` | `boolean`                                      | `false`      | 空数据表头与滚动条可见性        |
-| `sort`                                         | `BaseTableSort`                                | —            | 排序状态，包含 key 与 direction |
+| 属性                                                | 类型                                           | 默认值       | 说明                            |
+| --------------------------------------------------- | ---------------------------------------------- | ------------ | ------------------------------- |
+| `columns`                                           | `TableColumn<Row>[]`                           | 必填         | 列定义                          |
+| `data`                                              | `Row[]`                                        | 必填         | 当前页数据                      |
+| `row-key`                                           | `string \| ((row, index) => string \| number)` | `'id'`       | 稳定行标识                      |
+| `selected-row-keys / expanded-row-keys`             | `(string \| number)[]`                         | `[]`         | 选中行样式与展开行              |
+| `size`                                              | `'small' \| 'default' \| 'large'`              | `'default'`  | 表格密度                        |
+| `loading`                                           | `boolean`                                      | `false`      | 加载状态，刷新时保留已有行      |
+| `empty-text`                                        | `string`                                       | `'暂无数据'` | 空状态文字                      |
+| `show-header-when-empty / scrollbar-always-visible` | `boolean`                                      | `false`      | 空数据表头与滚动条可见性        |
+| `sort`                                              | `TableSort`                                    | —            | 排序状态，包含 key 与 direction |
+
+### 列合同
+
+TableColumn 的 width、minWidth 为像素数值；fixed 支持 true（左侧）、left、right 或 false（取消固定），formatter(value, row) 生成展示值。kind 和列 size 是项目已有的列展示预设，不与组件尺寸共用枚举
 
 ### 事件
 
-| 事件         | 说明                                                           |
-| ------------ | -------------------------------------------------------------- |
-| `sortChange` | BaseTableSort 或 undefined，只通知排序状态，调用方负责排序数据 |
+| 事件          | 说明                                                       |
+| ------------- | ---------------------------------------------------------- |
+| `sort-change` | TableSort 或 undefined，只通知排序状态，调用方负责排序数据 |
 
 ### 插槽
 
@@ -132,19 +134,6 @@ function changePageSize(value: number) {
 | `header-列 key` | 自定义表头，接收 `{ column }`                            |
 | `expanded`      | 展开内容，接收 `{ row, index }`                          |
 | `empty`         | 空状态内容                                               |
-
-### 分页属性与事件
-
-| 属性                   | 类型                  | 默认值              | 说明                              |
-| ---------------------- | --------------------- | ------------------- | --------------------------------- |
-| `pagination`           | `BaseTablePagination` | 必填                | 包含 currentPage、pageSize、total |
-| `pagination.pageSizes` | `number[]`            | `[10, 20, 50, 100]` | 每页条数选项                      |
-| `loading`              | `boolean`             | 必填                | 加载时禁用分页操作                |
-
-| 事件             | 参数               | 说明                                 |
-| ---------------- | ------------------ | ------------------------------------ |
-| `pageChange`     | `page: number`     | 请求切换页码                         |
-| `pageSizeChange` | `pageSize: number` | 请求切换每页条数，调用方同时处理页码 |
 
 ### 列设置属性与事件
 
@@ -158,4 +147,4 @@ function changePageSize(value: number) {
 | `reorder` | `keys: string[]`                | 更新列顺序     |
 | `reset`   | 无                              | 恢复默认列设置 |
 
-分页与列设置组件不提供自定义插槽，和同一个表格的数据及列定义联动
+列设置组件不提供自定义插槽，和同一个表格的数据及列定义联动

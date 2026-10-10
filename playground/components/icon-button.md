@@ -16,18 +16,18 @@ import IconButtonDemo from '../examples/IconButtonDemo.vue'
 
 ```vue
 <script setup lang="ts">
-import { BaseIconButton } from '@codex-proxy/ui'
+import { ZIconButton } from '@codex-proxy/ui'
 import { ref } from 'vue'
 
 const count = ref(0)
 </script>
 
 <template>
-  <BaseIconButton label="刷新配置" @click="count++">
+  <ZIconButton aria-label="刷新配置" @click="count++">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
       <path d="M20 7v5h-5M4 17v-5h5M6.1 6.1A8 8 0 0 1 20 12M4 12a8 8 0 0 0 13.9 5.9" />
     </svg>
-  </BaseIconButton>
+  </ZIconButton>
   <output aria-label="刷新次数">{{ count }}</output>
 </template>
 ```
@@ -36,29 +36,24 @@ const count = ref(0)
 
 ## 使用要点
 
-使用 `label` 提供可访问名称，图标默认随 `size` 缩放
+使用 `aria-label` 提供可访问名称，图标默认随 `size` 缩放
 
 ## API
 
 ### 属性
 
-| 属性                           | 类型                                                                            | 默认值     | 说明                 |
-| ------------------------------ | ------------------------------------------------------------------------------- | ---------- | -------------------- |
-| `label`                        | `string`                                                                        | 必填       | 可访问名称与悬停提示 |
-| `variant`                      | `'primary' \| 'secondary' \| 'filled' \| 'success' \| 'ghost' \| 'destructive'` | `'ghost'`  | 按钮样式             |
-| `size`                         | `'sm' \| 'md' \| 'lg'`                                                          | `'md'`     | 按钮和默认图标尺寸   |
-| `loading / disabled / pressed` | `boolean`                                                                       | `false`    | 加载、禁用与按下状态 |
-| `type`                         | `'button' \| 'submit' \| 'reset'`                                               | `'button'` | 原生按钮类型         |
+| 属性                 | 类型                                                                     | 默认值      | 说明                     |
+| -------------------- | ------------------------------------------------------------------------ | ----------- | ------------------------ |
+| `aria-label`         | `string`                                                                 | —           | 提供可访问名称与悬停提示 |
+| `type`               | `'default' \| 'primary' \| 'success' \| 'info' \| 'warning' \| 'danger'` | `'default'` | 语义类型                 |
+| `variant`            | `'solid' \| 'plain' \| 'text' \| 'link'`                                 | `'text'`    | 外观                     |
+| `size`               | `'small' \| 'default' \| 'large'`                                        | `'default'` | 组件尺寸                 |
+| `native-type`        | `'button' \| 'submit' \| 'reset'`                                        | `'button'`  | 原生按钮行为             |
+| `loading / disabled` | `boolean`                                                                | `false`     | 加载与禁用均阻止点击     |
+| `pressed`            | `boolean`                                                                | `false`     | 切换动作的按下状态       |
 
-### 事件
+### 事件、插槽与实例
 
-| 事件    | 说明                                  |
-| ------- | ------------------------------------- |
-| `click` | 原生 MouseEvent，加载与禁用时不会触发 |
-
-### 插槽
-
-| 插槽      | 说明     |
-| --------- | -------- |
-| `default` | 图标内容 |
-| `loading` | 加载图标 |
+- `click(event: MouseEvent)`：用户点击
+- 插槽：`default`、`loading`
+- 实例：`focus()`、`blur()`、`element`

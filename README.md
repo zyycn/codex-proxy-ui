@@ -30,7 +30,7 @@
 从 [GitHub Releases](https://github.com/zyycn/codex-proxy-ui/releases) 选择固定版本的安装包
 
 ```bash
-pnpm add https://github.com/zyycn/codex-proxy-ui/releases/download/v0.3.2/codex-proxy-ui-0.3.2.tgz
+pnpm add https://github.com/zyycn/codex-proxy-ui/releases/download/v0.4.0/codex-proxy-ui-0.4.0.tgz
 ```
 
 包名为 `@codex-proxy/ui`，当前通过 GitHub Release 分发，尚未发布到 npm registry
@@ -58,30 +58,30 @@ applyResolvedTheme(
 
 ### 使用组件
 
-在 Vue 组件中直接导入
+在 Vue 组件中直接导入，模板支持 `<z-button>` 与 `<ZButton>`
 
 ```vue
 <script setup lang="ts">
-import { BaseButton, BaseCard, BaseInput } from '@codex-proxy/ui'
+import { ZButton, ZCard, ZInput } from '@codex-proxy/ui'
 import { ref } from 'vue'
 
 const name = ref('')
 </script>
 
 <template>
-  <BaseCard title="插件设置">
-    <BaseInput v-model="name" placeholder="插件名称" />
-    <BaseButton variant="primary">
+  <ZCard title="插件设置">
+    <ZInput v-model="name" placeholder="插件名称" />
+    <ZButton type="primary">
       保存
-    </BaseButton>
-  </BaseCard>
+    </ZButton>
+  </ZCard>
 </template>
 ```
 
 根入口的静态具名导入支持 JavaScript tree-shaking，也可以使用组件子路径
 
 ```ts
-import { BaseButton } from '@codex-proxy/ui/button'
+import { ZButton } from '@codex-proxy/ui/button'
 ```
 
 `styles.css` 包含基础重置与完整组件样式，CSS 不随 JavaScript 按组件裁剪
@@ -117,6 +117,7 @@ pnpm build:playground
 | 任务       | 文档                                                            |
 | ---------- | --------------------------------------------------------------- |
 | 安装与接入 | [安装、按需导入与样式边界](playground/guide/installation.md)    |
+| 组件架构   | [命名、目录与职责](playground/guide/architecture.md)            |
 | 查找组件   | [组件目录与交互示例](playground/components/index.md)            |
 | 定制主题   | [主题变量、配色与密度](playground/guide/theme.md)               |
 | 联合开发   | [源码联调与热更新](playground/guide/development.md)             |

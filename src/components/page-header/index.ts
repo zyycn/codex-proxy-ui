@@ -1,1 +1,2 @@
-export { default as BasePageHeader } from './BasePageHeader.vue'
+export { default as ZPageHeader } from './PageHeader.vue'
+export type * from './types'

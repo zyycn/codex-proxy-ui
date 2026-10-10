@@ -1,1 +1,2 @@
-export { default as BaseIconButton } from './BaseIconButton.vue'
+export { default as ZIconButton } from './IconButton.vue'
+export type * from './types'

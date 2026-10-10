@@ -1,2 +1,2 @@
-export { default as BaseSelect } from './BaseSelect.vue'
-export type { SelectOption } from './types'
+export { default as ZSelect } from './Select.vue'
+export type * from './types'

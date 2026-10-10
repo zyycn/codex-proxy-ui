@@ -14,15 +14,15 @@ import ColorPickerDemo from '../examples/ColorPickerDemo.vue'
 
 ## 使用要点
 
-`v-model` 绑定颜色字符串，`presets` 配置快捷色板，`label` 提供可访问名称
+`v-model` 绑定颜色字符串，`presets` 配置快捷色板，`aria-label` 提供可访问名称
 
-`allowAlpha` 默认为 `true`，不需要透明度时设为 `false`，`disabled` 禁用交互
+`allow-alpha` 默认为 `true`，不需要透明度时设为 `false`，`disabled` 禁用交互
 
 ::: details 查看用法代码
 
 ```vue
 <script setup lang="ts">
-import { BaseColorPicker } from '@codex-proxy/ui'
+import { ZColorPicker } from '@codex-proxy/ui'
 import { ref } from 'vue'
 
 const color = ref('#5983F4')
@@ -30,7 +30,7 @@ const presets = ['#5983F4', '#0E7C72', '#A0583D']
 </script>
 
 <template>
-  <BaseColorPicker v-model="color" label="主题色" :presets="presets" :allow-alpha="false" />
+  <ZColorPicker v-model="color" aria-label="主题色" :presets="presets" :allow-alpha="false" />
 </template>
 ```
 
@@ -40,13 +40,13 @@ const presets = ['#5983F4', '#0E7C72', '#A0583D']
 
 ### 属性
 
-| 属性         | 类型                | 默认值       | 说明                                    |
-| ------------ | ------------------- | ------------ | --------------------------------------- |
-| `v-model`    | `string`            | 必填         | HEX 颜色值，允许透明度时可含 Alpha 通道 |
-| `label`      | `string`            | `'选择颜色'` | 触发按钮名称                            |
-| `presets`    | `readonly string[]` | `[]`         | 预设颜色                                |
-| `allowAlpha` | `boolean`           | `true`       | 启用透明度编辑                          |
-| `disabled`   | `boolean`           | `false`      | 禁用选择器                              |
+| 属性          | 类型                | 默认值       | 说明                                    |
+| ------------- | ------------------- | ------------ | --------------------------------------- |
+| `v-model`     | `string`            | 必填         | HEX 颜色值，允许透明度时可含 Alpha 通道 |
+| `aria-label`  | `string`            | `'选择颜色'` | 触发按钮名称                            |
+| `presets`     | `readonly string[]` | `[]`         | 预设颜色                                |
+| `allow-alpha` | `boolean`           | `true`       | 启用透明度编辑                          |
+| `disabled`    | `boolean`           | `false`      | 禁用选择器                              |
 
 ### 事件
 

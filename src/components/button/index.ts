@@ -1,1 +1,2 @@
-export { default as BaseButton } from './BaseButton.vue'
+export { default as ZButton } from './Button.vue'
+export type * from './types'

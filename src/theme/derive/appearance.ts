@@ -2,7 +2,7 @@ import type {
   ThemeAppearanceSeed,
   ThemeName,
 } from '../types'
-import { normalizeHexColor } from '../../color'
+import { normalizeHexColor } from '../../shared/utils/color'
 import { generateColorPalette, mix } from '../core/color'
 import {
   DARK_CONTAINER_BASE,

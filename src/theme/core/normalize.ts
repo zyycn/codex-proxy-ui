@@ -7,7 +7,7 @@ import type {
   ThemeTokenName,
   ThemeTokens,
 } from '../types'
-import { normalizeHexColor, normalizeRgbaHexColor } from '../../color'
+import { normalizeHexColor, normalizeRgbaHexColor } from '../../shared/utils/color'
 import {
   ALPHA_COLOR_TOKEN_NAMES,
   EDITABLE_COLOR_TOKEN_NAMES,

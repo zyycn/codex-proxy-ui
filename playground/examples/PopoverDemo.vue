@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BaseButton, BaseNumberInput, BasePopover, BaseSelect } from '@codex-proxy/ui'
+import { ZButton, ZInputNumber, ZPopover, ZSelect } from '@codex-proxy/ui'
 import { ref } from 'vue'
 import DemoPlayground from '../.vitepress/theme/DemoPlayground.vue'
 
@@ -12,26 +12,26 @@ const triggers = [{ label: '点击', value: 'click' }, { label: '悬停', value:
 
 <template>
   <DemoPlayground>
-    <BasePopover :key="`${placement}-${trigger}-${offset}`" :placement="placement" :trigger="trigger" :offset="offset">
-      <template #trigger>
-        <BaseButton>授权说明</BaseButton>
+    <ZPopover :placement="placement" :trigger="trigger" :offset="offset">
+      <template #reference>
+        <ZButton>授权说明</ZButton>
       </template>
       <div class="p-4">
         插件只会使用已明确授予的权限
       </div>
-    </BasePopover>
+    </ZPopover>
     <template #controls>
       <div class="demo-control">
         <span>位置</span>
-        <BaseSelect v-model="placement" :options="placements" size="sm" aria-label="气泡位置" />
+        <ZSelect v-model="placement" :options="placements" size="small" aria-label="气泡位置" />
       </div>
       <div class="demo-control">
         <span>触发</span>
-        <BaseSelect v-model="trigger" :options="triggers" size="sm" aria-label="触发方式" />
+        <ZSelect v-model="trigger" :options="triggers" size="small" aria-label="触发方式" />
       </div>
       <div class="demo-control">
         <span>间距</span>
-        <BaseNumberInput v-model="offset" label="气泡间距" :min="0" :max="24" />
+        <ZInputNumber v-model="offset" size="small" aria-label="气泡间距" :min="0" :max="24" />
       </div>
     </template>
   </DemoPlayground>

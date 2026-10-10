@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BaseCheckbox, BaseRadio } from '@codex-proxy/ui'
+import { ZCheckbox, ZRadio } from '@codex-proxy/ui'
 import { ref } from 'vue'
 import DemoPlayground from '../.vitepress/theme/DemoPlayground.vue'
 
@@ -10,11 +10,11 @@ const disabled = ref(false)
 <template>
   <DemoPlayground>
     <div class="demo-row">
-      <BaseRadio v-model="scope" name="scope" value="selected" label="指定请求" :disabled="disabled" show-label />
-      <BaseRadio v-model="scope" name="scope" value="all" label="全部请求" :disabled="disabled" show-label />
+      <ZRadio v-model="scope" name="scope" value="selected" label="指定请求" :disabled="disabled" />
+      <ZRadio v-model="scope" name="scope" value="all" label="全部请求" :disabled="disabled" />
     </div>
     <template #controls>
-      <BaseCheckbox v-model="disabled" label="禁用" show-label />
+      <ZCheckbox v-model="disabled" label="禁用" />
     </template>
   </DemoPlayground>
 </template>

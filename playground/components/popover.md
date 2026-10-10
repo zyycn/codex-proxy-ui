@@ -16,18 +16,18 @@ import PopoverDemo from '../examples/PopoverDemo.vue'
 
 ```vue
 <script setup lang="ts">
-import { BaseButton, BasePopover } from '@codex-proxy/ui'
+import { ZButton, ZPopover } from '@codex-proxy/ui'
 </script>
 
 <template>
-  <BasePopover placement="bottom" trigger="click">
-    <template #trigger>
-      <BaseButton>授权说明</BaseButton>
+  <ZPopover placement="bottom" trigger="click">
+    <template #reference>
+      <ZButton>授权说明</ZButton>
     </template>
     <p style="margin: 0; padding: 16px">
       插件只会使用已明确授予的权限
     </p>
-  </BasePopover>
+  </ZPopover>
 </template>
 ```
 
@@ -49,18 +49,23 @@ import { BaseButton, BasePopover } from '@codex-proxy/ui'
 | `offset`                     | `number`                                                                                               | `6`            | 与锚点的距离，单位 px                          |
 | `hoverDelay`                 | `number`                                                                                               | `400`          | 悬停打开延迟，单位 ms                          |
 | `disabled / animatePosition` | `boolean`                                                                                              | `false`        | 禁用触发与位置过渡                             |
-| `anchorElement`              | `HTMLElement \| null`                                                                                  | `null`         | 外部锚点，默认使用触发区                       |
+| `reference-element`          | `HTMLElement \| null`                                                                                  | `null`         | 外部锚点，默认使用触发区                       |
 | `arrowSurfaceClass`          | `string \| Partial<Record<PopoverSide, string>>`                                                       | —              | 箭头表面类，可按 top、right、bottom、left 指定 |
 
-### 事件
+### 事件与实例
 
-| 事件                | 说明                |
-| ------------------- | ------------------- |
-| `update:modelValue` | boolean，绑定值变化 |
+- `update:modelValue(value: boolean)`：打开状态变化
+- `open / close`：打开、关闭开始
+- `opened / closed`：入场、退场完成
+- 实例：`open()`、`close()`、`focus()`、`updatePosition()`
+
+默认正文使用主题字号，触发容器按内容宽度定位。整页和嵌套容器滚动时，面板与 Select 下拉一样跟随锚点；支持原生锚点定位的浏览器直接处理跟随，其余浏览器通过滚动事件更新坐标
+
+`placement`、`offset` 和 `reference-element` 变化时重新计算位置，空间不足时自动翻转并限制在视口内
 
 ### 插槽
 
-| 插槽      | 说明                                     |
-| --------- | ---------------------------------------- |
-| `trigger` | 触发内容，接收 `{ open, close, toggle }` |
-| `default` | 浮层内容，接收 `{ open, close, toggle }` |
+| 插槽        | 说明                                     |
+| ----------- | ---------------------------------------- |
+| `reference` | 触发内容，接收 `{ open, close, toggle }` |
+| `default`   | 浮层内容，接收 `{ open, close, toggle }` |

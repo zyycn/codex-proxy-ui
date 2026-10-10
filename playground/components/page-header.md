@@ -22,20 +22,20 @@ import PageHeaderDemo from '../examples/PageHeaderDemo.vue'
 
 ```vue
 <script setup lang="ts">
-import { BaseButton, BasePageHeader } from '@codex-proxy/ui'
+import { ZButton, ZPageHeader } from '@codex-proxy/ui'
 import { ref } from 'vue'
 
 const count = ref(0)
 </script>
 
 <template>
-  <BasePageHeader title="配置管理" :description="`已刷新 ${count} 次`">
+  <ZPageHeader title="配置管理" :description="`已刷新 ${count} 次`">
     <template #actions>
-      <BaseButton @click="count++">
+      <ZButton @click="count++">
         刷新
-      </BaseButton>
+      </ZButton>
     </template>
-  </BasePageHeader>
+  </ZPageHeader>
 </template>
 ```
 

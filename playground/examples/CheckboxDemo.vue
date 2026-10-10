@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BaseCheckbox } from '@codex-proxy/ui'
+import { ZCheckbox } from '@codex-proxy/ui'
 import { ref } from 'vue'
 import DemoPlayground from '../.vitepress/theme/DemoPlayground.vue'
 
@@ -10,11 +10,11 @@ const indeterminate = ref(false)
 
 <template>
   <DemoPlayground>
-    <BaseCheckbox v-model="checked" label="允许修改响应头" :disabled="disabled" :indeterminate="indeterminate" show-label />
+    <ZCheckbox v-model="checked" label="允许修改响应头" :disabled="disabled" :indeterminate="indeterminate" />
     <output aria-label="选择状态" class="demo-value">{{ checked ? '已选中' : '未选中' }}</output>
     <template #controls>
-      <BaseCheckbox v-model="disabled" label="禁用" show-label />
-      <BaseCheckbox v-model="indeterminate" label="半选状态" show-label />
+      <ZCheckbox v-model="disabled" label="禁用" />
+      <ZCheckbox v-model="indeterminate" label="半选状态" />
     </template>
   </DemoPlayground>
 </template>

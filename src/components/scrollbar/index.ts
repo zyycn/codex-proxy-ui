@@ -1,1 +1,2 @@
-export { default as BaseScrollbar } from './BaseScrollbar.vue'
+export { default as ZScrollbar } from './Scrollbar.vue'
+export type * from './types'
