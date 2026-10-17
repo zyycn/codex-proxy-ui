@@ -33,6 +33,7 @@
 | [ZInputNumber](./input-number.md) | 数值输入与步进操作       |
 | [ZTextarea](./textarea.md)        | 多行文本输入             |
 | [ZSelect](./select.md)            | 选项列表与选择           |
+| [ZDatePicker](./date-picker.md)   | 日期、时间与范围选择     |
 | [ZCheckbox](./checkbox.md)        | 独立开关与多项选择       |
 | [ZRadio](./radio.md)              | 同组互斥选项             |
 | [ZSwitch](./switch.md)            | 布尔状态切换             |

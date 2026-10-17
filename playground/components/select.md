@@ -14,6 +14,8 @@ import SelectDemo from '../examples/SelectDemo.vue'
 
 ## 使用要点
 
+默认宽度为容器的 `100%`，通过 `class / style` 指定固定宽度；示例容器宽 `240px`。行内布局需要给控件或父容器设置宽度
+
 `ZSelect` 默认为单选，`v-model` 使用字符串或数字，单选空值为 undefined。设置 `multiple` 后使用同类型数组，已选项以可移除标签显示，连续选择时保持菜单打开
 
 方向键定位选项，Enter／空格选择，Esc 关闭菜单并保留外层弹窗，Tab 移动到后续控件。搜索框中的空格正常输入，Enter 选择当前结果。标签移除按钮与 `+N` 均可用键盘操作

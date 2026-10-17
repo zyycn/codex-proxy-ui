@@ -1,0 +1,35 @@
+/* 默认宽度放在组件层，调用方的宽度工具类和内联样式可直接覆盖 */
+@layer components {
+  .z-input,
+  .z-select,
+  .z-textarea {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .z-input-number {
+    width: 150px;
+    max-width: 100%;
+  }
+
+  .z-input-number[data-size='small'] {
+    width: 120px;
+  }
+
+  .z-date-picker {
+    width: 220px;
+  }
+
+  .z-date-picker[data-type='monthrange'],
+  .z-date-picker[data-type='quarterrange'] {
+    width: 300px;
+  }
+
+  .z-date-picker[data-type='daterange'] {
+    width: 350px;
+  }
+
+  .z-date-picker[data-type='datetimerange'] {
+    width: 400px;
+  }
+}

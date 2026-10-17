@@ -73,8 +73,9 @@ export function usePopoverPosition(
       positionAnchor: nativeAnchor ? anchorName : undefined,
       positionVisibility: nativeAnchor ? 'anchors-visible' : undefined,
       // 相对锚点保留翻转和边界修正，滚动跟随由浏览器完成，无需等待滚动回调
-      left: nativeAnchor ? `calc(anchor(left) + ${left - triggerRect.left}px)` : `${left}px`,
-      top: nativeAnchor ? `calc(anchor(top) + ${top - triggerRect.top}px)` : `${top}px`,
+      // 锚点先于退场钩子卸载时，用最近一次测量值回退，避免 anchor() 退化为 auto
+      left: nativeAnchor ? `calc(anchor(left, ${triggerRect.left}px) + ${left - triggerRect.left}px)` : `${left}px`,
+      top: nativeAnchor ? `calc(anchor(top, ${triggerRect.top}px) + ${top - triggerRect.top}px)` : `${top}px`,
       maxWidth: `calc(100vw - ${viewportPadding * 2}px)`,
     }
     popoverArrowStyle.value = popoverArrowPosition({

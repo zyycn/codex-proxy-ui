@@ -36,6 +36,7 @@ export default defineConfig({
           { text: 'InputNumber 数字输入', link: '/components/input-number' },
           { text: 'Textarea 文本域', link: '/components/textarea' },
           { text: 'Select 选择器', link: '/components/select' },
+          { text: 'DatePicker 日期选择器', link: '/components/date-picker' },
           { text: 'Checkbox 复选框', link: '/components/checkbox' },
           { text: 'Radio 单选框', link: '/components/radio' },
           { text: 'Switch 开关', link: '/components/switch' },

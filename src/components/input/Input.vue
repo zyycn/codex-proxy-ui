@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import type { ComponentSize } from '../../shared/types'
-import { CircleX, Eye, EyeOff } from '@lucide/vue'
+import { Eye, EyeOff, X } from '@lucide/vue'
 import { computed, nextTick, shallowRef, useAttrs, useTemplateRef } from 'vue'
+import { clearButtonClass } from '../../shared/utils/clear-button'
 import { useFormField } from '../form/composables/useFormField'
+import { getInputClasses, inputFieldClass } from './styles'
 
 defineOptions({ inheritAttrs: false })
 
@@ -51,25 +53,7 @@ function clear() {
 }
 defineExpose({ focus, blur: () => inputRef.value?.blur(), select: () => inputRef.value?.select(), clear })
 
-const sizeClasses: Record<ComponentSize, string> = {
-  small: 'h-cp-control-sm gap-2 px-3 text-xs',
-  default: 'h-cp-control gap-2.5 px-3.5 text-cp',
-  large: 'h-cp-control-lg gap-3 px-4 text-cp-lg',
-}
-
-const containerClasses = computed(() => [
-  'group/input relative inline-flex w-full min-w-0 items-center overflow-visible rounded-cp border-0 text-cp-text shadow-cp-input transition-[background-color,box-shadow,color] duration-160 motion-reduce:transition-none',
-  sizeClasses[props.size],
-  props.disabled
-    ? 'cursor-not-allowed bg-cp-bg-container-disabled text-cp-text-disabled shadow-none'
-    : invalid.value
-      ? 'bg-cp-error-container hover:not-focus-within:bg-(--cp-input-error-active-bg) hover:not-focus-within:shadow-cp-input-error-active focus-within:bg-(--cp-input-error-active-bg) focus-within:shadow-cp-input-error-active'
-      : [
-          'bg-(--cp-input-bg)',
-          'hover:not-focus-within:bg-(--cp-input-hover-bg) hover:not-focus-within:shadow-cp-input-hover',
-          'focus-within:bg-(--cp-input-active-bg) focus-within:shadow-cp-input-active',
-        ],
-])
+const containerClasses = computed(() => getInputClasses(props.size, props.disabled, invalid.value))
 
 const iconClasses = computed(() => [
   'inline-flex shrink-0',
@@ -109,7 +93,7 @@ function syncAutofill(event: AnimationEvent) {
 </script>
 
 <template>
-  <div v-bind="rootAttrs" class="min-w-0">
+  <div v-bind="rootAttrs" class="z-input min-w-0">
     <span :class="containerClasses">
       <span v-if="$slots.prefix" :class="iconClasses">
         <slot name="prefix" />
@@ -119,7 +103,8 @@ function syncAutofill(event: AnimationEvent) {
         :id="controlId"
         ref="input"
         :value="model"
-        class="z-input__field h-full min-w-0 flex-1 border-0 bg-transparent font-emphasis leading-[1.15] text-cp-text outline-0 placeholder:font-normal placeholder:text-cp-text-quaternary disabled:cursor-not-allowed disabled:text-cp-text-disabled [&[type=number]]:appearance-[textfield] [&[type=number]::-webkit-inner-spin-button]:m-0 [&[type=number]::-webkit-inner-spin-button]:appearance-none [&[type=number]::-webkit-outer-spin-button]:m-0 [&[type=number]::-webkit-outer-spin-button]:appearance-none"
+        class="z-input__field"
+        :class="inputFieldClass"
         :placeholder="placeholder"
         :type="inputType"
         :disabled="disabled"
@@ -139,12 +124,12 @@ function syncAutofill(event: AnimationEvent) {
         v-if="clearable && model && !disabled && (controlAttrs.readonly === undefined || controlAttrs.readonly === false)"
         type="button"
         aria-label="清空输入"
-        :class="actionClasses"
+        :class="clearButtonClass"
         class="pointer-events-none opacity-0 group-focus-within/input:pointer-events-auto group-focus-within/input:opacity-100 group-hover/input:pointer-events-auto group-hover/input:opacity-100"
         @mousedown.prevent
         @click="clear"
       >
-        <CircleX :size="14" />
+        <X :size="14" />
       </button>
       <button
         v-if="showPassword"

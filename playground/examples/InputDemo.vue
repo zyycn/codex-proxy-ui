@@ -14,7 +14,7 @@ const sizes = [{ label: '小', value: 'small' }, { label: '中', value: 'default
 
 <template>
   <DemoPlayground>
-    <ZFormItem label="配置名称" :error="invalid ? '请填写有效名称' : undefined">
+    <ZFormItem label="配置名称" class="mx-auto w-60 max-w-full" :error="invalid ? '请填写有效名称' : undefined">
       <ZInput v-model="value" :size="size" :disabled="disabled" :clearable="clearable" :show-password="password" placeholder="填写名称" />
     </ZFormItem>
     <template #controls>

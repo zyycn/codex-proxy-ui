@@ -23,6 +23,9 @@ importers:
       '@vueuse/integrations':
         specifier: ^15.0.0
         version: 15.0.0(change-case@5.4.4)(focus-trap@7.8.0)(sortablejs@1.15.7)(vue@3.5.43(@typescript/typescript6@6.0.2))
+      dayjs:
+        specifier: ^1.11.23
+        version: 1.11.23
       dompurify:
         specifier: ^3.4.16
         version: 3.4.16
@@ -1666,6 +1669,9 @@ packages:
 
   csstype@3.2.3:
     resolution: {integrity: sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==}
+
+  dayjs@1.11.23:
+    resolution: {integrity: sha512-QDTCU0M0MxR3hQfnlDJfwekQiaanm1ubOD231u73WBckQ/fsamwRLiE2GBz6D3a/xF1NgfiDLJjXBa1hYOYTtQ==}
 
   debug@4.4.3:
     resolution: {integrity: sha512-RGwwWnwQvkVfavKVt22FGLw+xYSdzARwm0ru6DhTVA3umU5hZc28V3kO4stgYryrTlLpuvgI9GiijltAjNbcqA==}
@@ -4280,6 +4286,8 @@ snapshots:
   cssesc@3.0.0: {}
 
   csstype@3.2.3: {}
+
+  dayjs@1.11.23: {}
 
   debug@4.4.3:
     dependencies:

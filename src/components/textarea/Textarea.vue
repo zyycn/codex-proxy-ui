@@ -111,7 +111,7 @@ const textareaClasses = computed(() => [
 </script>
 
 <template>
-  <div v-bind="rootAttrs" class="min-w-0">
+  <div v-bind="rootAttrs" class="z-textarea min-w-0">
     <textarea
       v-bind="controlAttrs"
       :id="controlId"

@@ -24,7 +24,7 @@ import { ZButton, ZPopover } from '@codex-proxy/ui'
     <template #reference>
       <ZButton>授权说明</ZButton>
     </template>
-    <p style="margin: 0; padding: 16px">
+    <p style="margin: 0; padding: 8px 12px">
       插件只会使用已明确授予的权限
     </p>
   </ZPopover>
@@ -37,6 +37,8 @@ import { ZButton, ZPopover } from '@codex-proxy/ui'
 
 `placement` 设置位置，`trigger` 决定点击或悬停触发，`offset` 控制与锚点的距离
 
+悬停触发时，`enterable` 默认允许鼠标移入浮层，`show-after / hide-after` 控制打开和关闭延迟。触发区放在 `reference` 插槽中，`reference-element` 只负责定位；宿主无需另写鼠标离开时的关闭逻辑
+
 ## API
 
 ### 属性
@@ -48,8 +50,12 @@ import { ZButton, ZPopover } from '@codex-proxy/ui'
 | `trigger`                    | `'click' \| 'hover' \| 'hover-click'`                                                                  | `'click'`      | 触发方式                                       |
 | `offset`                     | `number`                                                                                               | `6`            | 与锚点的距离，单位 px                          |
 | `hoverDelay`                 | `number`                                                                                               | `400`          | 悬停打开延迟，单位 ms                          |
+| `show-after`                 | `number`                                                                                               | 无             | 悬停打开延迟，单位 ms，优先于 `hoverDelay`     |
+| `hide-after`                 | `number`                                                                                               | `200`          | 悬停关闭延迟，单位 ms                          |
+| `enterable`                  | `boolean`                                                                                              | `true`         | 鼠标移入浮层时保持打开，适用于悬停触发         |
 | `disabled / animatePosition` | `boolean`                                                                                              | `false`        | 禁用触发与位置过渡                             |
 | `reference-element`          | `HTMLElement \| null`                                                                                  | `null`         | 外部锚点，默认使用触发区                       |
+| `teleported`                 | `boolean`                                                                                              | `true`         | 将浮层传送到 body                              |
 | `arrowSurfaceClass`          | `string \| Partial<Record<PopoverSide, string>>`                                                       | —              | 箭头表面类，可按 top、right、bottom、left 指定 |
 
 ### 事件与实例

@@ -33,6 +33,8 @@ const description = ref('')
 
 ## 使用要点
 
+默认宽度为容器的 `100%`，可通过 `class / style` 指定宽度
+
 `rows` 控制初始行数，`resize` 控制允许拖动的方向
 
 ## API

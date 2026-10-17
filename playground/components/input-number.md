@@ -31,6 +31,8 @@ const count = ref(10)
 
 ## 使用要点
 
+默认宽度 `150px`，`small` 为 `120px`，可通过 `class / style` 覆盖
+
 `min`、`max` 限制范围，`step` 控制步长，`label` 描述数值含义
 
 ## API

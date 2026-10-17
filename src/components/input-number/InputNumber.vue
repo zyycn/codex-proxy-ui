@@ -87,7 +87,8 @@ function stepBy(direction: -1 | 1) {
 <template>
   <div
     v-bind="rootAttrs"
-    class="inline-flex min-w-0 items-center rounded-cp px-1.5 text-cp-text transition-[background-color,box-shadow] duration-150 motion-reduce:transition-none"
+    class="z-input-number inline-flex min-w-0 items-center rounded-cp px-1.5 text-cp-text transition-[background-color,box-shadow] duration-150 motion-reduce:transition-none"
+    :data-size="size"
     :class="[
       size === 'default' ? 'h-cp-control' : 'h-cp-control-sm',
       disabled

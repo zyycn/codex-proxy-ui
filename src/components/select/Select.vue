@@ -1,7 +1,8 @@
 <script setup lang="ts" generic="Multiple extends boolean = false, Value extends string | number = string">
 import type { SelectEmits, SelectOption, SelectProps, SelectSize, SelectSlots, SelectValue } from './types'
-import { Check, ChevronDown, CircleX, LoaderCircle } from '@lucide/vue'
+import { Check, ChevronDown, LoaderCircle, X } from '@lucide/vue'
 import { computed, provide, useAttrs, useTemplateRef, watch } from 'vue'
+import { clearButtonClass } from '../../shared/utils/clear-button'
 import Empty from '../empty/Empty.vue'
 import { useFormField } from '../form/composables/useFormField'
 import { formFieldKey } from '../form/context'
@@ -156,7 +157,7 @@ defineExpose({ focus: () => triggerRef.value?.focus(), blur: () => triggerRef.va
 </script>
 
 <template>
-  <div ref="rootRef" class="relative inline-block text-left" v-bind="rootAttrs">
+  <div ref="rootRef" class="z-select relative inline-block min-w-0 text-left" v-bind="rootAttrs">
     <div ref="controlRef" class="group/select relative" :class="multiple ? triggerClasses : undefined" :style="{ anchorName: `--${selectId}` }">
       <button
         v-bind="triggerAttrs"
@@ -201,11 +202,12 @@ defineExpose({ focus: () => triggerRef.value?.focus(), blur: () => triggerRef.va
         v-if="clearable && selectedValues.length && !disabled"
         type="button"
         aria-label="清空选择"
-        class="pointer-events-none absolute top-1/2 right-8 z-10 inline-flex size-4 -translate-y-1/2 items-center justify-center border-0 bg-transparent p-0 text-cp-text-quaternary opacity-0 outline-none transition-colors group-focus-within/select:pointer-events-auto group-focus-within/select:opacity-100 group-hover/select:pointer-events-auto group-hover/select:opacity-100 hover:text-cp-text-secondary focus-visible:ring-2 focus-visible:ring-cp-control-outline"
+        :class="clearButtonClass"
+        class="pointer-events-none absolute top-1/2 right-8 z-10 -translate-y-1/2 opacity-0 group-focus-within/select:pointer-events-auto group-focus-within/select:opacity-100 group-hover/select:pointer-events-auto group-hover/select:opacity-100"
         @mousedown.prevent
         @click.stop="clear"
       >
-        <CircleX :size="14" />
+        <X :size="14" />
       </button>
       <SelectTags
         v-if="multiple && selectedOptions.length"

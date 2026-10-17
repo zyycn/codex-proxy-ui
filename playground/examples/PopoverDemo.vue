@@ -1,22 +1,24 @@
 <script setup lang="ts">
-import { ZButton, ZInputNumber, ZPopover, ZSelect } from '@codex-proxy/ui'
+import { ZButton, ZCheckbox, ZInputNumber, ZPopover, ZSelect } from '@codex-proxy/ui'
 import { ref } from 'vue'
 import DemoPlayground from '../.vitepress/theme/DemoPlayground.vue'
 
 const placement = ref<'top' | 'bottom' | 'left' | 'right'>('bottom')
 const trigger = ref<'click' | 'hover' | 'hover-click'>('click')
 const offset = ref(6)
+const enterable = ref(true)
+const hideAfter = ref(200)
 const placements = [{ label: '上', value: 'top' }, { label: '下', value: 'bottom' }, { label: '左', value: 'left' }, { label: '右', value: 'right' }]
 const triggers = [{ label: '点击', value: 'click' }, { label: '悬停', value: 'hover' }, { label: '点击或悬停', value: 'hover-click' }]
 </script>
 
 <template>
   <DemoPlayground>
-    <ZPopover :placement="placement" :trigger="trigger" :offset="offset">
+    <ZPopover :placement="placement" :trigger="trigger" :offset="offset" :enterable="enterable" :hide-after="hideAfter">
       <template #reference>
         <ZButton>授权说明</ZButton>
       </template>
-      <div class="p-4">
+      <div class="px-3 py-2">
         插件只会使用已明确授予的权限
       </div>
     </ZPopover>
@@ -32,6 +34,11 @@ const triggers = [{ label: '点击', value: 'click' }, { label: '悬停', value:
       <div class="demo-control">
         <span>间距</span>
         <ZInputNumber v-model="offset" size="small" aria-label="气泡间距" :min="0" :max="24" />
+      </div>
+      <ZCheckbox v-model="enterable" label="允许移入" />
+      <div class="demo-control">
+        <span>关闭延迟</span>
+        <ZInputNumber v-model="hideAfter" size="small" aria-label="关闭延迟" :min="0" :max="2000" :step="100" />
       </div>
     </template>
   </DemoPlayground>

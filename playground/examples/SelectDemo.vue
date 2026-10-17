@@ -22,9 +22,9 @@ const groups = [
 
 <template>
   <DemoPlayground>
-    <ZFormItem label="账号分组">
-      <ZSelect v-if="multiple" v-model="selected" :options="groups" multiple :filterable="filterable" clearable :collapse-tags="collapse" collapse-tags-tooltip :max-collapse-tags="maxCollapseTags" :disabled="disabled" :loading="loading" class="demo-wide" />
-      <ZSelect v-else v-model="single" :options="groups" :filterable="filterable" clearable :disabled="disabled" :loading="loading" class="demo-wide" />
+    <ZFormItem label="账号分组" class="mx-auto w-60 max-w-full">
+      <ZSelect v-if="multiple" v-model="selected" :options="groups" multiple :filterable="filterable" clearable :collapse-tags="collapse" collapse-tags-tooltip :max-collapse-tags="maxCollapseTags" :disabled="disabled" :loading="loading" />
+      <ZSelect v-else v-model="single" :options="groups" :filterable="filterable" clearable :disabled="disabled" :loading="loading" />
     </ZFormItem>
     <template #controls>
       <ZCheckbox v-model="multiple" label="多选" />
