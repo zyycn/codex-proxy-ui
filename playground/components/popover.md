@@ -56,6 +56,7 @@ import { ZButton, ZPopover } from '@codex-proxy/ui'
 | `disabled / animatePosition` | `boolean`                                                                                              | `false`        | 禁用触发与位置过渡                             |
 | `reference-element`          | `HTMLElement \| null`                                                                                  | `null`         | 外部锚点，默认使用触发区                       |
 | `teleported`                 | `boolean`                                                                                              | `true`         | 将浮层传送到 body                              |
+| `role`                       | `'tooltip' \| 'dialog'`                                                                                | —              | 浮层的无障碍角色                               |
 | `arrowSurfaceClass`          | `string \| Partial<Record<PopoverSide, string>>`                                                       | —              | 箭头表面类，可按 top、right、bottom、left 指定 |
 
 ### 事件与实例
@@ -71,7 +72,9 @@ import { ZButton, ZPopover } from '@codex-proxy/ui'
 
 ### 插槽
 
-| 插槽        | 说明                                     |
-| ----------- | ---------------------------------------- |
-| `reference` | 触发内容，接收 `{ open, close, toggle }` |
-| `default`   | 浮层内容，接收 `{ open, close, toggle }` |
+| 插槽        | 说明                                                                  |
+| ----------- | --------------------------------------------------------------------- |
+| `reference` | 触发内容，接收 `{ open, close, toggle, id }`，id 可用于 aria-controls |
+| `default`   | 浮层内容，接收 `{ open, close, toggle }`                              |
+
+插槽中的 `open` 是当前显隐布尔值，`close` 与 `toggle` 是操作函数

@@ -48,6 +48,12 @@ const enabled = ref(true)
 
 ### 事件
 
-| 事件                | 说明                |
-| ------------------- | ------------------- |
-| `update:modelValue` | boolean，绑定值变化 |
+| 事件                | 说明                      |
+| ------------------- | ------------------------- |
+| `update:modelValue` | boolean，绑定值变化       |
+| `change`            | boolean，用户切换开关状态 |
+| `focus / blur`      | FocusEvent，焦点变化      |
+
+### 实例
+
+`focus()`、`blur()` 控制原生开关输入框焦点

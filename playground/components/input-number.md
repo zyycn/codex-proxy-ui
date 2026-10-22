@@ -23,7 +23,7 @@ const count = ref(10)
 </script>
 
 <template>
-  <ZInputNumber v-model="count" label="并发数量" :min="1" :max="100" :step="1" />
+  <ZInputNumber v-model="count" aria-label="并发数量" :min="1" :max="100" :step="1" />
 </template>
 ```
 
@@ -33,7 +33,7 @@ const count = ref(10)
 
 默认宽度 `150px`，`small` 为 `120px`，可通过 `class / style` 覆盖
 
-`min`、`max` 限制范围，`step` 控制步长，`label` 描述数值含义
+`min`、`max` 限制范围，`step` 控制步长，`aria-label` 提供数值含义的可访问名称
 
 ## API
 

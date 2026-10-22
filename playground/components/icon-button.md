@@ -36,7 +36,7 @@ const count = ref(0)
 
 ## 使用要点
 
-使用 `aria-label` 提供可访问名称，图标默认随 `size` 缩放
+使用 `aria-label` 提供可访问名称。内置加载图标与未指定尺寸的 Lucide 图标随 `size` 缩放，自定义 SVG 的尺寸由调用方设置
 
 ## API
 

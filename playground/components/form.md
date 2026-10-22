@@ -34,18 +34,18 @@ async function save() {
 
 <template>
   <ZForm ref="form" :model="model" :rules="rules" novalidate @submit="save">
-    <div class="demo-columns">
+    <div style="display: grid; gap: 20px">
       <ZFormItem prop="name" label="配置名称">
         <ZInput v-model="model.name" placeholder="填写名称" clearable />
       </ZFormItem>
       <ZFormItem prop="order" label="执行顺序">
-        <ZInputNumber v-model="model.order" aria-label="执行顺序" :min="0" class="demo-wide" />
+        <ZInputNumber v-model="model.order" aria-label="执行顺序" :min="0" style="width: 100%" />
       </ZFormItem>
     </div>
     <ZFormItem prop="description" label="说明">
       <ZTextarea v-model="model.description" :autosize="{ minRows: 2, maxRows: 5 }" />
     </ZFormItem>
-    <div class="demo-row">
+    <div style="display: flex; flex-wrap: wrap; gap: 8px">
       <ZButton type="primary" native-type="submit">
         校验并保存
       </ZButton>

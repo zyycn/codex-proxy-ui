@@ -16,7 +16,7 @@ import SliderDemo from '../examples/SliderDemo.vue'
 
 `v-model` 绑定数值，`min`、`max`、`step` 定义可选范围
 
-`aria-label` 是必填的可访问名称，`unit` 补充读屏数值单位，`disabled` 禁用交互
+通过 `aria-label` 说明调节用途，`unit` 补充读屏数值单位，`disabled` 禁用交互
 
 ::: details 查看用法代码
 
@@ -39,17 +39,24 @@ const opacity = ref(60)
 
 ### 属性
 
-| 属性         | 类型      | 默认值    | 说明                   |
-| ------------ | --------- | --------- | ---------------------- |
-| `v-model`    | `number`  | 必填      | 当前数值               |
-| `aria-label` | `string`  | 必填      | 可访问名称             |
-| `min / max`  | `number`  | `0 / 100` | 数值范围               |
-| `step`       | `number`  | `1`       | 步长                   |
-| `unit`       | `string`  | —         | 辅助技术读取的数值单位 |
-| `disabled`   | `boolean` | `false`   | 禁止修改               |
+| 属性         | 类型      | 默认值    | 说明                         |
+| ------------ | --------- | --------- | ---------------------------- |
+| `v-model`    | `number`  | 必填      | 当前数值                     |
+| `aria-label` | `string`  | `'数值'`  | 可访问名称，建议填写具体用途 |
+| `min / max`  | `number`  | `0 / 100` | 数值范围                     |
+| `step`       | `number`  | `1`       | 步长                         |
+| `unit`       | `string`  | —         | 辅助技术读取的数值单位       |
+| `disabled`   | `boolean` | `false`   | 禁止修改                     |
 
 ### 事件
 
-| 事件                | 说明               |
-| ------------------- | ------------------ |
-| `update:modelValue` | number，绑定值变化 |
+| 事件                | 说明                       |
+| ------------------- | -------------------------- |
+| `update:modelValue` | number，绑定值变化         |
+| `input`             | number，用户调节中的数值   |
+| `change`            | number，原生控件提交的数值 |
+| `focus / blur`      | FocusEvent，焦点变化       |
+
+### 实例
+
+`focus()`、`blur()` 控制原生滑块焦点

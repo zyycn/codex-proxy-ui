@@ -66,7 +66,7 @@ const open = ref(false)
 | `draggable`                                                 | `boolean`                                                   | `true`      | 拖动标题，全屏时关闭拖动           |
 | `role`                                                      | `'dialog' \| 'alertdialog'`                                 | `'dialog'`  | 无障碍角色                         |
 
-`before-close` 只处理关闭按钮、遮罩和 Escape，调用方直接修改模型不经过回调。等待期间阻止重复关闭
+关闭按钮、遮罩、Escape 以及实例或 header 插槽的 `close()` 都经过 `before-close`，等待期间阻止重复关闭。调用方直接修改模型不经过回调
 
 ### 事件与插槽
 
@@ -75,3 +75,8 @@ const open = ref(false)
 - `opened / closed`：入场 / 退场完成，closed 前保留内容、滚动锁与焦点管理
 - 插槽：`default`、`footer`、`description`、`icon`
 - `header({ titleId, close })`：自定义标题内容，关联 titleId 保留可访问名称
+
+### 实例
+
+- `focus()`：聚焦弹窗面板
+- `close()`：请求关闭，返回 `Promise<void>`，遵循 `before-close`

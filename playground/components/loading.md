@@ -23,7 +23,7 @@ const loading = ref(true)
 </script>
 
 <template>
-  <div v-loading="loading" class="h-44">
+  <div v-loading="loading" style="height: 176px">
     待加载的内容
   </div>
 </template>

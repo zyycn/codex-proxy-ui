@@ -38,21 +38,27 @@ const scope = ref('selected')
 
 ### 属性
 
-| 属性       | 类型      | 默认值  | 说明       |
-| ---------- | --------- | ------- | ---------- |
-| `v-model`  | `string`  | 必填    | 当前选中值 |
-| `disabled` | `boolean` | `false` | 禁用此选项 |
-
-| `value` | `string \| number` | 必填 | 选项值 |
-| `name / label` | `string` | — | 分组名和可见标签；隐藏名称使用 aria-label |
+| 属性           | 类型               | 默认值  | 说明                                      |
+| -------------- | ------------------ | ------- | ----------------------------------------- |
+| `v-model`      | `string \| number` | 必填    | 当前选中值                                |
+| `value`        | `string \| number` | 必填    | 选项值，与模型使用相同的值类型            |
+| `name / label` | `string`           | —       | 分组名和可见标签；隐藏名称使用 aria-label |
+| `disabled`     | `boolean`          | `false` | 禁用此选项                                |
 
 ### 事件
 
-| 事件                | 说明               |
-| ------------------- | ------------------ |
-| `update:modelValue` | string，绑定值变化 |
+| 事件                | 说明                           |
+| ------------------- | ------------------------------ |
+| `update:modelValue` | string 或 number，绑定值变化   |
+| `change`            | string 或 number，用户选中此项 |
+| `focus / blur`      | FocusEvent，焦点变化           |
 
 ### 插槽
 
-| 插槽 | 说明 |
-| ---- | ---- |
+| 插槽      | 说明                         |
+| --------- | ---------------------------- |
+| `default` | 自定义可见标签，优先于 label |
+
+### 实例
+
+`focus()`、`blur()` 控制原生单选框焦点

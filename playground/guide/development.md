@@ -34,7 +34,7 @@ export default defineConfig(({ mode }) => ({
 
 本地 UI 仓库也需安装自身依赖。运行 `vite --mode source` 后，适配器读取该仓库 `package.json` 的 `codex-proxy-source` 导出条件，映射组件、主题和样式入口；Vue 与图标依赖统一使用应用中的实例，UI 源码排除预构建，文件访问范围保留应用配置并加入 UI 仓库。
 
-源码模式使用 Tailwind 4 编译基础样式和新增 utility，应用应导入 [样式集成入口](./installation#样式边界)。普通模式的 `styles.css` 使用完整编译产物，使用者无需 Tailwind。
+源码模式使用 Tailwind 4 编译基础样式和页面 utility，应用应导入[样式集成入口](./installation.md#样式边界)。普通模式的 `styles.css` 使用完整编译产物，使用者无需 Tailwind
 
 Vite 适配器负责运行时解析。需要检查未发布源码的类型时，在独立的源码 tsconfig 中将 UI 公开入口映射到本地源码，并通过 `paths: { "vue": ["./node_modules/vue"] }` 统一 Vue 类型；日常类型检查继续使用已安装包的声明。
 
