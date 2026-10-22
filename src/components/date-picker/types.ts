@@ -1,5 +1,6 @@
 import type { Dayjs } from 'dayjs'
 import type { Component, CSSProperties } from 'vue'
+import type { UiLocale } from '../../locale/types'
 import type { ComponentSize } from '../../shared/types'
 import type { PopoverPlacement } from '../popover/types'
 
@@ -45,8 +46,8 @@ export interface DatePickerProps {
   prefixIcon?: Component | string
   clearIcon?: Component | string
   valueOnClear?: DatePickerValue | (() => DatePickerValue)
-  /** 只影响日历与格式化，不修改全局 Day.js locale */
-  locale?: string
+  /** 覆盖组件语言包，不修改全局 Day.js locale */
+  locale?: UiLocale
 }
 
 export interface DatePickerCell {

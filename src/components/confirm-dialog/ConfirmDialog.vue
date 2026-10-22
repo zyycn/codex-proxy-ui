@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useLocale } from '../../locale/context'
 import Button from '../button/Button.vue'
 import Dialog from '../dialog/Dialog.vue'
 
@@ -14,8 +15,6 @@ const props = withDefaults(
   }>(),
   {
     destructive: false,
-    confirmText: '确认',
-    cancelText: '取消',
     loading: false,
     confirmDisabled: false,
   },
@@ -29,6 +28,9 @@ const emit = defineEmits<{
   close: []
   closed: []
 }>()
+
+const locale = useLocale()
+
 const open = defineModel<boolean>({ default: false })
 function handleCancel() {
   if (props.loading)
@@ -69,7 +71,7 @@ function handleConfirm() {
 
     <template #footer>
       <Button :disabled="loading" @click="handleCancel">
-        {{ cancelText }}
+        {{ cancelText ?? locale.common.cancel }}
       </Button>
       <Button
         :type="destructive ? 'danger' : 'primary'" :variant="destructive ? 'plain' : 'solid'"
@@ -77,7 +79,7 @@ function handleConfirm() {
         :disabled="confirmDisabled"
         @click="handleConfirm"
       >
-        {{ confirmText }}
+        {{ confirmText ?? locale.common.confirm }}
       </Button>
     </template>
   </Dialog>

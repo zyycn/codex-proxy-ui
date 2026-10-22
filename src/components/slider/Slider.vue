@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { CSSProperties } from 'vue'
 import { computed, useAttrs, useTemplateRef } from 'vue'
+import { useLocale } from '../../locale/context'
 import { useFormField } from '../form/composables/useFormField'
 
 const props = withDefaults(
@@ -21,6 +22,9 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{ input: [value: number], change: [value: number], focus: [event: FocusEvent], blur: [event: FocusEvent] }>()
+
+const locale = useLocale()
+
 const model = defineModel<number>({ required: true })
 const attrs = useAttrs()
 const inputRef = useTemplateRef<HTMLInputElement>('input')
@@ -56,7 +60,7 @@ function updateModel(event: Event) {
     :max="max"
     :step="step"
     :disabled="disabled"
-    :aria-label="typeof attrs['aria-label'] === 'string' ? attrs['aria-label'] : '数值'"
+    :aria-label="typeof attrs['aria-label'] === 'string' ? attrs['aria-label'] : locale.common.value"
     :aria-describedby="describedBy"
     :aria-invalid="invalid || undefined"
     :aria-required="ariaRequired"

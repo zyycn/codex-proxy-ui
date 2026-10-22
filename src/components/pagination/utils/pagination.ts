@@ -26,11 +26,11 @@ export function getCurrentPage(pagination: PaginationState | undefined, totalPag
   return clamp(pagination.currentPage, 1, totalPages)
 }
 
-export function getPageSizeOptions(pagination?: PaginationState) {
+export function getPageSizeOptions(pagination: PaginationState, label: (count: number) => string) {
   const pageSizes = pagination?.pageSizes?.length ? pagination.pageSizes : DEFAULT_PAGE_SIZES
 
   return pageSizes.map(pageSize => ({
-    label: `${pageSize} 条/页`,
+    label: label(pageSize),
     value: pageSize,
   }))
 }

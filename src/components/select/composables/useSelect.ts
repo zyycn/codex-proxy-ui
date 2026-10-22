@@ -4,6 +4,7 @@ import type { SelectOption, SelectOptionValue, SelectProps, SelectValue } from '
 import type { SelectPositionElements } from './useSelectPosition'
 import { onClickOutside } from '@vueuse/core'
 import { computed, nextTick, ref, useId, watch } from 'vue'
+import { useLocale } from '../../../locale/context'
 import { useSelectPosition } from './useSelectPosition'
 
 interface SelectElements extends SelectPositionElements {
@@ -33,7 +34,8 @@ export function useSelect<Multiple extends boolean, Value extends SelectOptionVa
 
   const selectedValues = computed<Value[]>(() => Array.isArray(model.value) ? model.value as Value[] : model.value === undefined ? [] : [model.value as Value])
   const selectedOptions = computed(() => selectedValues.value.map(value => props.options.find(option => option.value === value) ?? { value, label: String(value) }))
-  const selectionLabel = computed(() => selectedOptions.value.map(option => option.label).join('、'))
+  const locale = useLocale()
+  const selectionLabel = computed(() => new Intl.ListFormat(locale.value.name).format(selectedOptions.value.map(option => option.label)))
   const displayed = computed(() => props.loading
     ? []
     : props.options.filter(option =>

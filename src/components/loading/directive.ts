@@ -1,5 +1,6 @@
 import type { DirectiveBinding, ObjectDirective } from 'vue'
 import type { LoadingBinding } from './types'
+import en from '../../locale/lang/en'
 
 interface LoadingState {
   overlay: HTMLDivElement
@@ -70,7 +71,7 @@ function syncLoading(element: HTMLElement, { value }: DirectiveBinding<LoadingBi
     element.style.position = 'relative'
   element.classList.add('overflow-hidden')
   element.setAttribute('aria-busy', 'true')
-  state.label.textContent = options.text || '加载中'
+  state.label.textContent = options.text ?? en.common.loading
   state.overlay.className = options.preserveContent ? OVERLAY_CLASS : `${OVERLAY_CLASS} ${MASK_CLASS}`
   // Vue 更新纯文本子节点时会移除蒙层，复用原节点补回容器。
   if (state.overlay.parentElement !== element)

@@ -2,8 +2,7 @@
 import type { ComponentSize } from '../../shared/types'
 import { X } from '@lucide/vue'
 import { computed, useId } from 'vue'
-
-type TagType = 'default' | 'primary' | 'success' | 'info' | 'warning' | 'danger'
+import { useLocale } from '../../locale/context'
 
 const props = withDefaults(defineProps<{
   type?: TagType
@@ -23,7 +22,13 @@ const props = withDefaults(defineProps<{
 
 // 关闭只通知调用方，由调用方决定是否移除标签。
 defineEmits<{ close: [event: MouseEvent] }>()
+
 defineSlots<{ default: () => unknown }>()
+
+const locale = useLocale()
+
+type TagType = 'default' | 'primary' | 'success' | 'info' | 'warning' | 'danger'
+
 const contentId = useId()
 const closeId = useId()
 
@@ -61,7 +66,7 @@ const classes = computed(() => [
       class="inline-grid size-4 shrink-0 cursor-pointer place-items-center rounded-full border-0 bg-transparent p-0 text-inherit outline-none transition-colors duration-150 hover:bg-current/10 focus-visible:ring-2 focus-visible:ring-cp-control-outline active:bg-current/20 disabled:cursor-not-allowed disabled:hover:bg-transparent motion-reduce:transition-none"
       @click.stop="$emit('close', $event)"
     >
-      <span :id="closeId" class="sr-only">移除</span>
+      <span :id="closeId" class="sr-only">{{ locale.common.remove }}</span>
       <X class="size-3" aria-hidden="true" />
     </button>
   </span>

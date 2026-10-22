@@ -2,6 +2,7 @@
 import { Check, ChevronDown } from '@lucide/vue'
 import { clamp } from 'es-toolkit'
 import { computed, provide, shallowRef, useAttrs, useTemplateRef, watch } from 'vue'
+import { useLocale } from '../../locale/context'
 
 import { normalizeHexColor } from '../../shared/utils/color'
 import Button from '../button/Button.vue'
@@ -27,8 +28,11 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{ change: [value: string], focus: [event: FocusEvent], blur: [event: FocusEvent] }>()
+
+const locale = useLocale()
+
 const attrs = useAttrs()
-const controlLabel = computed(() => typeof attrs['aria-label'] === 'string' ? attrs['aria-label'] : '选择颜色')
+const controlLabel = computed(() => typeof attrs['aria-label'] === 'string' ? attrs['aria-label'] : locale.value.colorPicker.label)
 const { controlId, invalid, describedBy, ariaRequired, rootAttrs, controlAttrs, validate } = useFormField(attrs)
 provide(formFieldKey, null)
 const triggerRef = useTemplateRef<HTMLButtonElement>('trigger')
@@ -90,8 +94,8 @@ const inputValid = computed(() =>
 const inputError = computed(() =>
   customInput.value && !inputValid.value
     ? props.allowAlpha
-      ? '请输入 rgba(r, g, b, a)'
-      : '请输入六位 HEX 颜色，例如 #2563EB'
+      ? locale.value.colorPicker.rgbaError
+      : locale.value.colorPicker.hexError
     : undefined,
 )
 
@@ -314,11 +318,11 @@ function normalizedInputColor() {
           :style="{ backgroundColor: hueColor }"
           role="slider"
           tabindex="0"
-          aria-label="饱和度和明度"
+          :aria-label="locale.colorPicker.saturationBrightness"
           aria-valuemin="0"
           aria-valuemax="100"
           :aria-valuenow="Math.round(saturation)"
-          :aria-valuetext="`饱和度 ${Math.round(saturation)}%，明度 ${Math.round(brightness)}%`"
+          :aria-valuetext="locale.colorPicker.saturationBrightnessValue(Math.round(saturation), Math.round(brightness))"
           @pointerdown="startSaturationBrightness"
           @pointermove="event => svPanel?.hasPointerCapture(event.pointerId) && updateSaturationBrightness(event)"
           @keydown="handleSaturationBrightnessKeydown"
@@ -334,7 +338,7 @@ function normalizedInputColor() {
           class="base-color-picker__hue relative touch-none rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-cp-control-outline"
           role="slider"
           tabindex="0"
-          aria-label="色相"
+          :aria-label="locale.colorPicker.hue"
           aria-orientation="vertical"
           aria-valuemin="0"
           aria-valuemax="360"
@@ -357,12 +361,12 @@ function normalizedInputColor() {
           :style="alphaTrackStyle"
           role="slider"
           tabindex="0"
-          aria-label="不透明度"
+          :aria-label="locale.colorPicker.opacity"
           aria-orientation="horizontal"
           aria-valuemin="0"
           aria-valuemax="100"
           :aria-valuenow="Math.round(alpha * 100)"
-          :aria-valuetext="`不透明度 ${Math.round(alpha * 100)}%`"
+          :aria-valuetext="locale.colorPicker.opacityValue(Math.round(alpha * 100))"
           @pointerdown="startAlpha"
           @pointermove="event => alphaSlider?.hasPointerCapture(event.pointerId) && updateAlpha(event)"
           @keydown="handleAlphaKeydown"
@@ -377,7 +381,7 @@ function normalizedInputColor() {
         </span>
       </div>
 
-      <div v-if="props.presets.length > 0" class="flex flex-wrap gap-2" role="radiogroup" aria-label="预设颜色">
+      <div v-if="props.presets.length > 0" class="flex flex-wrap gap-2" role="radiogroup" :aria-label="locale.colorPicker.presets">
         <button
           v-for="color in props.presets"
           :key="color"
@@ -403,7 +407,7 @@ function normalizedInputColor() {
           <Input
             v-model="customInput"
             class="rounded-cp bg-cp-fill-tertiary!"
-            :aria-label="props.allowAlpha ? 'RGBA 颜色' : 'HEX 颜色'"
+            :aria-label="props.allowAlpha ? locale.colorPicker.rgba : locale.colorPicker.hex"
             :placeholder="props.allowAlpha ? 'rgba(96, 165, 250, 1)' : '#2563EB'"
             autocomplete="off"
             :disabled="props.disabled"
@@ -422,7 +426,7 @@ function normalizedInputColor() {
           </p>
         </div>
         <Button size="default" :disabled="!inputValid" @click="confirm">
-          确定
+          {{ locale.common.confirm }}
         </Button>
       </div>
     </div>

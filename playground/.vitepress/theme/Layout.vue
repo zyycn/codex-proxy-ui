@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ZConfigProvider } from '@codex-proxy/ui'
+import { zhHans } from '@codex-proxy/ui/locale'
 import { applyResolvedTheme, DEFAULT_CUSTOM_THEME_COLOR, DEFAULT_THEME_COLOR, resolveTheme } from '@codex-proxy/ui/theme'
 import { inBrowser, useData } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
@@ -12,5 +14,7 @@ watchEffect(() => {
 </script>
 
 <template>
-  <DefaultTheme.Layout />
+  <ZConfigProvider :locale="zhHans">
+    <DefaultTheme.Layout />
+  </ZConfigProvider>
 </template>

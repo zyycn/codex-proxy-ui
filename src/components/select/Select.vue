@@ -2,6 +2,7 @@
 import type { SelectEmits, SelectOption, SelectProps, SelectSize, SelectSlots, SelectValue } from './types'
 import { Check, ChevronDown, LoaderCircle, X } from '@lucide/vue'
 import { computed, provide, useAttrs, useTemplateRef, watch } from 'vue'
+import { useLocale } from '../../locale/context'
 import { clearButtonClass } from '../../shared/utils/clear-button'
 import Empty from '../empty/Empty.vue'
 import { useFormField } from '../form/composables/useFormField'
@@ -20,14 +21,16 @@ const props = withDefaults(
   {
     size: 'default',
     disabled: false,
-    placeholder: '请选择',
-    emptyText: '暂无选项',
     maxCollapseTags: 1,
   },
 )
 
 const emit = defineEmits<SelectEmits<Multiple, Value>>()
+
 defineSlots<SelectSlots<Value>>()
+
+const locale = useLocale()
+
 const model = defineModel<SelectValue<Multiple, Value>>({ required: true })
 const attrs = useAttrs()
 const rootRef = useTemplateRef<HTMLElement>('rootRef')
@@ -178,9 +181,9 @@ defineExpose({ focus: () => triggerRef.value?.focus(), blur: () => triggerRef.va
         @blur="emit('blur', $event); validate('blur')"
         @keydown="handleTriggerKeydown"
       >
-        <span v-if="multiple" :class="selectedOptions.length ? 'sr-only' : 'block px-3 text-left text-cp-text-quaternary'">{{ selectionLabel || placeholder }}</span>
+        <span v-if="multiple" :class="selectedOptions.length ? 'sr-only' : 'block px-3 text-left text-cp-text-quaternary'">{{ selectionLabel || (placeholder ?? locale.select.placeholder) }}</span>
         <span v-else class="min-w-0 truncate" :class="selectedOption?.description ? 'max-w-1/2 shrink-0' : 'flex-1'">
-          {{ selectedOption?.label ?? placeholder }}
+          {{ selectedOption?.label ?? placeholder ?? locale.select.placeholder }}
         </span>
         <span
           v-if="!multiple && selectedOption?.description"
@@ -201,7 +204,7 @@ defineExpose({ focus: () => triggerRef.value?.focus(), blur: () => triggerRef.va
       <button
         v-if="clearable && selectedValues.length && !disabled"
         type="button"
-        aria-label="清空选择"
+        :aria-label="locale.select.clear"
         :class="clearButtonClass"
         class="pointer-events-none absolute top-1/2 right-8 z-10 -translate-y-1/2 opacity-0 group-focus-within/select:pointer-events-auto group-focus-within/select:opacity-100 group-hover/select:pointer-events-auto group-hover/select:opacity-100"
         @mousedown.prevent
@@ -246,8 +249,8 @@ defineExpose({ focus: () => triggerRef.value?.focus(), blur: () => triggerRef.va
               ref="searchInput"
               v-model="search"
               size="small"
-              aria-label="搜索选项"
-              placeholder="输入名称筛选"
+              :aria-label="locale.select.search"
+              :placeholder="locale.select.searchPlaceholder"
               role="combobox"
               aria-expanded="true"
               :aria-controls="`${selectId}-listbox`"
@@ -268,7 +271,7 @@ defineExpose({ focus: () => triggerRef.value?.focus(), blur: () => triggerRef.va
             >
               <div v-if="displayed.length === 0" class="shrink-0">
                 <slot name="empty" :search="search">
-                  <Empty :title="loading ? '正在加载…' : search ? '没有匹配项' : emptyText" size="small" surface="none" role="status">
+                  <Empty :title="loading ? locale.common.loading : search ? locale.select.noMatches : (emptyText ?? locale.select.empty)" size="small" surface="none" role="status">
                     <template v-if="loading" #icon>
                       <LoaderCircle :size="18" class="animate-spin text-cp-text-quaternary motion-reduce:animate-none" />
                     </template>

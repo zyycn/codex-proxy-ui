@@ -2,6 +2,7 @@
 import type { SelectOption } from '../types'
 import { useEventListener } from '@vueuse/core'
 import { computed, nextTick, ref, useId, watch } from 'vue'
+import { useLocale } from '../../../locale/context'
 import Popover from '../../popover/Popover.vue'
 import Scrollbar from '../../scrollbar/Scrollbar.vue'
 import Tag from '../../tag/Tag.vue'
@@ -15,7 +16,11 @@ const props = defineProps<{
   limit: number
   menuOpen: boolean
 }>()
+
 const emit = defineEmits<{ remove: [value: Value], focusControl: [] }>()
+
+const locale = useLocale()
+
 const open = ref(false)
 const trigger = ref<HTMLButtonElement | null>(null)
 const panelId = useId()
@@ -67,7 +72,7 @@ watch(() => [props.menuOpen, props.disabled, hidden.value.length], () => {
       :size="size"
       :closable="!disabled && !option.disabled"
       :disabled="disabled"
-      :close-label="`移除 ${option.label}`"
+      :close-label="locale.select.remove(option.label)"
       class="min-w-0 [&_button]:pointer-events-auto"
       @close="remove(option.value, $event)"
     >
@@ -86,7 +91,7 @@ watch(() => [props.menuOpen, props.disabled, hidden.value.length], () => {
           ref="trigger"
           type="button"
           :disabled="disabled"
-          :aria-label="`查看其余 ${hidden.length} 个已选项`"
+          :aria-label="locale.select.more(hidden.length)"
           :aria-expanded="open"
           :aria-controls="open ? panelId : undefined"
           aria-haspopup="dialog"
@@ -101,7 +106,7 @@ watch(() => [props.menuOpen, props.disabled, hidden.value.length], () => {
           </Tag>
         </button>
       </template>
-      <div :id="panelId" ref="panel" role="dialog" tabindex="-1" aria-label="其余已选项" class="max-w-[min(20rem,calc(100vw-2rem))] p-2">
+      <div :id="panelId" ref="panel" role="dialog" tabindex="-1" :aria-label="locale.select.remaining" class="max-w-[min(20rem,calc(100vw-2rem))] p-2">
         <Scrollbar max-height="12rem">
           <div class="flex flex-wrap gap-1">
             <Tag
@@ -110,7 +115,7 @@ watch(() => [props.menuOpen, props.disabled, hidden.value.length], () => {
               :size="size"
               :closable="!disabled && !option.disabled"
               :disabled="disabled"
-              :close-label="`移除 ${option.label}`"
+              :close-label="locale.select.remove(option.label)"
               @close="remove(option.value, $event)"
             >
               <span class="block max-w-56 truncate" :title="option.label">{{ option.label }}</span>

@@ -9,7 +9,7 @@ import pkg from './package.json' with { type: 'json' }
 const sourceRoot = fileURLToPath(new URL('./src', import.meta.url))
 const dependencies = Object.keys({ ...pkg.dependencies, ...pkg.peerDependencies })
 const entry = Object.fromEntries(
-  globSync(['index.ts', 'theme/index.ts', 'styles/index.ts', 'components/*/index.ts', 'vite.ts'], { cwd: sourceRoot })
+  globSync(['index.ts', 'theme/index.ts', 'locale/index.ts', 'styles/index.ts', 'components/*/index.ts', 'vite.ts'], { cwd: sourceRoot })
     .map(file => [normalizePath(file.slice(0, -3)), resolve(sourceRoot, file)]),
 )
 

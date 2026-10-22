@@ -2,6 +2,7 @@
 import type { ComponentSize } from '../../shared/types'
 import { Minus, Plus } from '@lucide/vue'
 import { computed, shallowRef, useAttrs, useTemplateRef, watch } from 'vue'
+import { useLocale } from '../../locale/context'
 
 import { useFormField } from '../form/composables/useFormField'
 import IconButton from '../icon-button/IconButton.vue'
@@ -32,12 +33,15 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{ input: [value: string], change: [value: number], focus: [event: FocusEvent], blur: [event: FocusEvent] }>()
+
+const locale = useLocale()
+
 const model = defineModel<number>({ required: true })
 const attrs = useAttrs()
 const { controlId, invalid, describedBy, required, ariaRequired, rootAttrs, controlAttrs, validate } = useFormField(attrs)
 const inputRef = useTemplateRef<HTMLInputElement>('input')
 const draft = shallowRef(String(model.value))
-const controlLabel = computed(() => attrs['aria-label'] ?? '数值')
+const controlLabel = computed(() => typeof attrs['aria-label'] === 'string' ? attrs['aria-label'] : locale.value.common.value)
 const canDecrease = computed(() => !props.disabled && !props.readonly && (props.min === undefined || model.value > props.min))
 const canIncrease = computed(() => !props.disabled && !props.readonly && (props.max === undefined || model.value < props.max))
 watch(model, (value) => {
@@ -100,7 +104,7 @@ function stepBy(direction: -1 | 1) {
   >
     <IconButton
       v-if="controls"
-      :aria-label="`减少${controlLabel}`"
+      :aria-label="locale.inputNumber.decrease(controlLabel)"
       size="small"
       :class="size === 'default' ? 'size-6!' : 'size-5!'"
       :disabled="!canDecrease"
@@ -141,7 +145,7 @@ function stepBy(direction: -1 | 1) {
 
     <IconButton
       v-if="controls"
-      :aria-label="`增加${controlLabel}`"
+      :aria-label="locale.inputNumber.increase(controlLabel)"
       size="small"
       :class="size === 'default' ? 'size-6!' : 'size-5!'"
       :disabled="!canIncrease"

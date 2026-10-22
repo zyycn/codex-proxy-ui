@@ -1,9 +1,10 @@
 <script setup lang="ts" generic="Row extends object = Record<string, unknown>">
 import type { ResolvedTableColumn, TableEmits, TableProps } from './types'
-
 import { Triangle } from '@lucide/vue'
+
 import { useResizeObserver } from '@vueuse/core'
 import { computed, nextTick, onMounted, shallowRef, useSlots, useTemplateRef, watch } from 'vue'
+import { useLocale } from '../../locale/context'
 import Empty from '../empty/Empty.vue'
 import Scrollbar from '../scrollbar/Scrollbar.vue'
 import { useTableColumnMotion } from './composables/useTableColumnMotion'
@@ -26,13 +27,15 @@ const props = withDefaults(defineProps<TableProps<Row>>(), {
   expandedRowKeys: () => [],
   size: 'default',
   loading: false,
-  emptyText: '暂无数据',
   showHeaderWhenEmpty: false,
   scrollbarAlwaysVisible: false,
   sort: undefined,
 })
 
 const emit = defineEmits<TableEmits>()
+
+const locale = useLocale()
+
 const slots = useSlots()
 const computedColumns = computed(() => resolveColumns(props.columns))
 const resolvedTableStyle = computed(() => tableStyle(computedColumns.value))
@@ -183,10 +186,10 @@ function columnAriaSort(column: ResolvedTableColumn<Row>) {
 function sortButtonLabel(column: ResolvedTableColumn<Row>) {
   const direction = columnSortDirection(column)
   if (!direction)
-    return `${column.label || column.key}：升序排列`
+    return locale.value.table.ascending(column.label || column.key)
   if (direction === 'asc')
-    return `${column.label || column.key}：降序排列`
-  return `${column.label || column.key}：取消排序`
+    return locale.value.table.descending(column.label || column.key)
+  return locale.value.table.clearSort(column.label || column.key)
 }
 </script>
 
@@ -222,7 +225,6 @@ function sortButtonLabel(column: ResolvedTableColumn<Row>) {
                   alignClass(column),
                   columnIndex === 0 ? 'rounded-l-cp' : undefined,
                   columnIndex === computedColumns.length - 1 ? 'rounded-r-cp' : undefined,
-                  columnIndex === computedColumns.length - 1 ? 'pr-6' : undefined,
                   stickyClass(column, true),
                 ]"
                 :style="stickyStyle(column)"
@@ -280,7 +282,7 @@ function sortButtonLabel(column: ResolvedTableColumn<Row>) {
                     alignClass(column),
                     index === 0 ? firstRowTopGapClass : undefined,
                     columnIndex === 0 ? 'rounded-l-cp' : undefined,
-                    columnIndex === computedColumns.length - 1 ? 'rounded-r-cp pr-6' : undefined,
+                    columnIndex === computedColumns.length - 1 ? 'rounded-r-cp' : undefined,
                     stickyClass(column),
                     rowBackgroundClass(row, index),
                   ]"
@@ -320,7 +322,7 @@ function sortButtonLabel(column: ResolvedTableColumn<Row>) {
         :class="showHeaderWhenEmpty ? ['absolute inset-x-0 bottom-0', size === 'small' ? 'top-8' : 'top-10'] : undefined"
       >
         <slot v-if="!loading" name="empty">
-          <Empty :title="emptyText" surface="none" class="w-full max-w-80" />
+          <Empty :title="emptyText ?? locale.common.empty" surface="none" class="w-full max-w-80" />
         </slot>
       </div>
       <!-- 加载反馈属于表格自身，独立使用和服务端渲染都不依赖宿主注册指令。 -->
@@ -336,7 +338,7 @@ function sortButtonLabel(column: ResolvedTableColumn<Row>) {
             class="size-4 shrink-0 rounded-full bg-[radial-gradient(circle_at_center,var(--cp-color-bg-container)_0_44%,transparent_46%),conic-gradient(from_0deg,var(--cp-color-primary)_0deg_105deg,var(--cp-color-primary-hover)_105deg_200deg,var(--cp-color-fill-tertiary)_200deg_360deg)] motion-safe:animate-spin"
             aria-hidden="true"
           />
-          <span>加载中</span>
+          <span>{{ locale.common.loading }}</span>
         </span>
       </div>
     </div>

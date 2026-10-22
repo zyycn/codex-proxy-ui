@@ -7,6 +7,7 @@ import type {
   ThemeTokenName,
 } from '../types'
 import { presetPrimaryColors } from '@ant-design/colors'
+import en from '../../locale/lang/en'
 
 export const DEFAULT_THEME_MODE: ThemeMode = 'system'
 export const DEFAULT_THEME_COLOR: ThemeColorPresetId = 'relay-blue'
@@ -43,14 +44,12 @@ export const DEFAULT_DIMENSIONS = {
 export const THEME_COLOR_PRESETS: readonly ThemeColorPreset[] = [
   {
     id: 'relay-blue',
-    label: '中继蓝',
-    description: '石墨表面上的清晰交互信号',
+    ...en.theme['relay-blue'],
     seed: DEFAULT_CUSTOM_THEME_COLOR,
   },
   {
     id: 'deep-teal',
-    label: '深海青',
-    description: '氧化铜落入深水玻璃的冷静层次',
+    ...en.theme['deep-teal'],
     seed: '#0E7C72',
     appearance: {
       light: {
@@ -65,8 +64,7 @@ export const THEME_COLOR_PRESETS: readonly ThemeColorPreset[] = [
   },
   {
     id: 'signal-violet',
-    label: '古风色',
-    description: '赭石落在宣纸与松烟墨上的温厚层次',
+    ...en.theme['signal-violet'],
     seed: '#A0583D',
     appearance: {
       light: {
@@ -81,8 +79,7 @@ export const THEME_COLOR_PRESETS: readonly ThemeColorPreset[] = [
   },
   {
     id: 'graphite',
-    label: '石墨',
-    description: '铅笔粉末与工作室灰纸的材料质感',
+    ...en.theme.graphite,
     seed: '#525B66',
     appearance: {
       light: {

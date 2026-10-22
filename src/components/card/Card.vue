@@ -51,7 +51,7 @@ const contentClasses = computed(() => [
     <template v-if="$slots.header || hasManagedHeader || $slots.body">
       <header v-if="$slots.header || hasManagedHeader" class="shrink-0">
         <slot name="header">
-          <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between">
             <div class="min-w-0 pt-0.5">
               <h2
                 v-if="props.title || $slots.title"
@@ -70,7 +70,7 @@ const contentClasses = computed(() => [
                 </slot>
               </p>
             </div>
-            <div v-if="$slots.actions" class="shrink-0">
+            <div v-if="$slots.actions" class="max-w-full shrink-0">
               <slot name="actions" />
             </div>
           </div>
