@@ -1,26 +1,28 @@
-# v0.5.0
+# v0.6.0
 
 ## 新增
 
-- 新增 `ZDatePicker`，支持日期、周、月份、年份、季度、日期时间、多选与范围选择，提供格式化、快捷选项、禁用日期、可编辑输入和表单校验
-- 日期范围共用一个输入框外观，清空按钮可通过 `clearable` 控制，未提供 `shortcuts` 时不显示快捷选项面板
-- `ZPopover` 新增 `enterable`、`showAfter`、`hideAfter` 和 `teleported`，可控制鼠标进入浮层、显隐延迟及挂载位置
+- 新增 `ZConfigProvider` 与 `@codex-proxy/ui/locale`，提供英文、简体中文和繁体中文语言包，支持响应式切换与嵌套配置
+- 新增 `createNotification`，可绑定应用的响应式语言；已打开通知的默认标题和关闭标签随语言更新
 
 ## 调整与修复
 
-- 修复 Popover 在锚点移除或清空时退场位置跳动，以及浮层内部操作和焦点归还导致意外重开的情况
-- Input、Select、DatePicker 统一使用轻量的叉号清空按钮
-- Input、Select、Textarea 默认宽度为容器的 `100%`；InputNumber 默认为 `150px`、小号为 `120px`；DatePicker 按日期类型提供默认宽度，支持窄容器收缩和调用方覆盖
+- 日期选择器、分页、表格、表单、选择框和弹窗等组件使用统一语言配置，显式文案与插槽仍可覆盖默认内容
+- 调整表格间距、弹窗标题与关闭按钮、卡片操作区和日期选择面板；分段控件支持长标签及窄容器横向滚动
+- 更新锁定的 DOMPurify 至 3.4.17
+- 修复干净检出时 Playground 语言包导入依赖预构建类型声明的问题
 
 ## 升级提示
 
-- 行内使用 Select 时为控件或父容器设置宽度；现有显式 `class / style` 宽度继续生效
-- Popover 默认允许鼠标进入，移出后延迟 `200ms` 关闭；`hoverDelay` 保留，设置 `showAfter` 时优先使用后者
+- 组件默认语言改为英文；中文应用需通过 `ZConfigProvider` 配置 `zhHans` 或 `zhHant`
+- `DatePicker.locale` 从 Day.js 语言字符串改为 `UiLocale` 语言包，未指定时继承 Provider 配置
+- 命令式通知需使用 `createNotification({ locale })` 绑定语言；直接使用 `ZNotification` 默认显示英文
+- `v-loading` 默认提示改为英文，应用可通过 `text` 选项提供本地化文本；主题预设的中文名称与说明可从语言包的 `theme` 字段读取
 
 ## 安装
 
 ```bash
-pnpm add https://github.com/zyycn/codex-proxy-ui/releases/download/v0.5.0/codex-proxy-ui-0.5.0.tgz
+pnpm add https://github.com/zyycn/codex-proxy-ui/releases/download/v0.6.0/codex-proxy-ui-0.6.0.tgz
 ```
 
 需要 Node.js 24+、Vue 3.5+，包名为 `@codex-proxy/ui`
