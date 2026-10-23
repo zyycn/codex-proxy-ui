@@ -3,6 +3,7 @@ import type { DatePickerEmits, DatePickerProps, DatePickerSlots, DatePickerValue
 import { CalendarDays, Clock, X } from '@lucide/vue'
 import { useEventListener } from '@vueuse/core'
 import { computed, nextTick, provide, shallowRef, useAttrs, useTemplateRef } from 'vue'
+import { localeKey } from '../../locale/context'
 import { clearButtonClass } from '../../shared/utils/clear-button'
 import Button from '../button/Button.vue'
 import { useFormField } from '../form/composables/useFormField'
@@ -26,7 +27,6 @@ const props = withDefaults(defineProps<DatePickerProps>(), {
   showConfirm: true,
   teleported: true,
   placement: 'bottom-start',
-  locale: 'zh-cn',
   shortcuts: () => [],
 })
 const emit = defineEmits<DatePickerEmits>()
@@ -36,6 +36,7 @@ const attrs = useAttrs()
 const { controlId, invalid, describedBy, ariaRequired, required, rootAttrs, controlAttrs, validate } = useFormField(attrs)
 provide(formFieldKey, null)
 const {
+  locale,
   type,
   range,
   time,
@@ -61,14 +62,15 @@ const {
   updateTime,
   navigate,
 } = useDatePicker(props, model, emit, () => validate('change'))
+provide(localeKey, locale)
 const inputs = useTemplateRef<HTMLInputElement[]>('inputs')
 const calendars = useTemplateRef<InstanceType<typeof DatePickerCalendar>[]>('calendars')
 const panel = useTemplateRef<HTMLElement>('panel')
 const inputRoot = useTemplateRef<HTMLElement>('inputRoot')
 const inputClasses = computed(() => getInputClasses(props.size, props.disabled, invalid.value))
-const controlLabel = computed(() => typeof attrs['aria-label'] === 'string' ? attrs['aria-label'] : '选择日期')
+const controlLabel = computed(() => typeof attrs['aria-label'] === 'string' ? attrs['aria-label'] : locale.value.datePicker.label)
 const panelDates = computed(() => range.value && !props.singlePanel ? anchors.value : anchors.value.slice(0, 1))
-const fields = computed(() => range.value ? [props.startPlaceholder ?? '开始日期', props.endPlaceholder ?? '结束日期'] : [props.placeholder ?? '请选择日期'])
+const fields = computed(() => range.value ? [props.startPlaceholder ?? locale.value.datePicker.startPlaceholder, props.endPlaceholder ?? locale.value.datePicker.endPlaceholder] : [props.placeholder ?? locale.value.datePicker.placeholder])
 const focus = () => inputs.value?.[0]?.focus()
 const blur = () => inputs.value?.forEach(input => input.blur())
 const restoringFocus = shallowRef(false)
@@ -158,7 +160,7 @@ async function keydown(event: KeyboardEvent) {
             :aria-required="ariaRequired"
             :aria-invalid="invalid || undefined"
             :aria-describedby="describedBy"
-            :aria-label="range ? `${controlLabel} · ${index === 0 ? '开始' : '结束'}` : typeof attrs['aria-label'] === 'string' ? attrs['aria-label'] : undefined"
+            :aria-label="range ? (index === 0 ? locale.datePicker.startLabel : locale.datePicker.endLabel)(controlLabel) : typeof attrs['aria-label'] === 'string' ? attrs['aria-label'] : undefined"
             :aria-controls="open ? id : undefined"
             :aria-expanded="open"
             aria-haspopup="dialog"
@@ -171,7 +173,7 @@ async function keydown(event: KeyboardEvent) {
             @keydown="keydown"
           >
         </template>
-        <button v-if="clearable && hasValue && !blocked" type="button" aria-label="清空日期" :class="clearButtonClass" @mousedown.prevent @click.stop="clear">
+        <button v-if="clearable && hasValue && !blocked" type="button" :aria-label="locale.datePicker.clear" :class="clearButtonClass" @mousedown.prevent @click.stop="clear">
           <component :is="clearIcon || X" class="size-3.5" />
         </button>
       </div>
@@ -220,12 +222,12 @@ async function keydown(event: KeyboardEvent) {
           </DatePickerCalendar>
         </div>
       </div>
-      <div v-if="time" class="flex flex-wrap gap-3 border-t border-cp-border-secondary px-3 py-2">
-        <Input v-for="(_, index) in fields" :key="index" :model-value="draft[index]?.format('HH:mm:ss') ?? ''" type="time" step="1" size="small" class="min-w-32 flex-1" :aria-label="range ? index === 0 ? '开始时间' : '结束时间' : '时间'" @change="updateTime($event, index)" />
+      <div v-if="time" class="flex flex-wrap gap-3 px-3 py-2">
+        <Input v-for="(_, index) in fields" :key="index" :model-value="draft[index]?.format('HH:mm:ss') ?? ''" type="time" step="1" size="small" class="min-w-32 flex-1" :aria-label="range ? index === 0 ? locale.datePicker.startTime : locale.datePicker.endTime : locale.datePicker.time" @change="updateTime($event, index)" />
       </div>
-      <div v-if="needsConfirm && showFooter" class="flex justify-end border-t border-cp-border-secondary p-2">
+      <div v-if="needsConfirm && showFooter" class="flex justify-end p-2">
         <Button v-if="showConfirm" size="small" :disabled="!canConfirm" @click="confirm">
-          确定
+          {{ locale.common.confirm }}
         </Button>
       </div>
     </div>

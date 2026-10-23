@@ -45,6 +45,11 @@
       "codex-proxy-source": "./src/vite.ts",
       "types": "./dist/types/vite.d.ts",
       "import": "./dist/vite.js"
+    },
+    "./locale": {
+      "codex-proxy-source": "./src/locale/index.ts",
+      "types": "./dist/types/locale/index.d.ts",
+      "import": "./dist/locale/index.js"
     }
   },
   "module": "./dist/index.js",

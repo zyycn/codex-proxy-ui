@@ -8,6 +8,7 @@ import quarterOfYear from 'dayjs/plugin/quarterOfYear'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
 import weekYear from 'dayjs/plugin/weekYear'
 import 'dayjs/locale/zh-cn'
+import 'dayjs/locale/zh-tw'
 
 dayjs.extend(customParseFormat)
 dayjs.extend(advancedFormat)
@@ -17,6 +18,8 @@ dayjs.extend(weekOfYear)
 dayjs.extend(weekYear)
 
 export { dayjs }
+
+export const calendarLocales = { 'en': 'en', 'zh-Hans': 'zh-cn', 'zh-Hant': 'zh-tw' } as const
 
 export function pickerView(type: DatePickerType): DatePickerView {
   if (type.startsWith('year'))
@@ -28,11 +31,11 @@ export function pickerView(type: DatePickerType): DatePickerView {
   return 'date'
 }
 
-export function pickerFormat(type: DatePickerType) {
+export function pickerFormat(type: DatePickerType, weekFormat: string) {
   if (type.includes('time'))
     return 'YYYY-MM-DD HH:mm:ss'
   if (type === 'week')
-    return 'gggg [第] ww [周]'
+    return weekFormat
   return { date: 'YYYY-MM-DD', month: 'YYYY-MM', year: 'YYYY', quarter: 'YYYY-[Q]Q' }[pickerView(type)]
 }
 

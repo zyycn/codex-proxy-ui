@@ -30,7 +30,7 @@ import { ZCard } from '@codex-proxy/ui'
 
 ## 使用要点
 
-`padding` 控制内容间距，`actions` 插槽承载卡片操作
+`padding` 控制内容间距，`actions` 插槽承载卡片操作。标题和操作区放不下时换行，操作区最大宽度为卡片内容宽度；内容需要完整展示时避免固定卡片高度
 
 ## API
 

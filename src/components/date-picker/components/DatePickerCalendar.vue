@@ -3,6 +3,7 @@ import type { Dayjs } from 'dayjs'
 import type { DatePickerCell, DatePickerSlots, DatePickerView } from '../types'
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from '@lucide/vue'
 import { computed, nextTick, shallowRef, useTemplateRef, watch } from 'vue'
+import { useLocale } from '../../../locale/context'
 import { availableDate, dayjs, startOfView } from '../utils/date'
 
 const props = defineProps<{
@@ -17,12 +18,17 @@ const props = defineProps<{
   cellClassName?: (date: Date) => string
   showWeekNumber?: boolean
 }>()
+
 const emit = defineEmits<{
   pick: [date: Dayjs]
   cellHover: [date: Dayjs]
   navigate: [date: Dayjs, view: DatePickerView]
 }>()
+
 defineSlots<DatePickerSlots>()
+
+const locale = useLocale()
+
 const mode = shallowRef(props.view)
 const focused = shallowRef<number>()
 const grid = useTemplateRef<HTMLElement>('grid')
@@ -137,12 +143,12 @@ watch(() => props.view, value => mode.value = value)
 <template>
   <section class="w-72 max-w-full shrink-0 p-3">
     <div class="mb-3 flex items-center justify-between gap-1">
-      <button type="button" :class="actionClass" aria-label="上一年" @click="navigate(-1, true)">
+      <button type="button" :class="actionClass" :aria-label="locale.datePicker.previousYear" @click="navigate(-1, true)">
         <slot name="prev-year">
           <ChevronsLeft :size="16" />
         </slot>
       </button>
-      <button v-if="mode === 'date'" type="button" :class="actionClass" aria-label="上个月" @click="navigate(-1)">
+      <button v-if="mode === 'date'" type="button" :class="actionClass" :aria-label="locale.datePicker.previousMonth" @click="navigate(-1)">
         <slot name="prev-month">
           <ChevronLeft :size="16" />
         </slot>
@@ -150,20 +156,20 @@ watch(() => props.view, value => mode.value = value)
       <div class="flex flex-1 items-center justify-center gap-1 font-emphasis" aria-live="polite">
         <span v-if="mode === 'year'">{{ decade }} – {{ decade + 9 }}</span>
         <template v-else>
-          <button type="button" class="rounded-cp-sm border-0 bg-transparent px-1 text-cp-text outline-none hover:text-cp-primary focus-visible:ring-2 focus-visible:ring-cp-control-outline" aria-label="选择年份" @click="changeView('year')">
+          <button type="button" class="rounded-cp-sm border-0 bg-transparent px-1 text-cp-text outline-none hover:text-cp-primary focus-visible:ring-2 focus-visible:ring-cp-control-outline" :aria-label="locale.datePicker.chooseYear" @click="changeView('year')">
             {{ date.format('YYYY') }}
           </button>
-          <button v-if="mode === 'date'" type="button" class="rounded-cp-sm border-0 bg-transparent px-1 text-cp-text outline-none hover:text-cp-primary focus-visible:ring-2 focus-visible:ring-cp-control-outline" aria-label="选择月份" @click="changeView('month')">
+          <button v-if="mode === 'date'" type="button" class="rounded-cp-sm border-0 bg-transparent px-1 text-cp-text outline-none hover:text-cp-primary focus-visible:ring-2 focus-visible:ring-cp-control-outline" :aria-label="locale.datePicker.chooseMonth" @click="changeView('month')">
             {{ date.format('MMM') }}
           </button>
         </template>
       </div>
-      <button v-if="mode === 'date'" type="button" :class="actionClass" aria-label="下个月" @click="navigate(1)">
+      <button v-if="mode === 'date'" type="button" :class="actionClass" :aria-label="locale.datePicker.nextMonth" @click="navigate(1)">
         <slot name="next-month">
           <ChevronRight :size="16" />
         </slot>
       </button>
-      <button type="button" :class="actionClass" aria-label="下一年" @click="navigate(1, true)">
+      <button type="button" :class="actionClass" :aria-label="locale.datePicker.nextYear" @click="navigate(1, true)">
         <slot name="next-year">
           <ChevronsRight :size="16" />
         </slot>
@@ -171,7 +177,7 @@ watch(() => props.view, value => mode.value = value)
     </div>
     <div ref="grid" role="grid" :aria-label="mode === 'year' ? `${decade} – ${decade + 9}` : date.format('YYYY MMMM')" :aria-multiselectable="range || selected.length > 1">
       <div v-if="mode === 'date'" role="row" class="mb-1 grid text-center text-cp-xs text-cp-text-tertiary" :style="{ gridTemplateColumns: `repeat(${showWeekNumber ? 8 : 7}, minmax(0, 1fr))` }">
-        <span v-if="showWeekNumber" role="columnheader" class="py-1">周</span>
+        <span v-if="showWeekNumber" role="columnheader" class="py-1">{{ locale.datePicker.week }}</span>
         <span v-for="(day, index) in weekdays" :key="index" role="columnheader" class="py-1">{{ day }}</span>
       </div>
       <div v-for="(row, index) in rows" :key="index" role="row" class="grid py-0.5" :style="{ gridTemplateColumns: `repeat(${columns + (mode === 'date' && showWeekNumber ? 1 : 0)}, minmax(0, 1fr))` }">

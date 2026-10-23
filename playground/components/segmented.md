@@ -16,6 +16,10 @@ import SegmentedDemo from '../examples/SegmentedDemo.vue'
 
 每项使用稳定的 `value`，通过控件 `aria-label` 或所属 `ZFormItem` 的标签向辅助技术说明用途
 
+默认宽度由完整标签决定，需要铺满容器时使用 `w-full`。空间不足时在控件内部横向滚动，标签保持单行；选中滑块随选项位置和宽度平滑移动，减少动态效果偏好下立即更新
+
+方向键切换相邻可用选项，Home / End 跳到首尾可用选项，禁用项不参与切换
+
 ::: details 查看用法代码
 
 ```vue

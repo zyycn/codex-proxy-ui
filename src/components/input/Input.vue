@@ -2,6 +2,7 @@
 import type { ComponentSize } from '../../shared/types'
 import { Eye, EyeOff, X } from '@lucide/vue'
 import { computed, nextTick, shallowRef, useAttrs, useTemplateRef } from 'vue'
+import { useLocale } from '../../locale/context'
 import { clearButtonClass } from '../../shared/utils/clear-button'
 import { useFormField } from '../form/composables/useFormField'
 import { getInputClasses, inputFieldClass } from './styles'
@@ -32,7 +33,11 @@ const emit = defineEmits<{
   focus: [event: FocusEvent]
   blur: [event: FocusEvent]
 }>()
+
 defineSlots<{ prefix?: () => unknown, suffix?: () => unknown }>()
+
+const locale = useLocale()
+
 const model = defineModel<string>({ default: '' })
 const attrs = useAttrs()
 const { controlId, invalid, describedBy, required, ariaRequired, rootAttrs, controlAttrs, validate } = useFormField(attrs)
@@ -123,7 +128,7 @@ function syncAutofill(event: AnimationEvent) {
       <button
         v-if="clearable && model && !disabled && (controlAttrs.readonly === undefined || controlAttrs.readonly === false)"
         type="button"
-        aria-label="清空输入"
+        :aria-label="locale.input.clear"
         :class="clearButtonClass"
         class="pointer-events-none opacity-0 group-focus-within/input:pointer-events-auto group-focus-within/input:opacity-100 group-hover/input:pointer-events-auto group-hover/input:opacity-100"
         @mousedown.prevent
@@ -136,7 +141,7 @@ function syncAutofill(event: AnimationEvent) {
         type="button"
         :class="actionClasses"
         class="z-input__password-toggle"
-        :aria-label="`${passwordVisible ? '隐藏' : '显示'}${attrs['aria-label'] ?? '内容'}`"
+        :aria-label="(passwordVisible ? locale.input.hide : locale.input.show)(typeof attrs['aria-label'] === 'string' ? attrs['aria-label'] : locale.input.content)"
         :aria-pressed="passwordVisible"
         :disabled="disabled"
         @mousedown.prevent

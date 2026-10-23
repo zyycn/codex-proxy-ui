@@ -2,14 +2,13 @@
 import { AlertCircle, AlertTriangle, CheckCircle2, Info, X } from '@lucide/vue'
 import { useResizeObserver } from '@vueuse/core'
 import { computed, nextTick, onBeforeUnmount, shallowRef, useId, useTemplateRef, watch } from 'vue'
+import { useLocale } from '../../locale/context'
 
 import IconButton from '../icon-button/IconButton.vue'
 import Scrollbar from '../scrollbar/Scrollbar.vue'
 import { useDialogDrag } from './composables/useDialogDrag'
 import { lockBodyScroll, unlockBodyScroll } from './utils/bodyScrollLock'
 import { getModalFocusTarget, rememberModalFocus } from './utils/dialogFocus'
-
-type DialogType = 'default' | 'info' | 'warning' | 'danger' | 'success'
 
 const props = withDefaults(
   defineProps<{
@@ -38,7 +37,13 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{ open: [], opened: [], close: [], closed: [] }>()
+
 defineSlots<{ default?: () => unknown, footer?: () => unknown, icon?: () => unknown, description?: () => unknown, header?: (props: { titleId: string, close: () => Promise<void> }) => unknown }>()
+
+const locale = useLocale()
+
+type DialogType = 'default' | 'info' | 'warning' | 'danger' | 'success'
+
 const open = defineModel<boolean>({ default: false })
 const rendered = shallowRef(false)
 const panel = useTemplateRef<HTMLElement>('panel')
@@ -256,7 +261,7 @@ defineExpose({ focus: () => panel.value?.focus(), close: closeDialog })
         <button
           type="button"
           tabindex="-1"
-          aria-label="关闭弹窗"
+          :aria-label="locale.dialog.close"
           :disabled="!closeOnClickModal || closing"
           class="absolute inset-0 cursor-default border-0 bg-cp-bg-mask p-0"
           @click="closeDialog"
@@ -277,7 +282,7 @@ defineExpose({ focus: () => panel.value?.focus(), close: closeDialog })
           tabindex="-1"
         >
           <header
-            class="cp-modal-header grid shrink-0 gap-3 p-4 pb-0 sm:gap-4 sm:p-6 sm:pb-0"
+            class="cp-modal-header relative grid shrink-0 gap-3 p-4 pb-0 sm:gap-4 sm:p-6 sm:pb-0"
             :class="[
               type === 'default'
                 ? 'grid-cols-[minmax(0,1fr)_28px]'
@@ -298,7 +303,7 @@ defineExpose({ focus: () => panel.value?.focus(), close: closeDialog })
             </span>
             <div class="min-w-0">
               <slot name="header" :title-id="titleId" :close="closeDialog">
-                <h2 :id="titleId" class="relative top-px m-0 text-lg leading-[1.15] font-heavy text-cp-text">
+                <h2 :id="titleId" class="m-0 text-lg leading-6 font-heavy text-cp-text">
                   {{ title }}
                 </h2>
                 <p
@@ -314,7 +319,8 @@ defineExpose({ focus: () => panel.value?.focus(), close: closeDialog })
             </div>
             <IconButton
               v-if="showClose"
-              aria-label="关闭"
+              class="absolute top-7 right-7 translate-x-1/2 -translate-y-1/2 sm:top-9 sm:right-9"
+              :aria-label="locale.common.close"
               size="small"
               :disabled="closing"
               @click="closeDialog"

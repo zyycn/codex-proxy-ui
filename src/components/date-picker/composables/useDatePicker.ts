@@ -2,18 +2,20 @@ import type { Dayjs } from 'dayjs'
 import type { Ref } from 'vue'
 import type { DatePickerEmits, DatePickerProps, DatePickerShortcut, DatePickerValue, DatePickerView } from '../types'
 import { computed, shallowRef, watch } from 'vue'
-import { availableDate, dayjs, formatValue, parseDate, parseValue, pickerFormat, pickerView, sameValue, withTime } from '../utils/date'
+import { useLocale } from '../../../locale/context'
+import { availableDate, calendarLocales, dayjs, formatValue, parseDate, parseValue, pickerFormat, pickerView, sameValue, withTime } from '../utils/date'
 
 type PickerEmit = <Event extends keyof DatePickerEmits>(event: Event, ...args: DatePickerEmits[Event]) => void
 
 export function useDatePicker(props: Readonly<DatePickerProps>, model: Ref<DatePickerValue>, emit: PickerEmit, validate: () => void) {
   const type = computed(() => props.type ?? 'date')
-  const locale = computed(() => props.locale ?? 'zh-cn')
+  const locale = useLocale(() => props.locale)
+  const calendarLocale = computed(() => calendarLocales[locale.value.name])
   const range = computed(() => type.value.endsWith('range'))
   const multiple = computed(() => ['dates', 'months', 'years', 'quarters'].includes(type.value))
   const time = computed(() => type.value.includes('time'))
   const view = computed(() => pickerView(type.value))
-  const format = computed(() => props.format ?? pickerFormat(type.value))
+  const format = computed(() => props.format ?? pickerFormat(type.value, locale.value.datePicker.weekFormat))
   const open = shallowRef(false)
   const draft = shallowRef<Dayjs[]>([])
   const hover = shallowRef<Dayjs>()
@@ -21,7 +23,7 @@ export function useDatePicker(props: Readonly<DatePickerProps>, model: Ref<DateP
   const input = shallowRef<string[]>([])
   const inputDirty = shallowRef(false)
   const anchors = shallowRef<Dayjs[]>([])
-  const selected = computed(() => parseValue(model.value, props.valueFormat, locale.value))
+  const selected = computed(() => parseValue(model.value, props.valueFormat, calendarLocale.value))
   const blocked = computed(() => props.disabled || props.readonly)
   const panelStep = computed(() => view.value === 'date' ? 'month' : 'year')
   const panelAmount = computed(() => view.value === 'year' ? 10 : 1)
@@ -48,8 +50,8 @@ export function useDatePicker(props: Readonly<DatePickerProps>, model: Ref<DateP
   }
 
   function resetPanels() {
-    const defaults = parseValue(props.defaultValue, undefined, locale.value)
-    const left = selected.value[0] ?? defaults[0] ?? dayjs().locale(locale.value)
+    const defaults = parseValue(props.defaultValue, undefined, calendarLocale.value)
+    const left = selected.value[0] ?? defaults[0] ?? dayjs().locale(calendarLocale.value)
     const next = left.add(panelAmount.value, panelStep.value)
     const end = selected.value[1] ?? defaults[1]
     anchors.value = [left, props.unlinkPanels && end?.isAfter(left, panelStep.value) ? end : next]
@@ -110,7 +112,7 @@ export function useDatePicker(props: Readonly<DatePickerProps>, model: Ref<DateP
       return true
     }
     const values = multiple.value ? input.value[0]!.split(',').map(value => value.trim()).filter(Boolean) : input.value
-    const dates = values.map(value => parseDate(value, format.value, locale.value))
+    const dates = values.map(value => parseDate(value, format.value, calendarLocale.value))
     if (!dates.every((date): date is Dayjs => Boolean(date)) || !valid(dates)) {
       resetInput()
       return false
@@ -188,7 +190,7 @@ export function useDatePicker(props: Readonly<DatePickerProps>, model: Ref<DateP
   function shortcut(item: DatePickerShortcut) {
     if (blocked.value)
       return
-    const dates = parseValue(typeof item.value === 'function' ? item.value() : item.value, undefined, locale.value)
+    const dates = parseValue(typeof item.value === 'function' ? item.value() : item.value, undefined, calendarLocale.value)
     if (!valid(dates))
       return
     draft.value = dates
@@ -208,7 +210,7 @@ export function useDatePicker(props: Readonly<DatePickerProps>, model: Ref<DateP
   }
 
   function updateTime(value: string, index: number) {
-    const parsed = parseDate(value, value.length === 5 ? 'HH:mm' : 'HH:mm:ss', locale.value)
+    const parsed = parseDate(value, value.length === 5 ? 'HH:mm' : 'HH:mm:ss', calendarLocale.value)
     if (!parsed || blocked.value)
       return
     const date = draft.value[index] ?? anchors.value[index]!
@@ -244,7 +246,7 @@ export function useDatePicker(props: Readonly<DatePickerProps>, model: Ref<DateP
     }
     resetDraft()
   }, { immediate: true })
-  watch([type, locale, () => props.valueFormat, format], resetDraft)
+  watch([type, () => props.valueFormat, () => props.format], resetDraft)
   watch(open, (visible) => {
     if (!visible) {
       applyInput()
@@ -259,13 +261,22 @@ export function useDatePicker(props: Readonly<DatePickerProps>, model: Ref<DateP
       handleClose()
     }
   })
-  watch([type, locale], () => {
+  watch(type, () => {
     handleClose()
     resetPanels()
+  })
+  watch(calendarLocale, (value) => {
+    // 语言变化只重绘日期文本，保留打开状态、未提交选择和输入。
+    draft.value = draft.value.map(date => date.locale(value))
+    anchors.value = anchors.value.map(date => date.locale(value))
+    hover.value = hover.value?.locale(value)
+    if (!inputDirty.value)
+      resetInput()
   })
   resetPanels()
 
   return {
+    locale,
     type,
     range,
     multiple,

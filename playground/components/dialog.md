@@ -6,6 +6,8 @@ import DialogDemo from '../examples/DialogDemo.vue'
 
 为需要独立处理的操作提供对话空间
 
+标题和正文使用相同的外侧间距：窄屏 16px、桌面 24px。关闭按钮沿用小号图标按钮尺寸，以标题首行中心独立定位，不参与标题行高度计算
+
 ## 交互示例
 
 <ClientOnly>

@@ -3,8 +3,7 @@ import type { Component } from 'vue'
 import type { ComponentSize } from '../../shared/types'
 import { Inbox } from '@lucide/vue'
 import { computed } from 'vue'
-
-type EmptySurface = 'subtle' | 'inset' | 'none'
+import { useLocale } from '../../locale/context'
 
 const props = withDefaults(
   defineProps<{
@@ -23,7 +22,11 @@ const props = withDefaults(
   },
 )
 
-const resolvedTitle = computed(() => props.title ?? '暂无数据')
+const locale = useLocale()
+
+type EmptySurface = 'subtle' | 'inset' | 'none'
+
+const resolvedTitle = computed(() => props.title ?? locale.value.common.empty)
 const resolvedIcon = computed(() => props.icon ?? Inbox)
 
 const surfaceClasses: Record<EmptySurface, string> = {

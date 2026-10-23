@@ -1,11 +1,16 @@
 <script setup lang="ts">
+import type { MaybeRefOrGetter } from 'vue'
+import type { UiLocale } from '../../../locale/types'
 import type { NotificationMessage } from '../types'
 import { AlertCircle, AlertTriangle, CheckCircle2, Info, X } from '@lucide/vue'
-import { useTemplateRef } from 'vue'
+import { provide, toValue, useTemplateRef } from 'vue'
+import { localeKey, useLocale } from '../../../locale/context'
 import IconButton from '../../icon-button/IconButton.vue'
 
-const props = defineProps<{ messages: NotificationMessage[] }>()
+const props = defineProps<{ messages: NotificationMessage[], locale?: MaybeRefOrGetter<UiLocale> }>()
 const emit = defineEmits<{ close: [id: string], empty: [] }>()
+const locale = useLocale(() => toValue(props.locale))
+provide(localeKey, locale)
 const root = useTemplateRef<HTMLElement>('root')
 
 function finishLeave() {
@@ -19,13 +24,6 @@ const iconMap = {
   error: AlertCircle,
   warning: AlertTriangle,
   info: Info,
-}
-
-const titleMap = {
-  success: '成功',
-  error: '失败',
-  warning: '警告',
-  info: '信息',
 }
 
 const colorClasses = {
@@ -72,7 +70,7 @@ const colorClasses = {
 
         <div class="flex min-w-0 flex-1 flex-col gap-1">
           <p class="m-0 truncate text-cp leading-[1.15] font-bold text-cp-text">
-            {{ message.title ?? titleMap[message.type] }}
+            {{ message.title ?? locale.notification[message.type] }}
           </p>
           <p
             class="m-0 max-h-8 overflow-hidden text-xs leading-tight font-semibold text-cp-text-secondary"
@@ -83,7 +81,7 @@ const colorClasses = {
 
         <IconButton
           size="small"
-          :aria-label="`关闭${message.title ?? titleMap[message.type]}通知`"
+          :aria-label="locale.notification.close(message.title ?? locale.notification[message.type])"
           @click="emit('close', message.id)"
         >
           <X :size="16" class="text-cp-text-quaternary" />

@@ -2,8 +2,9 @@
 import type { PaginationProps } from './types'
 import type { PagerItem } from './utils/pagination'
 import { ChevronLeft, ChevronRight } from '@lucide/vue'
-
 import { computed } from 'vue'
+
+import { useLocale } from '../../locale/context'
 import IconButton from '../icon-button/IconButton.vue'
 import Select from '../select/Select.vue'
 import {
@@ -14,13 +15,17 @@ import {
 } from './utils/pagination'
 
 const props = defineProps<PaginationProps>()
+
 const emit = defineEmits<{ currentChange: [page: number], sizeChange: [pageSize: number] }>()
+
+const locale = useLocale()
+
 const page = defineModel<number>('currentPage', { default: 1 })
 const pageSize = defineModel<number>('pageSize', { default: 20 })
 const pagination = computed(() => ({ currentPage: page.value, pageSize: pageSize.value, total: props.total, pageSizes: props.pageSizes }))
 const totalPages = computed(() => getTotalPages(pagination.value))
 const currentPage = computed(() => getCurrentPage(pagination.value, totalPages.value))
-const pageSizeOptions = computed(() => getPageSizeOptions(pagination.value))
+const pageSizeOptions = computed(() => getPageSizeOptions(pagination.value, locale.value.pagination.pageSize))
 const pagerItems = computed(() => getPagerItems(totalPages.value, currentPage.value))
 const adjacentPagerItems = computed(() => {
   const count = Math.min(3, totalPages.value)
@@ -78,11 +83,11 @@ function paginationPageClass(page: number) {
   >
     <div class="grid min-w-0 grid-cols-[auto_minmax(0,1fr)] items-center gap-2 @min-[36rem]/pagination:grid-cols-[minmax(0,1fr)_auto_auto] @min-[36rem]/pagination:gap-3">
       <span class="hidden min-w-0 truncate text-cp-sm font-emphasis text-cp-text-secondary @min-[36rem]/pagination:block">
-        共 {{ pagination.total }} 条
+        {{ locale.pagination.total(pagination.total) }}
       </span>
       <Select
         :model-value="pageSize"
-        aria-label="每页条数"
+        :aria-label="locale.pagination.sizeLabel"
         :options="pageSizeOptions"
         :disabled="disabled"
         size="small"
@@ -91,14 +96,14 @@ function paginationPageClass(page: number) {
       />
 
       <nav
-        aria-label="分页"
+        :aria-label="locale.pagination.label"
         class="flex shrink-0 items-center justify-self-end gap-2"
       >
         <IconButton
           variant="solid"
           size="small"
           :disabled="disabled || currentPage <= 1"
-          aria-label="上一页"
+          :aria-label="locale.pagination.previous"
           @click="goToPage(currentPage - 1)"
         >
           <ChevronLeft class="size-4" />
@@ -134,7 +139,7 @@ function paginationPageClass(page: number) {
           variant="solid"
           size="small"
           :disabled="disabled || currentPage >= totalPages"
-          aria-label="下一页"
+          :aria-label="locale.pagination.next"
           @click="goToPage(currentPage + 1)"
         >
           <ChevronRight class="size-4" />

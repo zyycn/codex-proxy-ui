@@ -120,6 +120,8 @@ function changePageSize(value: number) {
 
 TableColumn 的 width、minWidth 为像素数值；fixed 支持 true（左侧）、left、right 或 false（取消固定），formatter(value, row) 生成展示值。kind 和列 size 是项目已有的列展示预设，不与组件尺寸共用枚举
 
+同一列的表头和单元格使用相同内边距，小尺寸默认左右各 12px，默认和大尺寸各 16px；末列保持相同规则。选择、展开和操作列使用各自的列预设
+
 ### 事件
 
 | 事件          | 说明                                                       |

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { FormValidationTrigger } from './types'
 import { computed, inject, onBeforeUnmount, provide, shallowRef, useId, useTemplateRef } from 'vue'
+import { useLocale } from '../../locale/context'
 import { formFieldKey, formKey } from './context'
 
 const props = withDefaults(
@@ -22,12 +23,15 @@ const props = withDefaults(
 )
 
 const slots = defineSlots<{ 'default': () => unknown, 'label'?: () => unknown, 'label-extra'?: () => unknown, 'extra'?: () => unknown }>()
+
+const locale = useLocale()
+
 const generatedId = useId()
 const providedControlId = shallowRef<string>()
 const rootRef = useTemplateRef<HTMLElement>('root')
 const form = inject(formKey, null)
-const validationError = shallowRef('')
-const errorMessage = computed(() => props.error || validationError.value)
+const validationError = shallowRef<string | (() => string)>('')
+const errorMessage = computed(() => props.error || (typeof validationError.value === 'function' ? validationError.value() : validationError.value))
 const rules = computed(() => {
   const rules = props.prop ? form?.rules.value[props.prop] : undefined
   return rules ? Array.isArray(rules) ? rules : [rules] : []
@@ -46,10 +50,10 @@ async function validate(trigger?: FormValidationTrigger) {
   const sequence = ++validationSequence
   const model = form?.model.value ?? {}
   const value = props.prop?.split('.').reduce<unknown>((value, key) => value && typeof value === 'object' ? (value as Record<string, unknown>)[key] : undefined, model)
-  let error = ''
+  let error: string | (() => string) = ''
   for (const rule of selectedRules) {
     if (rule.required && (value === undefined || value === null || value === '' || (Array.isArray(value) && !value.length))) {
-      error = rule.message ?? '请填写此项'
+      error = rule.message ?? (() => locale.value.form.requiredMessage)
       break
     }
     if (rule.validator) {
@@ -57,7 +61,7 @@ async function validate(trigger?: FormValidationTrigger) {
         error = await rule.validator(value, model) || ''
       }
       catch (cause) {
-        error = rule.message ?? (cause instanceof Error ? cause.message : '校验失败')
+        error = rule.message ?? (cause instanceof Error ? cause.message : () => locale.value.form.invalidMessage)
       }
       if (error)
         break
@@ -112,7 +116,7 @@ provide(formFieldKey, {
         >
           <slot name="label">{{ label }}</slot>
           <span v-if="isRequired" class="font-bold text-cp-error">*</span>
-          <span v-if="isRequired" class="sr-only">必填</span>
+          <span v-if="isRequired" class="sr-only">{{ locale.form.required }}</span>
         </label>
         <slot name="label-extra" />
       </div>

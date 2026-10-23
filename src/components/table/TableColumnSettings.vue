@@ -4,6 +4,7 @@ import { Columns3, GripVertical } from '@lucide/vue'
 import { usePreferredReducedMotion } from '@vueuse/core'
 import { moveArrayElement, useSortable } from '@vueuse/integrations/useSortable'
 import { computed, nextTick, shallowRef, useId, useTemplateRef, watch } from 'vue'
+import { useLocale } from '../../locale/context'
 import Button from '../button/Button.vue'
 import Checkbox from '../checkbox/Checkbox.vue'
 import IconButton from '../icon-button/IconButton.vue'
@@ -19,6 +20,8 @@ const emit = defineEmits<{
   reorder: [keys: string[]]
   reset: []
 }>()
+
+const locale = useLocale()
 
 const open = shallowRef(false)
 const panelId = useId()
@@ -90,7 +93,7 @@ async function focusMovedColumn(key: string) {
   const index = props.options.findIndex(option => option.key === key)
   const option = props.options[index]
   if (option)
-    announcement.value = `${option.label}已移到第 ${index + 1} 项`
+    announcement.value = locale.value.table.movedColumn(option.label, index + 1)
 }
 
 function moveWithKeyboard(key: string, direction: -1 | 1) {
@@ -153,7 +156,7 @@ watch(open, async (value) => {
     <template #reference>
       <IconButton
         ref="trigger"
-        aria-label="显示列" variant="plain"
+        :aria-label="locale.table.columns" variant="plain"
         :pressed="open"
         aria-haspopup="dialog"
         :aria-expanded="open"
@@ -168,18 +171,18 @@ watch(open, async (value) => {
       :id="panelId"
       ref="panel"
       role="dialog"
-      aria-label="显示列"
+      :aria-label="locale.table.columns"
       class="w-60 max-w-full overflow-hidden rounded-cp-lg"
       @keydown.esc.stop.prevent="closeAndFocus"
       @keydown.tab="handleTab"
       @focusout="handleFocusOut"
     >
       <div class="flex items-center justify-between gap-3 bg-cp-popover-header-bg px-3 py-2.5">
-        <span class="text-cp-sm font-bold text-cp-text">显示列</span>
+        <span class="text-cp-sm font-bold text-cp-text">{{ locale.table.columns }}</span>
         <span class="text-cp-xs text-cp-text-secondary">{{ visibleCount }} / {{ options.length }}</span>
       </div>
       <p :id="`${panelId}-reorder-help`" class="sr-only">
-        拖动手柄调整列顺序，也可聚焦手柄后使用上下方向键移动。
+        {{ locale.table.columnInstructions }}
       </p>
       <p class="sr-only" role="status" aria-live="polite">
         {{ announcement }}
@@ -189,7 +192,7 @@ watch(open, async (value) => {
           ref="list"
           class="grid gap-0.5 p-2 [&_[data-column-handle]:is(:hover,:active)]:bg-transparent"
           role="list"
-          aria-label="表格列"
+          :aria-label="locale.table.columnList"
           @pointermove="updateHoveredColumn"
           @pointerleave="clearHoveredColumn"
         >
@@ -211,7 +214,7 @@ watch(open, async (value) => {
             />
             <IconButton
               v-if="option.reorderable"
-              :aria-label="`拖动调整${option.label}顺序`"
+              :aria-label="locale.table.moveColumn(option.label)"
               :aria-describedby="`${panelId}-reorder-help`"
               :data-column-key="option.key"
               data-column-handle
@@ -227,7 +230,7 @@ watch(open, async (value) => {
       </Scrollbar>
       <div class="flex justify-end px-2 pb-2">
         <Button variant="text" size="small" @click="emit('reset')">
-          恢复默认
+          {{ locale.table.reset }}
         </Button>
       </div>
     </div>

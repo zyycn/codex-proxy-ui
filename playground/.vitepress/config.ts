@@ -66,6 +66,7 @@ export default defineConfig({
         { text: '安装与按需使用', link: '/guide/installation' },
         { text: '源码联调与热更新', link: '/guide/development' },
         { text: '组件架构与目录', link: '/guide/architecture' },
+        { text: '国际化', link: '/guide/i18n' },
         { text: '主题', link: '/guide/theme' },
         { text: '组件总览', link: '/components/' },
       ] }],
