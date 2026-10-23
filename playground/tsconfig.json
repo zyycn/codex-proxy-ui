@@ -4,6 +4,7 @@
     "paths": {
       "@codex-proxy/ui": ["../src/index.ts"],
       "@codex-proxy/ui/theme": ["../src/theme/index.ts"],
+      "@codex-proxy/ui/locale": ["../src/locale/index.ts"],
       "@codex-proxy/ui/*": ["../src/components/*/index.ts"]
     }
   },
