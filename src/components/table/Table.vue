@@ -243,19 +243,21 @@ function sortButtonLabel(column: ResolvedTableColumn<Row>) {
                     <span class="truncate">
                       <slot :name="`header-${column.key}`" :column="column">{{ column.label }}</slot>
                     </span>
-                    <span class="inline-flex shrink-0 -translate-y-px flex-col gap-px">
+                    <span class="inline-flex shrink-0 -translate-y-px flex-col gap-px" aria-hidden="true">
                       <Triangle
                         class="size-1.25 fill-current"
-                        :class="
-                          columnSortDirection(column) === 'asc' ? 'text-cp-primary-text' : 'text-cp-text-tertiary'
-                        "
+                        :class="[
+                          columnSortDirection(column) === 'asc' ? 'text-cp-primary-text' : 'text-cp-text-tertiary',
+                          columnSortDirection(column) === 'desc' ? 'opacity-30' : undefined,
+                        ]"
                         :stroke-width="0"
                       />
                       <Triangle
                         class="size-1.25 rotate-180 fill-current"
-                        :class="
-                          columnSortDirection(column) === 'desc' ? 'text-cp-primary-text' : 'text-cp-text-tertiary'
-                        "
+                        :class="[
+                          columnSortDirection(column) === 'desc' ? 'text-cp-primary-text' : 'text-cp-text-tertiary',
+                          columnSortDirection(column) === 'asc' ? 'opacity-30' : undefined,
+                        ]"
                         :stroke-width="0"
                       />
                     </span>

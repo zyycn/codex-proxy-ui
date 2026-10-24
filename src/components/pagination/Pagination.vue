@@ -2,7 +2,8 @@
 import type { PaginationProps } from './types'
 import type { PagerItem } from './utils/pagination'
 import { ChevronLeft, ChevronRight } from '@lucide/vue'
-import { computed } from 'vue'
+import { useRafFn, useResizeObserver } from '@vueuse/core'
+import { computed, shallowRef, useTemplateRef } from 'vue'
 
 import { useLocale } from '../../locale/context'
 import IconButton from '../icon-button/IconButton.vue'
@@ -44,12 +45,39 @@ const compactPagerItems = computed<PagerItem[]>(() => {
   return [1, 'ellipsis', current, 'ellipsis', total]
 })
 
-const pagerVisibilityClasses = [
-  'flex @min-[19.5rem]/pagination:hidden',
-  'hidden @min-[19.5rem]/pagination:flex @min-[24.5rem]/pagination:hidden',
-  'hidden @min-[24.5rem]/pagination:flex @min-[29.5rem]/pagination:hidden',
-  'hidden @min-[29.5rem]/pagination:flex',
-]
+const controlsRef = useTemplateRef<HTMLElement>('controls')
+const totalLabelRef = useTemplateRef<HTMLElement>('totalLabel')
+const sizeControlRef = useTemplateRef<HTMLElement>('sizeControl')
+const pagerRef = useTemplateRef<HTMLElement>('pager')
+const pagerGroupRefs = useTemplateRef<HTMLElement[]>('pagerGroup')
+const activePagerVariant = shallowRef(0)
+const showPageSize = shallowRef(true)
+
+// 页码位数和字体都会影响宽度，沿用已有密度方案并按实际占用空间选择
+function updatePagerLayout() {
+  const controls = controlsRef.value
+  const sizeControl = sizeControlRef.value
+  const pager = pagerRef.value
+  const groups = pagerGroupRefs.value
+  if (!controls?.clientWidth || !sizeControl || !pager || !groups?.length)
+    return
+
+  const widths = groups.map(group => group.getBoundingClientRect().width)
+  const navigationWidth = pager.getBoundingClientRect().width - widths[activePagerVariant.value]!
+  const gap = Number.parseFloat(getComputedStyle(controls).columnGap)
+  const hasTotal = totalLabelRef.value && getComputedStyle(totalLabelRef.value).display !== 'none'
+  const spaceWithSize = controls.clientWidth - sizeControl.getBoundingClientRect().width - gap * (hasTotal ? 2 : 1) - navigationWidth
+  showPageSize.value = widths[0]! <= spaceWithSize
+  const available = showPageSize.value ? spaceWithSize : controls.clientWidth - gap * (hasTotal ? 1 : 0) - navigationWidth
+  activePagerVariant.value = widths.reduce((selected, width, index) => width <= available ? index : selected, 0)
+}
+
+// 下一帧再切换布局，避免在 ResizeObserver 通知中再次改变被观察元素尺寸
+const { pause: pauseLayout, resume: scheduleLayout } = useRafFn(() => {
+  pauseLayout()
+  updatePagerLayout()
+}, { immediate: false })
+useResizeObserver(() => [controlsRef.value, sizeControlRef.value, pagerRef.value, ...(pagerGroupRefs.value ?? [])], scheduleLayout)
 
 function changePageSize(value: number | undefined) {
   if (props.disabled || value === undefined || value === pageSize.value)
@@ -69,7 +97,7 @@ function goToPage(target: number) {
 
 function paginationPageClass(page: number) {
   return [
-    'inline-flex size-8 items-center justify-center rounded-cp border-0 text-xs font-bold leading-none transition-colors duration-150 outline-none',
+    'inline-flex h-8 min-w-8 shrink-0 items-center justify-center rounded-cp border-0 px-2 text-xs font-bold leading-none whitespace-nowrap transition-colors duration-150 outline-none',
     page === currentPage.value
       ? 'cursor-default bg-(--cp-button-primary-bg) text-(--cp-button-primary-color)'
       : 'cursor-pointer bg-cp-fill-quaternary text-cp-text hover:bg-cp-bg-text-hover focus-visible:ring-2 focus-visible:ring-cp-control-outline focus-visible:ring-offset-2 focus-visible:ring-offset-cp-bg-container',
@@ -81,21 +109,29 @@ function paginationPageClass(page: number) {
   <footer
     class="@container/pagination mt-2 min-h-10 min-w-0 shrink-0 px-0 py-1"
   >
-    <div class="grid min-w-0 grid-cols-[auto_minmax(0,1fr)] items-center gap-2 @min-[36rem]/pagination:grid-cols-[minmax(0,1fr)_auto_auto] @min-[36rem]/pagination:gap-3">
-      <span class="hidden min-w-0 truncate text-cp-sm font-emphasis text-cp-text-secondary @min-[36rem]/pagination:block">
+    <div
+      ref="controls"
+      class="grid min-w-0 items-center gap-2 @min-[36rem]/pagination:gap-3"
+      :class="showPageSize ? 'grid-cols-[auto_minmax(0,1fr)] @min-[36rem]/pagination:grid-cols-[minmax(0,1fr)_auto_auto]' : 'grid-cols-1 @min-[36rem]/pagination:grid-cols-[minmax(0,1fr)_auto]'"
+    >
+      <span ref="totalLabel" class="hidden min-w-0 truncate text-cp-sm font-emphasis text-cp-text-secondary @min-[36rem]/pagination:block">
         {{ locale.pagination.total(pagination.total) }}
       </span>
-      <Select
-        :model-value="pageSize"
-        :aria-label="locale.pagination.sizeLabel"
-        :options="pageSizeOptions"
-        :disabled="disabled"
-        size="small"
-        class="w-28 shrink-0"
-        @change="changePageSize"
-      />
+      <div ref="sizeControl" class="w-28 shrink-0" :class="showPageSize ? undefined : 'pointer-events-none invisible fixed'">
+        <Select
+          v-if="showPageSize"
+          :model-value="pageSize"
+          :aria-label="locale.pagination.sizeLabel"
+          :options="pageSizeOptions"
+          :disabled="disabled"
+          size="small"
+          class="w-full"
+          @change="changePageSize"
+        />
+      </div>
 
       <nav
+        ref="pager"
         :aria-label="locale.pagination.label"
         class="flex shrink-0 items-center justify-self-end gap-2"
       >
@@ -112,27 +148,31 @@ function paginationPageClass(page: number) {
         <div
           v-for="(items, variant) in [[currentPage], adjacentPagerItems, compactPagerItems, pagerItems]"
           :key="variant"
-          class="items-center gap-2"
-          :class="pagerVisibilityClasses[variant]"
+          class="shrink-0"
+          :class="variant === activePagerVariant ? undefined : 'pointer-events-none invisible fixed size-0 overflow-hidden'"
+          :inert="variant !== activePagerVariant || undefined"
         >
-          <template v-for="(item, index) in items" :key="`${item}-${index}`">
-            <span
-              v-if="item === 'ellipsis'"
-              class="inline-flex size-8 items-center justify-center text-xs font-bold text-cp-text-quaternary"
-            >
-              …
-            </span>
-            <button
-              v-else
-              type="button"
-              :class="paginationPageClass(item)"
-              :disabled="disabled || item === currentPage"
-              :aria-current="item === currentPage ? 'page' : undefined"
-              @click="goToPage(item)"
-            >
-              {{ item }}
-            </button>
-          </template>
+          <!-- 隐藏方案保留实际尺寸供测量，外层隔离溢出与交互 -->
+          <div ref="pagerGroup" class="flex w-max items-center gap-2">
+            <template v-for="(item, index) in items" :key="`${item}-${index}`">
+              <span
+                v-if="item === 'ellipsis'"
+                class="inline-flex size-8 items-center justify-center text-xs font-bold text-cp-text-quaternary"
+              >
+                …
+              </span>
+              <button
+                v-else
+                type="button"
+                :class="paginationPageClass(item)"
+                :disabled="disabled || item === currentPage"
+                :aria-current="item === currentPage ? 'page' : undefined"
+                @click="goToPage(item)"
+              >
+                {{ item }}
+              </button>
+            </template>
+          </div>
         </div>
 
         <IconButton
