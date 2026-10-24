@@ -166,7 +166,12 @@ useEventListener(rootRef, 'click', (event) => {
   event.stopPropagation()
   togglePopover()
 })
-useEventListener(rootRef, ['mouseenter', 'focusin'], handleHoverEnter)
+useEventListener(rootRef, 'mouseenter', handleHoverEnter)
+useEventListener(rootRef, 'focusin', (event) => {
+  // 鼠标点击保留的焦点会在窗口激活时恢复，只有键盘焦点需要打开悬停提示
+  if (event.target instanceof Element && event.target.matches(':focus-visible'))
+    handleHoverEnter()
+})
 useEventListener(rootRef, ['mouseleave', 'focusout'], handleHoverLeave)
 useEventListener(popoverRef, ['mouseenter', 'focusin'], (event) => {
   if (props.enterable || event.type === 'focusin')
