@@ -29,6 +29,7 @@ export {
   resolveTheme,
   resolveThemeName,
   resolveThemeSeed,
+  resolveThemeSeedTokens,
   themeColorPreset,
 } from './core/resolve'
 export { applyResolvedTheme } from './runtime/browser'

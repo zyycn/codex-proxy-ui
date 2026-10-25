@@ -1,6 +1,13 @@
 /* 扫描随包发布的组件源码，不依赖 dist 或预先构建；与应用 utility 保持同一轮排序。 */
 @source '../components';
 
+/* 单行省略只裁切横向，保留紧凑行高下的字形上下沿及 flex 收缩能力 */
+@utility truncate {
+  overflow-x: clip;
+  overflow-y: visible;
+  min-inline-size: 0;
+}
+
 @theme inline {
   /* 基础 */
   --font-sans: var(

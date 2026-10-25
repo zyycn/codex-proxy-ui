@@ -8,6 +8,8 @@ import DialogDemo from '../examples/DialogDemo.vue'
 
 标题和正文使用相同的外侧间距：窄屏 16px、桌面 24px。关闭按钮沿用小号图标按钮尺寸，以标题首行中心独立定位，不参与标题行高度计算
 
+没有正文时不渲染内容区域，标题说明与操作按钮之间保留窄屏 16px、桌面 24px 间距
+
 ## 交互示例
 
 <ClientOnly>
@@ -82,3 +84,9 @@ const open = ref(false)
 
 - `focus()`：聚焦弹窗面板
 - `close()`：请求关闭，返回 `Promise<void>`，遵循 `before-close`
+
+### 自定义模态面板
+
+`useModalFocus(panelRef, { isOpen, onEscape })` 提供焦点管理，可用于移动导航等自定义模态面板。打开前调用 `rememberFocus()`，挂载后调用 `focusInitial()`，将外层 `keydown` 交给 `handleKeydown`，退场完成后调用 `restoreFocus()`
+
+面板设置 `role="dialog"`、`aria-modal="true"`、可访问名称和 `tabindex="-1"`；调用方负责遮罩、背景 `inert` 与滚动锁。`onEscape` 返回 `false` 可阻止本层处理；Tab 在可聚焦控件之间循环，退场和卸载恢复来源焦点，并避免抢走后续弹窗的焦点

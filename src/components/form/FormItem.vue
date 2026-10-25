@@ -1,147 +1,156 @@
 <script setup lang="ts">
-import type { FormValidationTrigger } from './types'
-import { computed, inject, onBeforeUnmount, provide, shallowRef, useId, useTemplateRef } from 'vue'
+import type { Ref } from 'vue'
+import type { FormItemContext, FormItemProp, FormItemValidateState, FormLabelPosition, FormRule } from './types'
+import { useResizeObserver } from '@vueuse/core'
+import { computed, inject, onBeforeUnmount, onMounted, provide, reactive, shallowReactive, shallowRef, useId, useTemplateRef, watch } from 'vue'
 import { useLocale } from '../../locale/context'
+import { useFormItemValidation } from './composables/useFormItemValidation'
 import { formFieldKey, formKey } from './context'
 
-const props = withDefaults(
-  defineProps<{
-    label?: string
-    description?: string
-    error?: string
-    required?: boolean
-    for?: string
-    prop?: string
-  }>(),
-  {
-    label: undefined,
-    description: undefined,
-    error: undefined,
-    required: false,
-    for: undefined,
-  },
-)
-
+const props = withDefaults(defineProps<{
+  label?: string
+  labelPosition?: FormLabelPosition | ''
+  labelWidth?: string | number
+  description?: string
+  error?: string
+  required?: boolean
+  for?: string
+  prop?: FormItemProp
+  rules?: FormRule | FormRule[]
+  showMessage?: boolean
+  validateStatus?: FormItemValidateState
+}>(), { required: undefined, showMessage: undefined })
 const slots = defineSlots<{ 'default': () => unknown, 'label'?: () => unknown, 'label-extra'?: () => unknown, 'extra'?: () => unknown }>()
-
 const locale = useLocale()
-
-const generatedId = useId()
-const providedControlId = shallowRef<string>()
-const rootRef = useTemplateRef<HTMLElement>('root')
 const form = inject(formKey, null)
-const validationError = shallowRef<string | (() => string)>('')
-const errorMessage = computed(() => props.error || (typeof validationError.value === 'function' ? validationError.value() : validationError.value))
-const rules = computed(() => {
-  const rules = props.prop ? form?.rules.value[props.prop] : undefined
-  return rules ? Array.isArray(rules) ? rules : [rules] : []
+const validation = useFormItemValidation(props, form)
+const { propString, validateMessage, isRequired, isResetting, validate } = validation
+const fieldId = `field-${useId()}`
+const labelId = `${fieldId}-label`
+const controls = shallowReactive(new Set<Readonly<Ref<string>>>())
+const controlIds = computed(() => [...controls].map(control => control.value))
+const rootRef = useTemplateRef<HTMLElement>('root')
+const labelRef = useTemplateRef<HTMLElement>('labelContent')
+const resolvedControlId = computed(() => props.for ?? (controlIds.value.length === 1 ? controlIds.value[0] : undefined))
+const isGroup = computed(() => !resolvedControlId.value && controlIds.value.length > 1)
+const hasLabel = computed(() => Boolean(props.label || slots.label))
+const labelPosition = computed(() => props.labelPosition || form?.labelPosition.value || 'top')
+const labelWidth = computed(() => props.labelWidth ?? form?.labelWidth.value ?? 'auto')
+const isHorizontal = computed(() => labelPosition.value !== 'top')
+const measuredWidth = shallowRef(0)
+useResizeObserver(labelRef, ([entry]) => {
+  measuredWidth.value = Math.ceil(entry?.contentRect.width ?? 0)
 })
-const isRequired = computed(() => props.required || rules.value.some(rule => rule.required))
-const resolvedControlId = computed(() => props.for ?? providedControlId.value ?? `field-${generatedId}`)
-const descriptionId = computed(() => (props.description ? `${resolvedControlId.value}-description` : undefined))
-const errorId = computed(() => (errorMessage.value ? `${resolvedControlId.value}-error` : undefined))
+const registeredWidth = computed(() => isHorizontal.value && labelWidth.value === 'auto' && hasLabel.value ? measuredWidth.value : 0)
+const unregisterLabel = form?.registerLabelWidth(registeredWidth)
+const layoutStyle = computed(() => {
+  if (!isHorizontal.value)
+    return undefined
+  const width = labelWidth.value === 'auto' ? form?.autoLabelWidth.value || measuredWidth.value : labelWidth.value
+  return { gridTemplateColumns: `${typeof width === 'number' ? `${width}px` : width} minmax(0, 1fr)` }
+})
+const showError = computed(() => Boolean(validateMessage.value && (props.showMessage ?? form?.showMessage.value ?? true)))
+const descriptionId = computed(() => props.description ? `${fieldId}-description` : undefined)
+const errorId = computed(() => showError.value ? `${fieldId}-error` : undefined)
 const describedBy = computed(() => [descriptionId.value, errorId.value].filter(Boolean).join(' ') || undefined)
-
-let validationSequence = 0
-async function validate(trigger?: FormValidationTrigger) {
-  const selectedRules = rules.value.filter(rule => !trigger || !rule.trigger || (Array.isArray(rule.trigger) ? rule.trigger : [rule.trigger]).includes(trigger))
-  if (!selectedRules.length)
-    return !errorMessage.value
-  const sequence = ++validationSequence
-  const model = form?.model.value ?? {}
-  const value = props.prop?.split('.').reduce<unknown>((value, key) => value && typeof value === 'object' ? (value as Record<string, unknown>)[key] : undefined, model)
-  let error: string | (() => string) = ''
-  for (const rule of selectedRules) {
-    if (rule.required && (value === undefined || value === null || value === '' || (Array.isArray(value) && !value.length))) {
-      error = rule.message ?? (() => locale.value.form.requiredMessage)
-      break
-    }
-    if (rule.validator) {
-      try {
-        error = await rule.validator(value, model) || ''
-      }
-      catch (cause) {
-        error = rule.message ?? (cause instanceof Error ? cause.message : () => locale.value.form.invalidMessage)
-      }
-      if (error)
-        break
-    }
-  }
-  // 清空、卸载或后一次校验会使当前异步结果失效
-  if (sequence !== validationSequence)
-    return false
-  validationError.value = error
-  return !errorMessage.value
-}
-function clearValidate() {
-  validationSequence++
-  validationError.value = ''
-}
 function focus() {
-  const root = rootRef.value
-  const control = root && [...root.querySelectorAll<HTMLElement>('[id]')].find(element => element.id === resolvedControlId.value)
+  const id = resolvedControlId.value ?? controlIds.value[0]
+  const control = rootRef.value && [...rootRef.value.querySelectorAll<HTMLElement>('[id]')].find(element => element.id === id)
   const target = control?.querySelector<HTMLElement>('[tabindex="0"]') ?? control
-  target?.focus()
+  target?.focus({ preventScroll: true })
 }
-function scrollIntoView() {
-  rootRef.value?.scrollIntoView({ block: 'nearest' })
+function scrollIntoView(options: boolean | ScrollIntoViewOptions = { block: 'nearest' }) {
+  rootRef.value?.scrollIntoView(options)
 }
-const unregister = form?.register({ prop: computed(() => props.prop), validate, clearValidate, focus, scrollIntoView })
-onBeforeUnmount(() => {
-  clearValidate()
-  unregister?.()
+const context: FormItemContext = reactive({
+  $el: computed(() => rootRef.value ?? undefined),
+  prop: computed(() => props.prop),
+  propString,
+  fieldValue: validation.fieldValue,
+  validateState: validation.validateState,
+  validateMessage,
+  validate,
+  resetField: validation.resetField,
+  clearValidate: validation.clearValidate,
+  setInitialValue: validation.setInitialValue,
+  getInitialValue: validation.getInitialValue,
+  focus,
+  scrollIntoView,
 })
-defineExpose({ validate, clearValidate, focus, scrollIntoView })
+let unregisterField: (() => void) | undefined
+onMounted(() => {
+  watch(propString, () => {
+    unregisterField?.()
+    validation.clearValidate()
+    unregisterField = propString.value ? form?.register(context) : undefined
+  }, { immediate: true })
+})
+onBeforeUnmount(() => {
+  unregisterField?.()
+  unregisterLabel?.()
+})
+defineExpose(context)
 provide(formFieldKey, {
   controlId: resolvedControlId,
-  labelledBy: computed(() => props.label || slots.label ? `${resolvedControlId.value}-label` : undefined),
+  labelledBy: computed(() => hasLabel.value ? labelId : undefined),
   describedBy,
-  invalid: computed(() => Boolean(errorMessage.value)),
+  invalid: computed(() => validation.validateState.value === 'error'),
   required: isRequired,
+  isResetting,
   validate,
-  setControlId(id) { providedControlId.value = id },
+  registerControl(id) {
+    controls.add(id)
+    return () => controls.delete(id)
+  },
 })
 </script>
 
 <template>
-  <div ref="root" class="relative min-w-0">
-    <div v-if="label || $slots.label || $slots.extra" class="mb-2 flex min-h-4 min-w-0 items-center justify-between gap-3">
-      <div class="flex min-w-0 items-center gap-1.5">
-        <!-- 控件 ID 由表单上下文提供，帮助按钮放在 label 外以免触发关联控件。 -->
-        <!-- eslint-disable-next-line vue-a11y/label-has-for -->
-        <label
-          :id="`${resolvedControlId}-label`"
+  <div
+    ref="root"
+    class="relative min-w-0"
+    :class="{ 'grid items-start gap-x-3': isHorizontal }"
+    :style="layoutStyle"
+    :role="isGroup ? 'group' : undefined"
+    :aria-labelledby="isGroup && hasLabel ? labelId : undefined"
+  >
+    <div
+      v-if="hasLabel || $slots.extra || isHorizontal"
+      class="flex min-w-0 items-center gap-3"
+      :class="isHorizontal ? ['min-h-cp-control', labelPosition === 'right' ? 'justify-end' : 'justify-start'] : 'mb-2 min-h-4 justify-between'"
+    >
+      <div ref="labelContent" class="inline-flex items-center gap-1.5" :class="isHorizontal && labelWidth === 'auto' ? 'w-max shrink-0' : 'min-w-0'">
+        <!-- 复合字段提供组标签，控件保留独立 ID；显式 for 只关联指定控件 -->
+        <component
+          :is="resolvedControlId ? 'label' : 'span'"
+          :id="labelId"
           :for="resolvedControlId"
-          class="flex min-w-0 items-center gap-1.5 text-cp leading-none font-medium text-cp-text-secondary"
+          class="flex min-w-0 items-center gap-1.5 text-cp font-medium text-cp-text-secondary"
+          :class="isHorizontal ? 'leading-snug' : 'leading-none'"
         >
-          <slot name="label">{{ label }}</slot>
+          <slot name="label">
+            {{ label }}
+          </slot>
           <span v-if="isRequired" class="font-bold text-cp-error">*</span>
           <span v-if="isRequired" class="sr-only">{{ locale.form.required }}</span>
-        </label>
+        </component>
         <slot name="label-extra" />
       </div>
-      <div v-if="$slots.extra" class="inline-flex shrink-0 items-center">
+      <div v-if="$slots.extra && !isHorizontal" class="inline-flex shrink-0 items-center">
         <slot name="extra" />
       </div>
     </div>
-    <p
-      v-if="description"
-      :id="descriptionId"
-      class="mt-0 mb-2 text-xs leading-[1.35] font-emphasis text-cp-text-quaternary"
-    >
-      {{ description }}
-    </p>
-    <div class="min-w-0">
+    <div class="relative min-w-0">
+      <div v-if="$slots.extra && isHorizontal" class="mb-2 flex justify-end">
+        <slot name="extra" />
+      </div>
+      <p v-if="description" :id="descriptionId" class="mt-0 mb-2 text-xs leading-[1.35] font-emphasis text-cp-text-quaternary">
+        {{ description }}
+      </p>
       <slot />
+      <p v-if="showError" :id="errorId" :title="validateMessage" class="absolute top-full left-0 mt-1 mb-0 w-full truncate text-xs leading-[1.35] font-emphasis text-cp-error-text" aria-live="polite">
+        {{ validateMessage }}
+      </p>
     </div>
-    <p
-      v-if="errorMessage"
-      :id="errorId"
-      :title="errorMessage"
-      class="absolute top-full left-0 mt-1 mb-0 max-w-full truncate text-xs leading-none font-emphasis text-cp-error-text"
-      aria-live="polite"
-    >
-      {{ errorMessage }}
-    </p>
   </div>
 </template>

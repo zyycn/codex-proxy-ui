@@ -7,8 +7,8 @@ import { useLocale } from '../../locale/context'
 import IconButton from '../icon-button/IconButton.vue'
 import Scrollbar from '../scrollbar/Scrollbar.vue'
 import { useDialogDrag } from './composables/useDialogDrag'
+import { useModalFocus } from './composables/useModalFocus'
 import { lockBodyScroll, unlockBodyScroll } from './utils/bodyScrollLock'
-import { getModalFocusTarget, rememberModalFocus } from './utils/dialogFocus'
 
 const props = withDefaults(
   defineProps<{
@@ -53,7 +53,14 @@ const { cancelDrag, constrainPosition, handlePointerDown, isDragging, resetPosit
   panel,
   () => props.draggable && !props.fullscreen,
 )
-let previouslyFocused: HTMLElement | null = null
+const { rememberFocus, focusInitial, handleKeydown, restoreFocus } = useModalFocus(panel, {
+  isOpen: () => open.value,
+  onEscape: () => {
+    if (!props.closeOnPressEscape)
+      return false
+    void closeDialog()
+  },
+})
 let ownsScrollLock = false
 
 // 内容分段可能在弹窗打开期间改变面板高度；拖拽偏移必须随尺寸重新约束到视口内。
@@ -61,15 +68,6 @@ useResizeObserver(panel, () => {
   if (open.value)
     constrainPosition()
 })
-
-const focusableSelector = [
-  'a[href]',
-  'button:not([disabled])',
-  'input:not([disabled])',
-  'select:not([disabled])',
-  'textarea:not([disabled])',
-  '[tabindex]:not([tabindex="-1"])',
-].join(',')
 
 const panelStyle = computed(() => ({ width: props.fullscreen ? '100%' : typeof props.width === 'number' ? `${props.width}px` : props.width, maxWidth: '100%' }))
 const closing = shallowRef(false)
@@ -128,57 +126,8 @@ function finishLeave() {
   rendered.value = false
   resetPosition()
   releaseScrollLock()
-  restorePreviousFocus()
+  restoreFocus()
   emit('closed')
-}
-
-function focusableElements(root: ParentNode | null = panel.value): HTMLElement[] {
-  if (!root)
-    return []
-
-  const elements: HTMLElement[] = []
-  for (const element of root.children) {
-    if (element instanceof HTMLElement && element.matches(focusableSelector) && !element.hidden)
-      elements.push(element)
-    elements.push(...focusableElements(element.shadowRoot ?? element))
-  }
-  return elements
-}
-
-function handleKeydown(event: KeyboardEvent) {
-  if (event.key === 'Escape' && props.closeOnPressEscape) {
-    event.preventDefault()
-    void closeDialog()
-    return
-  }
-  if (event.key !== 'Tab')
-    return
-
-  const focusable = focusableElements()
-  if (focusable.length === 0) {
-    event.preventDefault()
-    panel.value?.focus()
-    return
-  }
-  const first = focusable[0]
-  const last = focusable[focusable.length - 1]
-  let activeElement = document.activeElement
-  while (activeElement?.shadowRoot?.activeElement)
-    activeElement = activeElement.shadowRoot.activeElement
-  if (!panel.value?.contains(document.activeElement)) {
-    event.preventDefault()
-    if (event.shiftKey)
-      last?.focus()
-    else first?.focus()
-  }
-  else if (event.shiftKey && activeElement === first) {
-    event.preventDefault()
-    last?.focus()
-  }
-  else if (!event.shiftKey && activeElement === last) {
-    event.preventDefault()
-    first?.focus()
-  }
 }
 
 function acquireScrollLock() {
@@ -195,16 +144,6 @@ function releaseScrollLock() {
   unlockBodyScroll()
 }
 
-function restorePreviousFocus() {
-  // 连续打开另一弹窗时，旧窗口的退场不能抢走新窗口已经取得的焦点。
-  const active = document.activeElement
-  const focusStayedInModal = active === document.body || active === document.documentElement || panel.value?.contains(active)
-  const target = getModalFocusTarget(previouslyFocused)
-  if (focusStayedInModal && target?.isConnected)
-    target.focus()
-  previouslyFocused = null
-}
-
 watch(
   open,
   async (isOpen) => {
@@ -212,20 +151,13 @@ watch(
     closing.value = false
     if (isOpen) {
       if (!rendered.value) {
-        previouslyFocused = getModalFocusTarget(document.activeElement)
+        rememberFocus()
       }
       emit('open')
       rendered.value = true
       acquireScrollLock()
       await nextTick()
-      if (panel.value)
-        rememberModalFocus(panel.value, previouslyFocused, () => open.value)
-      if (!open.value)
-        return
-      const first = focusableElements()[0]
-      if (first)
-        first.focus()
-      else panel.value?.focus()
+      focusInitial()
       return
     }
 
@@ -238,7 +170,6 @@ watch(
 
 onBeforeUnmount(() => {
   releaseScrollLock()
-  restorePreviousFocus()
 })
 defineExpose({ focus: () => panel.value?.focus(), close: closeDialog })
 </script>
@@ -282,13 +213,14 @@ defineExpose({ focus: () => panel.value?.focus(), close: closeDialog })
           tabindex="-1"
         >
           <header
-            class="cp-modal-header relative grid shrink-0 gap-3 p-4 pb-0 sm:gap-4 sm:p-6 sm:pb-0"
+            class="cp-modal-header relative grid shrink-0 gap-3 p-4 sm:gap-4 sm:p-6"
             :class="[
               type === 'default'
                 ? 'grid-cols-[minmax(0,1fr)_28px]'
                 : 'grid-cols-[auto_minmax(0,1fr)_28px]',
               description || $slots.description ? 'items-start' : 'items-center',
               draggable ? 'cp-modal-header--draggable' : undefined,
+              $slots.default || $slots.footer ? 'pb-0 sm:pb-0' : undefined,
             ]"
             @pointerdown="handlePointerDown"
           >
@@ -340,6 +272,7 @@ defineExpose({ focus: () => panel.value?.focus(), close: closeDialog })
           <footer
             v-if="$slots.footer"
             class="flex shrink-0 flex-wrap justify-end gap-2 px-4 pb-4 sm:gap-3 sm:px-6 sm:pb-6"
+            :class="!$slots.default ? 'pt-4 sm:pt-6' : undefined"
           >
             <slot name="footer" />
           </footer>

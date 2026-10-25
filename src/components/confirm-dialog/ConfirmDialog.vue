@@ -62,12 +62,11 @@ function handleConfirm() {
     @close="emit('close')"
     @closed="emit('closed')"
   >
-    <div
-      v-if="$slots.default"
-      class="text-cp-lg leading-[1.55] font-emphasis text-cp-text-secondary"
-    >
-      <slot />
-    </div>
+    <template v-if="$slots.default" #default>
+      <div class="text-cp-lg leading-[1.55] font-emphasis text-cp-text-secondary">
+        <slot />
+      </div>
+    </template>
 
     <template #footer>
       <Button :disabled="loading" @click="handleCancel">

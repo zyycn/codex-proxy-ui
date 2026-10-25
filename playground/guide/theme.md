@@ -33,6 +33,8 @@ const theme = resolveTheme('light', 'custom', '#0E7C72', {
 
 输入经统一规范化：无效的 Seed 颜色覆盖被忽略，自定义主色无效时回退默认色，尺寸限制在允许范围内；`tokenOverrides` 只接受开放的组件字段，不能覆盖任意 CSS 变量。优先调整 Seed 以保留状态之间的派生关系
 
+只需种子值时可调用 `resolveThemeSeedTokens(mode, primaryColor, overrides?, appearance?)`，无需生成完整色阶与 CSS Token。主色和覆盖值应已规范化，预置外观取自 `THEME_COLOR_PRESETS` 对应项的 `appearance[mode]`
+
 ## 局部主题
 
 局部主题将派生的 Token 绑定到容器，不改写文档级主题

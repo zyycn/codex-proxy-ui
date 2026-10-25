@@ -95,7 +95,7 @@ const headerRowClass = computed(() => [
   'font-bold text-cp-text-secondary',
 ])
 const bodyRowClass = computed(() => (props.size === 'small' ? 'h-cp-table-row-sm' : props.size === 'large' ? 'h-12' : 'h-cp-table-row'))
-const cellPaddingClass = computed(() => (props.size === 'small' ? 'px-3' : 'px-4'))
+const cellPaddingClass = computed(() => (props.size === 'large' ? 'px-4' : 'px-3'))
 const bodyTextClass = computed(() => (props.size === 'small' ? 'text-cp-sm' : props.size === 'large' ? 'text-cp-lg' : 'text-cp'))
 const bodyCellFrameClass = computed(() =>
   props.size === 'small'

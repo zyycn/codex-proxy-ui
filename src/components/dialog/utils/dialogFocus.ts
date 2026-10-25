@@ -12,7 +12,7 @@ export function rememberModalFocus(panel: HTMLElement, target: HTMLElement | nul
 export function getModalFocusTarget(element: Element | null): HTMLElement | null {
   let target = element instanceof HTMLElement ? element : null
   while (target) {
-    const panel = target.closest<HTMLElement>('.cp-modal-panel')
+    const panel = target.closest<HTMLElement>('[aria-modal="true"]')
     const origin = panel && focusOrigins.get(panel)
     if (!origin || (origin.isOpen() && panel?.isConnected))
       return target

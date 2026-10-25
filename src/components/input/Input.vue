@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ComponentSize } from '../../shared/types'
 import { Eye, EyeOff, X } from '@lucide/vue'
-import { computed, nextTick, shallowRef, useAttrs, useTemplateRef } from 'vue'
+import { computed, nextTick, shallowRef, useAttrs, useTemplateRef, watch } from 'vue'
 import { useLocale } from '../../locale/context'
 import { clearButtonClass } from '../../shared/utils/clear-button'
 import { useFormField } from '../form/composables/useFormField'
@@ -41,6 +41,9 @@ const locale = useLocale()
 const model = defineModel<string>({ default: '' })
 const attrs = useAttrs()
 const { controlId, invalid, describedBy, required, ariaRequired, rootAttrs, controlAttrs, validate } = useFormField(attrs)
+watch(model, () => {
+  void validate('change')
+})
 const inputRef = useTemplateRef<HTMLInputElement>('input')
 const passwordVisible = shallowRef(false)
 const composing = shallowRef(false)
@@ -52,7 +55,6 @@ function clear() {
   model.value = ''
   emit('input', '')
   emit('change', '')
-  validate('change')
   emit('clear')
   focus()
 }
@@ -80,7 +82,6 @@ function updateModel(event: Event) {
 function handleChange(event: Event) {
   updateModel(event)
   emit('change', (event.target as HTMLInputElement).value)
-  validate('change')
 }
 
 function finishComposition(event: CompositionEvent) {

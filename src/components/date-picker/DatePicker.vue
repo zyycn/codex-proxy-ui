@@ -141,7 +141,7 @@ async function keydown(event: KeyboardEvent) {
 </script>
 
 <template>
-  <Popover v-bind="rootAttrs" v-model="open" class="z-date-picker" :data-type="type" :disabled="blocked" :placement="placement" :teleported="teleported" @open="restoringFocus = false" @close="restoringFocus = true" @closed="restoringFocus = false">
+  <Popover v-bind="rootAttrs" v-model="open" class="z-date-picker" :data-type="type" :disabled="blocked" :placement="placement" :offset="10" :teleported="teleported" @open="restoringFocus = false" @close="restoringFocus = true" @closed="restoringFocus = false">
     <template #reference="{ id }">
       <div ref="inputRoot" :class="inputClasses">
         <component :is="prefixIcon || (time ? Clock : CalendarDays)" class="size-4 shrink-0" :class="disabled ? 'text-cp-text-disabled' : invalid ? 'text-cp-error' : 'text-cp-text-quaternary'" />
