@@ -1,45 +1,44 @@
 <!-- prettier-ignore -->
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/zyycn/codex-proxy-rs/main/frontend/public/favicon.svg" alt="Codex Proxy UI" width="80" height="80" />
+<img src="https://raw.githubusercontent.com/zyycn/codex-proxy-ui/main/playground/public/logo.svg" alt="Codex Proxy UI" width="88" height="88" />
 
 # Codex Proxy UI
 
-面向管理工具与插件页面的 Vue 3 组件库
+Vue 3 · TypeScript · 按需导入 · 主题定制 · 国际化
 
 [![CI](https://github.com/zyycn/codex-proxy-ui/actions/workflows/ci.yml/badge.svg)](https://github.com/zyycn/codex-proxy-ui/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/zyycn/codex-proxy-ui?display_name=tag&sort=semver&style=flat-square)](https://github.com/zyycn/codex-proxy-ui/releases)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=flat-square)](LICENSE)
 
-[快速预览](#快速预览) · [快速开始](#快速开始) · [本地开发](#本地开发) · [文档](#文档)
+[在线文档与演示](https://zyycn.github.io/codex-proxy-ui/) · [快速开始](#快速开始) · [组件目录](playground/components/index.md) · [版本发布](https://github.com/zyycn/codex-proxy-ui/releases) · [问题反馈](https://github.com/zyycn/codex-proxy-ui/issues)
 
 </div>
 
-## 快速预览
+## 特性
 
-[Playground](https://zyycn.github.io/codex-proxy-ui/) 提供表单、表格、导航与反馈组件的交互示例，以及浅色、深色、自定义主题和示例源码
+- **Vue 3 与 TypeScript**：基于 Composition API，提供组件属性、事件、插槽与实例的类型声明
+- **常用组件**：覆盖表单、表格、日期选择、分页、弹窗、通知与 Markdown 等场景，配套交互示例和 API 文档
+- **主题定制**：支持浅色、深色、预置配色和自定义主色，通过主题变量调整密度与组件外观，支持局部主题
+- **表单校验**：通过 `FormRules<T>` 声明规则，支持异步校验、字段重置和标签左对齐、右对齐与顶部布局
+- **按需导入**：提供 ESM、静态具名导入和组件子路径，支持 JavaScript tree-shaking
+- **国际化**：内置简体中文、繁体中文与英文，可通过 ConfigProvider 设置或扩展组件文案
 
-正式版本发布时自动构建并部署到 GitHub Pages，预发行只构建验收，不覆盖在线站点
+## 安装
+
+需要 Vue 3.5+、Node.js 24+
+
+```bash
+pnpm add https://github.com/zyycn/codex-proxy-ui/releases/download/v0.7.0/codex-proxy-ui-0.7.0.tgz
+```
+
+包名为 `@codex-proxy/ui`，通过 [GitHub Releases](https://github.com/zyycn/codex-proxy-ui/releases) 分发，尚未发布到 npm registry。每个版本提供 `.tgz` 安装包与 `.sha256` 校验文件，提交应用锁文件以固定版本和完整性摘要
 
 ## 快速开始
 
-需要 Vue 3.5+，组件库提供 TypeScript 类型与完整样式，无需安装 Tailwind
+### 1. 导入样式并初始化主题
 
-### 安装
-
-从 [GitHub Releases](https://github.com/zyycn/codex-proxy-ui/releases) 选择固定版本的安装包
-
-```bash
-pnpm add https://github.com/zyycn/codex-proxy-ui/releases/download/v0.5.0/codex-proxy-ui-0.5.0.tgz
-```
-
-包名为 `@codex-proxy/ui`，通过 GitHub Release 分发，安装时使用固定版本的归档地址
-
-每个版本提供 `.tgz` 和 `.sha256`，提交应用锁文件以固定版本与完整性摘要
-
-### 初始化主题
-
-在客户端入口导入样式并设置默认主题
+在 Vue 应用的客户端入口 `src/main.ts` 中初始化主题，再挂载应用
 
 ```ts
 import {
@@ -48,60 +47,74 @@ import {
   DEFAULT_THEME_COLOR,
   resolveTheme,
 } from '@codex-proxy/ui/theme'
+import { createApp } from 'vue'
+import App from './App.vue'
 import '@codex-proxy/ui/styles.css'
 
 applyResolvedTheme(
   document.documentElement,
   resolveTheme('light', DEFAULT_THEME_COLOR, DEFAULT_CUSTOM_THEME_COLOR),
 )
+
+createApp(App).mount('#app')
 ```
 
-### 使用组件
+`styles.css` 包含基础样式与完整组件样式，使用组件无需安装 Tailwind。SSR 项目在客户端生命周期中初始化主题，详见[安装指南](playground/guide/installation.md)
 
-在 Vue 组件中直接导入，模板支持 `<z-button>` 与 `<ZButton>`
+### 2. 使用组件
+
+在 `src/App.vue` 中直接导入组件，无需全局注册
 
 ```vue
 <script setup lang="ts">
-import { ZButton, ZCard, ZInput } from '@codex-proxy/ui'
+import { ZButton, ZCard } from '@codex-proxy/ui'
 import { ref } from 'vue'
 
-const name = ref('')
+const count = ref(0)
 </script>
 
 <template>
-  <ZCard title="插件设置">
-    <ZInput v-model="name" placeholder="插件名称" />
-    <ZButton type="primary">
-      保存
+  <ZCard title="开始使用">
+    <ZButton type="primary" @click="count++">
+      已点击 {{ count }} 次
     </ZButton>
   </ZCard>
 </template>
 ```
 
-根入口的静态具名导入支持 JavaScript tree-shaking，也可以使用组件子路径
+组件也提供独立入口，模板支持 `ZButton` 和 `z-button` 两种写法
 
 ```ts
 import { ZButton } from '@codex-proxy/ui/button'
 ```
 
-`styles.css` 包含基础重置与完整组件样式，CSS 不随 JavaScript 按组件裁剪
+JavaScript 可按需裁剪，`styles.css` 为完整样式，不随组件导入裁剪
 
-需要切换主题、自定义配色或接入 Tailwind CSS 4 时，参阅 [主题指南](playground/guide/theme.md) 与 [样式集成](playground/guide/installation.md#样式边界)
+## 文档
+
+[在线文档与 Playground](https://zyycn.github.io/codex-proxy-ui/) 提供可交互示例、源码和主题切换；固定版本的 API 可查看对应 Git 标签下的文档
+
+| 主题 | 内容 |
+| --- | --- |
+| [安装与样式集成](playground/guide/installation.md) | 包入口、按需使用与 Tailwind CSS 4 接入 |
+| [组件目录](playground/components/index.md) | 组件示例、属性、事件、插槽与实例方法 |
+| [主题定制](playground/guide/theme.md) | 预置配色、明暗模式、局部主题与组件变量 |
+| [国际化](playground/guide/i18n.md) | 语言包、ConfigProvider 与自定义文案 |
+| [源码联调](playground/guide/development.md) | 在应用中使用组件源码与热更新 |
+| [组件架构](playground/guide/architecture.md) | 目录组织、公开入口与组件职责 |
 
 ## 本地开发
 
-需要 Node.js 24+，pnpm 版本由 `package.json` 固定
+使用 Node.js 24+ 和 `package.json` 指定的 pnpm 版本
 
 ```bash
+git clone https://github.com/zyycn/codex-proxy-ui.git
+cd codex-proxy-ui
 pnpm install --frozen-lockfile
 pnpm dev
 ```
 
 打开 [本地 Playground](http://127.0.0.1:5176)，组件与文档修改会自动热更新
-
-普通应用开发和生产构建都使用编译产物，联合修改组件源码时使用 `@codex-proxy/ui/vite` 的默认导出 `CodexProxyUI`，配置见 [源码联调指南](playground/guide/development.md)
-
-检查与构建
 
 ```bash
 pnpm lint
@@ -110,16 +123,4 @@ pnpm build
 pnpm build:playground
 ```
 
-`prepack` 自动生成 JavaScript、CSS、Vite 适配器及类型声明
-
-## 文档
-
-| 任务       | 文档                                                            |
-| ---------- | --------------------------------------------------------------- |
-| 安装与接入 | [安装、按需导入与样式边界](playground/guide/installation.md)    |
-| 组件架构   | [命名、目录与职责](playground/guide/architecture.md)            |
-| 查找组件   | [组件目录与交互示例](playground/components/index.md)            |
-| 定制主题   | [主题变量、配色与密度](playground/guide/theme.md)               |
-| 联合开发   | [源码联调与热更新](playground/guide/development.md)             |
-| 发布组件库 | [自动构建与 Playground 部署](.github/workflows/release.yml)     |
-| 反馈问题   | [GitHub Issues](https://github.com/zyycn/codex-proxy-ui/issues) |
+`pnpm pack` 自动构建 JavaScript、CSS 和类型声明，并生成可安装的归档。正式版本的[发布工作流](.github/workflows/release.yml)同步更新在线 Playground
