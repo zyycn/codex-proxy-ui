@@ -1,7 +1,7 @@
 .markdown-body {
-  color: var(--cp-color-text);
+  color: var(--z-color-text);
   font-family: var(--font-sans);
-  font-size: var(--cp-font-size-sm);
+  font-size: var(--z-font-size-sm);
   font-weight: var(--font-weight-emphasis);
   line-height: 1.65;
   overflow-wrap: anywhere;
@@ -27,7 +27,7 @@
 .markdown-body h5,
 .markdown-body h6 {
   margin: 12px 0 6px;
-  color: var(--cp-color-text);
+  color: var(--z-color-text);
   font-size: inherit;
   font-weight: var(--font-weight-heavy);
   line-height: 1.4;
@@ -56,36 +56,36 @@
 }
 
 .markdown-body a {
-  color: var(--cp-color-link);
+  color: var(--z-color-link);
   font-weight: var(--font-weight-heavy);
   text-decoration: none;
 }
 
 .markdown-body a:hover {
-  color: var(--cp-color-link-hover);
+  color: var(--z-color-link-hover);
   text-decoration: underline;
 }
 
 .markdown-body a:focus-visible {
-  border-radius: var(--cp-border-radius-sm);
-  outline: 2px solid var(--cp-control-outline);
+  border-radius: var(--z-border-radius-sm);
+  outline: 2px solid var(--z-control-outline);
   outline-offset: 2px;
 }
 
 .markdown-body code {
-  border-radius: var(--cp-border-radius-sm);
-  background: var(--cp-color-fill-tertiary);
-  color: var(--cp-color-text);
+  border-radius: var(--z-border-radius-sm);
+  background: var(--z-color-fill-tertiary);
+  color: var(--z-color-text);
   font-family: var(--font-mono);
-  font-size: var(--cp-font-size-xs);
+  font-size: var(--z-font-size-xs);
   padding: 1px 5px;
 }
 
 .markdown-body pre {
   margin: 8px 0;
   overflow-x: auto;
-  border-radius: var(--cp-border-radius);
-  background: var(--cp-color-bg-container);
+  border-radius: var(--z-border-radius);
+  background: var(--z-color-bg-container);
   padding: 8px 10px;
 }
 
@@ -96,7 +96,50 @@
 
 .markdown-body blockquote {
   margin: 8px 0;
-  border-left: 3px solid var(--cp-color-split);
-  color: var(--cp-color-text-secondary);
+  border-left: 3px solid var(--z-color-split);
+  color: var(--z-color-text-secondary);
   padding-left: 10px;
+}
+
+.markdown-body .markdown-alert {
+  margin: 12px 0;
+  border-inline-start: 4px solid var(--markdown-alert-color);
+  padding: 8px 12px;
+}
+
+.markdown-body .markdown-alert > :last-child {
+  margin-bottom: 0;
+}
+
+.markdown-body .markdown-alert-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--markdown-alert-color);
+  font-weight: var(--font-weight-heavy);
+}
+
+.markdown-alert-title svg {
+  flex: none;
+  fill: currentColor;
+}
+
+.markdown-alert-note {
+  --markdown-alert-color: var(--z-color-info-text);
+}
+
+.markdown-alert-tip {
+  --markdown-alert-color: var(--z-color-success-text);
+}
+
+.markdown-alert-important {
+  --markdown-alert-color: var(--z-color-purple-text);
+}
+
+.markdown-alert-warning {
+  --markdown-alert-color: var(--z-color-warning-text);
+}
+
+.markdown-alert-caution {
+  --markdown-alert-color: var(--z-color-error-text);
 }

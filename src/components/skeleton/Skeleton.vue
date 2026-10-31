@@ -18,14 +18,14 @@ const props = withDefaults(
 
 const shapeClasses: Record<SkeletonShape, string> = {
   text: 'h-3 rounded-full',
-  block: 'rounded-cp',
+  block: 'rounded-z',
   circle: 'rounded-full',
 }
 
 const classes = computed(() => [
-  'block bg-cp-fill-secondary',
+  'block bg-z-fill-secondary',
   shapeClasses[props.shape],
-  props.animated ? 'motion-safe:animate-cp-skeleton motion-reduce:animate-none' : undefined,
+  props.animated ? 'motion-safe:animate-z-skeleton motion-reduce:animate-none' : undefined,
 ])
 </script>
 

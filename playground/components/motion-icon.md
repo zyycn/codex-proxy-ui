@@ -6,19 +6,15 @@ import MotionIconDemo from '../examples/MotionIconDemo.vue'
 
 为插槽中的图标增加指针反馈，不改变图标来源与尺寸
 
-## 交互示例
+## 基础用法
+
+<DemoExample>
 
 <ClientOnly>
   <MotionIconDemo />
 </ClientOnly>
 
-## 使用要点
-
-`variant` 支持默认的 `random` 与 `brand`，`as` 指定外层 HTML 元素
-
-组件响应系统的减少动态效果偏好，纯装饰图标可设置 `aria-hidden`，交互操作请配合有名称的按钮使用
-
-::: details 查看用法代码
+<template #source>
 
 ```vue
 <script setup lang="ts">
@@ -34,16 +30,24 @@ import { ZMotionIcon } from '@codex-proxy/ui'
 </template>
 ```
 
-:::
+</template>
 
-## API
+</DemoExample>
+
+## 用法说明
+
+`variant` 支持默认的 `random` 与 `brand`，`as` 指定外层 HTML 元素
+
+组件响应系统的减少动态效果偏好，纯装饰图标可设置 `aria-hidden`，交互操作请配合有名称的按钮使用
+
+## MotionIcon API {#api}
 
 ### 属性
 
-| 属性      | 类型                          | 默认值     | 说明                   |
-| --------- | ----------------------------- | ---------- | ---------------------- |
-| `as`      | `keyof HTMLElementTagNameMap` | `'span'`   | 根元素标签             |
-| `variant` | `'random' \| 'brand'`         | `'random'` | 随机反馈或固定品牌动效 |
+| 属性      | 说明                   | 类型                          | 默认值     |
+| --------- | ---------------------- | ----------------------------- | ---------- |
+| `as`      | 根元素标签             | `keyof HTMLElementTagNameMap` | `'span'`   |
+| `variant` | 随机反馈或固定品牌动效 | `'random' \| 'brand'`         | `'random'` |
 
 ### 插槽
 

@@ -3,7 +3,7 @@
 从 GitHub Release 安装固定版本，包名与导入路径保持 `@codex-proxy/ui`
 
 ```bash
-pnpm add https://github.com/zyycn/codex-proxy-ui/releases/download/v0.7.0/codex-proxy-ui-0.7.0.tgz
+pnpm add https://github.com/zyycn/codex-proxy-ui/releases/download/v0.8.0/codex-proxy-ui-0.8.0.tgz
 ```
 
 提交消费方锁文件以固定下载地址和完整性摘要，Release 提供独立的 `.sha256` 校验文件
@@ -37,6 +37,24 @@ JavaScript 入口不自动加载全库样式，纯主题或工具导入不会带
 @import '@codex-proxy/ui/tailwind.css';
 @import 'tailwindcss/utilities.css' layer(utilities);
 ```
+
+## 公共过渡动画
+
+导入 `@codex-proxy/ui/styles.css` 后，在 Vue `Transition` 的 `name` 中使用公共名称，无需逐个声明进出场类
+
+| 名称            | 效果与用途                                         |
+| --------------- | -------------------------------------------------- |
+| `z-fade`        | 淡入淡出，用于 Popover 浮层、提示和状态切换        |
+| `z-slide-fade`  | 轻微向下滑入、淡出，用于 Select 和 DatePicker 浮层 |
+| `z-zoom-in-top` | 从顶部纵向展开、收起，用于表单错误提示             |
+
+```vue
+<Transition name="z-fade">
+  <p v-if="visible">提示内容</p>
+</Transition>
+```
+
+三种过渡时长均为 150ms，只改变透明度和变换，不改变布局高度；系统启用 `prefers-reduced-motion: reduce` 时关闭过渡
 
 ## 类型
 

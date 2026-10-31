@@ -142,7 +142,7 @@ defineExpose(instance)
 </script>
 
 <template>
-  <form class="grid min-w-0 gap-5" @submit.prevent>
+  <form class="grid min-w-0 gap-4.5" @submit.prevent>
     <slot />
   </form>
 </template>

@@ -6,17 +6,15 @@ import DialogDemo from '../examples/DialogDemo.vue'
 
 为需要独立处理的操作提供对话空间
 
-标题和正文使用相同的外侧间距：窄屏 16px、桌面 24px。关闭按钮沿用小号图标按钮尺寸，以标题首行中心独立定位，不参与标题行高度计算
+## 基础用法
 
-没有正文时不渲染内容区域，标题说明与操作按钮之间保留窄屏 16px、桌面 24px 间距
-
-## 交互示例
+<DemoExample>
 
 <ClientOnly>
   <DialogDemo />
 </ClientOnly>
 
-::: details 查看用法代码
+<template #source>
 
 ```vue
 <script setup lang="ts">
@@ -41,9 +39,11 @@ const open = ref(false)
 </template>
 ```
 
-:::
+</template>
 
-## 使用要点
+</DemoExample>
+
+## 用法说明
 
 `v-model` 控制开关，`width` 调整宽度，标题描述当前操作
 
@@ -53,31 +53,35 @@ const open = ref(false)
 
 退出期间重新打开会取消本次退场，不触发 `closed`
 
-## API
+## Dialog API {#api}
 
 ### 属性
 
-| 属性                                                        | 类型                                                        | 默认值      | 说明                               |
-| ----------------------------------------------------------- | ----------------------------------------------------------- | ----------- | ---------------------------------- |
-| `v-model`                                                   | `boolean`                                                   | `false`     | 打开状态                           |
-| `title`                                                     | `string`                                                    | 必填        | 对话框标题                         |
-| `description`                                               | `string`                                                    | —           | 标题说明                           |
-| `width`                                                     | `number \| string`                                          | `'36rem'`   | 数字为 px；受视口宽度限制          |
-| `fullscreen`                                                | `boolean`                                                   | `false`     | 全屏显示                           |
-| `type`                                                      | `'default' \| 'info' \| 'warning' \| 'danger' \| 'success'` | `'default'` | 标题图标语义                       |
-| `show-close / close-on-click-modal / close-on-press-escape` | `boolean`                                                   | `true`      | 关闭按钮、遮罩、Escape 的独立策略  |
-| `before-close`                                              | `() => boolean \| void \| Promise<boolean \| void>`         | —           | 用户关闭前等待回调；false 阻止关闭 |
-| `draggable`                                                 | `boolean`                                                   | `true`      | 拖动标题，全屏时关闭拖动           |
-| `role`                                                      | `'dialog' \| 'alertdialog'`                                 | `'dialog'`  | 无障碍角色                         |
+| 属性                                                        | 说明                               | 类型                                                        | 默认值      |
+| ----------------------------------------------------------- | ---------------------------------- | ----------------------------------------------------------- | ----------- |
+| `v-model`                                                   | 打开状态                           | `boolean`                                                   | `false`     |
+| `title`                                                     | 对话框标题                         | `string`                                                    | 必填        |
+| `description`                                               | 标题说明                           | `string`                                                    | —           |
+| `width`                                                     | 数字为 px；受视口宽度限制          | `number \| string`                                          | `'36rem'`   |
+| `fullscreen`                                                | 全屏显示                           | `boolean`                                                   | `false`     |
+| `type`                                                      | 标题图标语义                       | `'default' \| 'info' \| 'warning' \| 'danger' \| 'success'` | `'default'` |
+| `show-close / close-on-click-modal / close-on-press-escape` | 关闭按钮、遮罩、Escape 的独立策略  | `boolean`                                                   | `true`      |
+| `before-close`                                              | 用户关闭前等待回调；false 阻止关闭 | `() => boolean \| void \| Promise<boolean \| void>`         | —           |
+| `draggable`                                                 | 拖动标题，全屏时关闭拖动           | `boolean`                                                   | `true`      |
+| `role`                                                      | 无障碍角色                         | `'dialog' \| 'alertdialog'`                                 | `'dialog'`  |
 
 关闭按钮、遮罩、Escape 以及实例或 header 插槽的 `close()` 都经过 `before-close`，等待期间阻止重复关闭。调用方直接修改模型不经过回调
 
-### 事件与插槽
+### 事件
 
 - `update:modelValue(value: boolean)`：用户关闭请求通过后更新模型
 - `open / close`：打开 / 关闭开始
 - `opened / closed`：入场 / 退场完成，closed 前保留内容、滚动锁与焦点管理
-- 插槽：`default`、`footer`、`description`、`icon`
+
+### 插槽
+
+`default`、`footer`、`description`、`icon`
+
 - `header({ titleId, close })`：自定义标题内容，关联 titleId 保留可访问名称
 
 ### 实例

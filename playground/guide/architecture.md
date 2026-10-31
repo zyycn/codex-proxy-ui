@@ -30,8 +30,10 @@ src/
 │   ├── types.ts                   # ComponentSize
 │   └── utils/                     # 已有跨组件纯工具
 ├── theme/                         # 主题算法与运行时
+├── locale/                        # 语言包、全局配置与组件文案
 ├── styles/                        # 全局基线、令牌、Tailwind 入口
-└── vite.ts                        # 源码联调适配器
+├── build/                         # Node 构建工具与主题前缀转换
+└── vite.ts                        # Vite 接入与源码联调
 
 playground/
 ├── components/                    # 按实体组织的 API 文档
@@ -41,6 +43,8 @@ playground/
 ```
 
 `index.ts` 只组织公开导出。关联组件由同一实体入口提供，例如 FormItem 属于 form，TableColumnSettings 属于 table。分页有自己的入口
+
+浏览器入口不依赖 `build/` 或 Node API，Vite 适配器由独立的 `/vite` 入口提供。公开组件、主题与语言包入口及命名见[公开 API](./api.md)
 
 ```ts
 // button/index.ts
@@ -58,6 +62,10 @@ export { notification as ZNotification } from './service'
 只有已存在跨组件调用的能力进入 shared/。字段上下文由 form 拥有，通知状态与计时器由 notification 拥有。消费方通过公开入口导入，库内直接引用所属实现，避免根入口循环依赖
 
 DOM 指令由对应实体拥有，例如 loading/ 的 directive.ts 与 types.ts。入口导出 `vLoading`，供 `<script setup>` 局部使用或注册为全局 `v-loading`；应用只负责注册，蒙层和 DOM 状态的清理由组件库负责
+
+文档站通过 VitePress 默认主题的插槽和样式扩展组织导航与阅读布局。`DemoExample` 将示例与可折叠的用法代码放在一起，`DemoPlayground` 管理预览和配置区；文档排版避开 `vp-raw` 示例区域，组件示例使用库内真实实现
+
+`DocsSidebar` 在 VitePress 原侧栏外组合 `ZScrollbar`，菜单和移动端控制仍由默认主题持有。页面滚动条使用 `ZScrollbar` 的文档目标模式，保持原生页面滚动源
 
 ## 合同与职责
 

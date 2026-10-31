@@ -1,18 +1,18 @@
 import type {
   FunctionalColorMap,
   PresetColorRoleMap,
-  ResolvedThemeSeedTokens,
   ThemeAliasMap,
   ThemeColorRoleRecipe,
   ThemeDataMap,
   ThemeFillMap,
   ThemeLinkMap,
-  ThemeName,
   ThemePaletteSource,
   ThemePresetColorMap,
   ThemePresetColorName,
   ThemePresetColorRoleRecipe,
   ThemePrimaryMap,
+  ThemeScheme,
+  ThemeSeedTokens,
   ThemeSemanticMap,
   ThemeSurfaceMap,
 } from '../types'
@@ -32,7 +32,7 @@ import {
   DARK_CONTAINER_BASE,
   DARK_SURFACE_ANCHORS,
   DARK_TEXT_BASE,
-  DEFAULT_CUSTOM_THEME_COLOR,
+  defaultThemePrimaryColor,
   LIGHT_CONTAINER_BASE,
   LIGHT_FOREGROUND,
   LIGHT_SURFACE_ANCHORS,
@@ -52,7 +52,7 @@ const ACTIVITY_LEVEL_MIX = {
 const SURFACE_MAP_DERIVERS = {
   light: deriveNeutralLightSurfaceMap,
   dark: deriveNeutralDarkSurfaceMap,
-} satisfies Record<ThemeName, (seedTokens: ResolvedThemeSeedTokens) => ThemeSurfaceMap>
+} satisfies Record<ThemeScheme, (seedTokens: ThemeSeedTokens) => ThemeSurfaceMap>
 
 const LIGHT_SURFACE_MIX = {
   secondary: 0.09,
@@ -70,7 +70,7 @@ const LIGHT_FILL_OPACITIES = {
   contentHoverBg: [0.09, LIGHT_SURFACE_MIX.tertiary],
 } satisfies Record<keyof ThemeFillMap, [number, number]>
 
-export function deriveLightThemeFillMap(seedTokens: ResolvedThemeSeedTokens): ThemeFillMap {
+export function deriveLightThemeFillMap(seedTokens: ThemeSeedTokens): ThemeFillMap {
   const appearanceInfluence = deriveSurfaceAppearanceInfluence(
     seedTokens.colorBgBase,
     seedTokens.colorTextBase,
@@ -116,8 +116,8 @@ function themeTextBackgrounds(surfaces: ThemeSurfaceMap, fills: ThemeFillMap | n
 }
 
 export function deriveThemeSurfaceMap(
-  theme: ThemeName,
-  seedTokens: ResolvedThemeSeedTokens,
+  theme: ThemeScheme,
+  seedTokens: ThemeSeedTokens,
 ): ThemeSurfaceMap {
   return SURFACE_MAP_DERIVERS[theme](seedTokens)
 }
@@ -148,7 +148,7 @@ export function deriveThemeAliasMap(surfaces: ThemeSurfaceMap): ThemeAliasMap {
 
 export function deriveThemePrimaryMap(
   seed: string,
-  theme: ThemeName,
+  theme: ThemeScheme,
   containerBg: string,
 ): ThemePrimaryMap {
   const roles = deriveColorRoleMap(
@@ -176,7 +176,7 @@ export function deriveThemePrimaryMap(
 
 export function deriveThemeLinkMap(
   seed: string,
-  theme: ThemeName,
+  theme: ThemeScheme,
   containerBg: string,
 ): ThemeLinkMap {
   const roles = deriveColorRoleMap(
@@ -194,9 +194,9 @@ export function deriveThemeLinkMap(
 }
 
 export function deriveThemeSemanticMap(
-  theme: ThemeName,
+  theme: ThemeScheme,
   surfaces: ThemeSurfaceMap,
-  seedTokens: ResolvedThemeSeedTokens,
+  seedTokens: ThemeSeedTokens,
   fills: ThemeFillMap | null,
   primary: ThemePrimaryMap,
 ): ThemeSemanticMap {
@@ -237,9 +237,9 @@ export function deriveThemeSemanticMap(
 }
 
 export function deriveThemePresetColorMap(
-  theme: ThemeName,
+  theme: ThemeScheme,
   containerBg: string,
-  seedTokens: ResolvedThemeSeedTokens,
+  seedTokens: ThemeSeedTokens,
 ): ThemePresetColorMap {
   const seeds: Record<ThemePresetColorName, string> = {
     ...PRESET_COLOR_SEEDS,
@@ -280,7 +280,7 @@ export function deriveThemeDataMap(
 }
 
 function deriveNeutralDarkSurfaceMap(
-  seedTokens: ResolvedThemeSeedTokens,
+  seedTokens: ThemeSeedTokens,
 ): ThemeSurfaceMap {
   const background = seedTokens.colorBgBase
   const colorText = seedTokens.colorTextBase
@@ -404,7 +404,7 @@ function deriveNeutralDarkSurfaceMap(
 }
 
 function deriveNeutralLightSurfaceMap(
-  seedTokens: ResolvedThemeSeedTokens,
+  seedTokens: ThemeSeedTokens,
 ): ThemeSurfaceMap {
   const background = seedTokens.colorBgBase
   const colorText = seedTokens.colorTextBase
@@ -496,12 +496,12 @@ function deriveSurfaceAppearanceInfluence(
 
 function deriveColorRoleMap(
   seed: string,
-  theme: ThemeName,
+  theme: ThemeScheme,
   containerBg: string,
   recipe: ThemeColorRoleRecipe,
   textBackgrounds: string | readonly string[] = containerBg,
 ): FunctionalColorMap {
-  const normalizedSeed = normalizeHexColor(seed) ?? DEFAULT_CUSTOM_THEME_COLOR
+  const normalizedSeed = normalizeHexColor(seed) ?? defaultThemePrimaryColor
   const palette = generateColorPalette(normalizedSeed, theme, containerBg)
   const resolve = (source: ThemePaletteSource): string => source === 'seed'
     ? normalizedSeed
@@ -554,7 +554,7 @@ function derivePresetColorRoleMap(
   recipe: ThemePresetColorRoleRecipe,
 ): PresetColorRoleMap {
   const color = (step: number): string =>
-    normalizeHexColor(palette[step - 1]) ?? DEFAULT_CUSTOM_THEME_COLOR
+    normalizeHexColor(palette[step - 1]) ?? defaultThemePrimaryColor
   const solid = color(recipe.solid)
   const container = mix(containerBg, solid, recipe.containerMix)
   const containerStrong = mix(containerBg, solid, recipe.containerStrongMix)

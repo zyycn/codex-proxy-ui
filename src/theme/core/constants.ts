@@ -9,16 +9,16 @@ import type {
 import { presetPrimaryColors } from '@ant-design/colors'
 import en from '../../locale/lang/en'
 
-export const DEFAULT_THEME_MODE: ThemeMode = 'system'
-export const DEFAULT_THEME_COLOR: ThemeColorPresetId = 'relay-blue'
-export const DEFAULT_CUSTOM_THEME_COLOR = '#5983F4'
-export const DEFAULT_THEME_CUSTOMIZATION: ThemeCustomization = {}
+export const defaultThemeMode: ThemeMode = 'system'
+export const defaultThemeColorId: ThemeColorPresetId = 'relay-blue'
+export const defaultThemePrimaryColor = '#5983F4'
+export const defaultThemeCustomization: ThemeCustomization = {}
 
 export const DEFAULT_SEED_COLORS = {
   colorSuccess: '#12B981',
   colorWarning: '#F59E0B',
   colorError: '#EF4444',
-  colorInfo: DEFAULT_CUSTOM_THEME_COLOR,
+  colorInfo: defaultThemePrimaryColor,
 } as const
 
 export const PRESET_COLOR_SEEDS = {
@@ -41,11 +41,11 @@ export const DEFAULT_DIMENSIONS = {
   shadowStrength: 100,
 } as const
 
-export const THEME_COLOR_PRESETS: readonly ThemeColorPreset[] = [
+export const themeColorPresets: readonly ThemeColorPreset[] = [
   {
     id: 'relay-blue',
     ...en.theme['relay-blue'],
-    seed: DEFAULT_CUSTOM_THEME_COLOR,
+    seed: defaultThemePrimaryColor,
   },
   {
     id: 'deep-teal',
@@ -126,52 +126,52 @@ export const DARK_SURFACE_ANCHORS = {
 export const LIGHT_SHADOW_BASE = LIGHT_TEXT_BASE
 
 export const EDITABLE_COLOR_TOKEN_NAMES = new Set<ThemeTokenName>([
-  '--cp-menu-item-selected-bg',
-  '--cp-input-bg',
-  '--cp-input-hover-bg',
-  '--cp-input-active-bg',
-  '--cp-button-primary-color',
-  '--cp-button-primary-bg',
-  '--cp-button-primary-hover-bg',
-  '--cp-button-primary-active-bg',
-  '--cp-button-secondary-bg',
-  '--cp-button-secondary-hover-bg',
-  '--cp-button-secondary-active-bg',
-  '--cp-icon-button-secondary-bg',
-  '--cp-icon-button-secondary-hover-bg',
-  '--cp-icon-button-secondary-active-bg',
-  '--cp-card-bg',
-  '--cp-modal-bg',
-  '--cp-popover-header-bg',
-  '--cp-table-header-bg',
-  '--cp-table-row-bg',
-  '--cp-table-row-stripe-bg',
-  '--cp-table-row-hover-bg',
-  '--cp-table-row-selected-bg',
-  '--cp-table-row-selected-hover-bg',
-  '--cp-progress-remaining-color',
-  '--cp-layout-sider-bg',
-  '--cp-scrollbar-thumb-bg',
-  '--cp-scrollbar-thumb-hover-bg',
+  'menu-item-selected-bg',
+  'input-bg',
+  'input-hover-bg',
+  'input-active-bg',
+  'button-primary-color',
+  'button-primary-bg',
+  'button-primary-hover-bg',
+  'button-primary-active-bg',
+  'button-secondary-bg',
+  'button-secondary-hover-bg',
+  'button-secondary-active-bg',
+  'icon-button-secondary-bg',
+  'icon-button-secondary-hover-bg',
+  'icon-button-secondary-active-bg',
+  'card-bg',
+  'modal-bg',
+  'popover-header-bg',
+  'table-header-bg',
+  'table-row-bg',
+  'table-row-stripe-bg',
+  'table-row-hover-bg',
+  'table-row-selected-bg',
+  'table-row-selected-hover-bg',
+  'progress-remaining-color',
+  'layout-sider-bg',
+  'scrollbar-thumb-bg',
+  'scrollbar-thumb-hover-bg',
 ])
 
 export const EDITABLE_SHADOW_TOKEN_NAMES = new Set<ThemeTokenName>([
-  '--cp-input-shadow',
-  '--cp-input-hover-shadow',
-  '--cp-input-active-shadow',
-  '--cp-card-shadow',
-  '--cp-layout-sider-shadow',
+  'input-shadow',
+  'input-hover-shadow',
+  'input-active-shadow',
+  'card-shadow',
+  'layout-sider-shadow',
 ])
 
 /** 只有控件填充允许透出宿主背景；容器与固定表格单元格保持实色。 */
 export const ALPHA_COLOR_TOKEN_NAMES = new Set<string>([
-  '--cp-input-bg',
-  '--cp-input-hover-bg',
-  '--cp-input-active-bg',
-  '--cp-button-secondary-bg',
-  '--cp-button-secondary-hover-bg',
-  '--cp-button-secondary-active-bg',
-  '--cp-icon-button-secondary-bg',
-  '--cp-icon-button-secondary-hover-bg',
-  '--cp-icon-button-secondary-active-bg',
+  'input-bg',
+  'input-hover-bg',
+  'input-active-bg',
+  'button-secondary-bg',
+  'button-secondary-hover-bg',
+  'button-secondary-active-bg',
+  'icon-button-secondary-bg',
+  'icon-button-secondary-hover-bg',
+  'icon-button-secondary-active-bg',
 ] satisfies ThemeTokenName[])

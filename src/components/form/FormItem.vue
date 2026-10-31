@@ -117,7 +117,7 @@ provide(formFieldKey, {
     <div
       v-if="hasLabel || $slots.extra || isHorizontal"
       class="flex min-w-0 items-center gap-3"
-      :class="isHorizontal ? ['min-h-cp-control', labelPosition === 'right' ? 'justify-end' : 'justify-start'] : 'mb-2 min-h-4 justify-between'"
+      :class="isHorizontal ? ['min-h-z-control', labelPosition === 'right' ? 'justify-end' : 'justify-start'] : 'mb-2 min-h-4 justify-between'"
     >
       <div ref="labelContent" class="inline-flex items-center gap-1.5" :class="isHorizontal && labelWidth === 'auto' ? 'w-max shrink-0' : 'min-w-0'">
         <!-- 复合字段提供组标签，控件保留独立 ID；显式 for 只关联指定控件 -->
@@ -125,13 +125,13 @@ provide(formFieldKey, {
           :is="resolvedControlId ? 'label' : 'span'"
           :id="labelId"
           :for="resolvedControlId"
-          class="flex min-w-0 items-center gap-1.5 text-cp font-medium text-cp-text-secondary"
+          class="flex min-w-0 items-center gap-1.5 text-z font-medium text-z-text-secondary"
           :class="isHorizontal ? 'leading-snug' : 'leading-none'"
         >
           <slot name="label">
             {{ label }}
           </slot>
-          <span v-if="isRequired" class="font-bold text-cp-error">*</span>
+          <span v-if="isRequired" class="font-bold text-z-error">*</span>
           <span v-if="isRequired" class="sr-only">{{ locale.form.required }}</span>
         </component>
         <slot name="label-extra" />
@@ -144,13 +144,15 @@ provide(formFieldKey, {
       <div v-if="$slots.extra && isHorizontal" class="mb-2 flex justify-end">
         <slot name="extra" />
       </div>
-      <p v-if="description" :id="descriptionId" class="mt-0 mb-2 text-xs leading-[1.35] font-emphasis text-cp-text-quaternary">
+      <p v-if="description" :id="descriptionId" class="mt-0 mb-2 text-xs leading-[1.35] font-emphasis text-z-text-quaternary">
         {{ description }}
       </p>
       <slot />
-      <p v-if="showError" :id="errorId" :title="validateMessage" class="absolute top-full left-0 mt-1 mb-0 w-full truncate text-xs leading-[1.35] font-emphasis text-cp-error-text" aria-live="polite">
-        {{ validateMessage }}
-      </p>
+      <Transition name="z-zoom-in-top">
+        <p v-if="showError" :id="errorId" :title="validateMessage" class="absolute top-full left-0 mt-1.25 mb-0 w-full truncate text-xs leading-none font-normal text-z-error-text" aria-live="polite">
+          {{ validateMessage }}
+        </p>
+      </Transition>
     </div>
   </div>
 </template>

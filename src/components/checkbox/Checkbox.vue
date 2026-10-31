@@ -31,12 +31,12 @@ watchEffect(() => {
 })
 
 const boxClasses = computed(() => [
-  'relative inline-flex size-4 shrink-0 items-center justify-center rounded-cp-sm border-0 transition-[background-color,box-shadow,color] duration-150 motion-reduce:transition-none',
+  'relative inline-flex size-4 shrink-0 items-center justify-center rounded-z-sm border-0 transition-[background-color,box-shadow,color] duration-150 motion-reduce:transition-none',
   props.disabled
-    ? 'bg-cp-bg-container-disabled text-cp-text-disabled'
+    ? 'bg-z-bg-container-disabled text-z-text-disabled'
     : checked.value
-      ? 'bg-cp-primary text-(--cp-button-primary-color)'
-      : 'bg-cp-bg-container text-transparent shadow-[inset_0_0_0_1px_var(--cp-color-border)]',
+      ? 'bg-z-primary text-(--z-button-primary-color)'
+      : 'bg-z-bg-container text-transparent shadow-[inset_0_0_0_1px_var(--z-color-border)]',
 ])
 </script>
 
@@ -45,7 +45,7 @@ const boxClasses = computed(() => [
   <!-- eslint-disable-next-line vue-a11y/label-has-for -->
   <label
     v-bind="rootAttrs"
-    class="group relative inline-flex min-h-4 min-w-4 items-center gap-2.5 text-cp leading-none font-emphasis"
+    class="group relative inline-flex min-h-4 min-w-4 select-none items-center gap-2.5 text-z leading-none font-emphasis"
     :class="disabled ? 'cursor-not-allowed opacity-55' : 'cursor-pointer'"
   >
     <input
@@ -67,7 +67,7 @@ const boxClasses = computed(() => [
     >
     <span
       :class="boxClasses"
-      class="peer-focus-visible:ring-2 peer-focus-visible:ring-cp-control-outline peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-cp-bg-container"
+      class="peer-focus-visible:ring-2 peer-focus-visible:ring-z-control-outline peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-z-bg-container"
     >
       <Minus
         class="absolute size-3 transition-opacity duration-150 motion-reduce:transition-none"
@@ -78,6 +78,6 @@ const boxClasses = computed(() => [
         :class="!indeterminate && model ? 'opacity-100' : 'opacity-0'"
       />
     </span>
-    <span v-if="label || $slots.label" class="min-w-0 text-cp leading-none font-emphasis"><slot name="label">{{ label }}</slot></span>
+    <span v-if="label || $slots.label" class="min-w-0 text-z leading-none font-emphasis"><slot name="label">{{ label }}</slot></span>
   </label>
 </template>

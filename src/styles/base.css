@@ -1,7 +1,7 @@
 @layer base {
   html {
-    background: var(--cp-color-bg-layout, #f6f8fb);
-    color: var(--cp-color-text, #0e1726);
+    background: var(--z-color-bg-layout, #f6f8fb);
+    color: var(--z-color-text, #0e1726);
     font-family: var(--font-sans);
     font-synthesis: none;
     text-rendering: optimizeLegibility;
@@ -10,17 +10,17 @@
   }
 
   body {
-    background: var(--cp-color-bg-layout, #f6f8fb);
-    font-size: var(--cp-font-size, 13px);
+    background: var(--z-color-bg-layout, #f6f8fb);
+    font-size: var(--z-font-size, 13px);
   }
 
   /* 主题作用域同时驱动 Tailwind 数值间距，保证预览草稿与已保存主题使用同一密度算法。 */
   [data-theme] {
-    --spacing: var(--cp-size-unit, 4px);
+    --spacing: var(--z-size-unit, 4px);
   }
 
   [data-theme]:not(html) {
-    font-size: var(--cp-font-size, 13px);
+    font-size: var(--z-font-size, 13px);
   }
 
   html.theme-fallback-transition,
@@ -73,8 +73,18 @@
   }
 }
 
-@utility cp-scrollbar {
-  scrollbar-color: var(--cp-scrollbar-thumb-bg) transparent;
+@utility z-scrollbar-hidden {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+}
+
+@utility z-scrollbar {
+  scrollbar-color: var(--z-scrollbar-thumb-bg) transparent;
   scrollbar-width: thin;
 
   &::-webkit-scrollbar {
@@ -87,14 +97,14 @@
   }
 
   &::-webkit-scrollbar-thumb {
-    background: var(--cp-scrollbar-thumb-bg);
+    background: var(--z-scrollbar-thumb-bg);
     border: 3px solid transparent;
     border-radius: 999px;
     background-clip: content-box;
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    background: var(--cp-scrollbar-thumb-hover-bg);
+    background: var(--z-scrollbar-thumb-hover-bg);
     border: 3px solid transparent;
     background-clip: content-box;
   }

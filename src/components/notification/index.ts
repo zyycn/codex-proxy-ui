@@ -1,2 +1,2 @@
 export { createNotification, notification as ZNotification } from './service'
-export type { NotificationHandle, NotificationOptions, NotificationType } from './types'
+export type { NotificationConfig, NotificationHandle, NotificationOptions, NotificationService, NotificationType } from './types'

@@ -1,36 +1,50 @@
 @import 'tailwindcss/theme.css' layer(theme);
 @import '@codex-proxy/ui/tailwind.css';
 @import 'tailwindcss/utilities.css' layer(utilities) source('../../');
+@import './document.css';
 @reference '../../../src/styles/base.css';
 
 :root {
   --vp-c-brand-1: #4c6fda;
   --vp-c-brand-2: #6483e3;
   --vp-c-brand-3: #4c6fda;
-  --vp-sidebar-width: 260px;
+  --vp-c-brand-soft: #edf2ff;
+  --vp-c-text-1: #303642;
+  --vp-c-text-2: #606b7a;
+  --vp-c-text-3: #6d7786;
+  --vp-c-bg: #ffffff;
+  --vp-c-bg-soft: #f7f8fa;
+  --vp-c-divider: #e3e7ee;
+  --vp-c-gutter: var(--vp-c-divider);
+  --vp-sidebar-bg-color: var(--vp-c-bg);
+  --vp-sidebar-width: 280px;
+  --vp-nav-height: 60px;
+  --vp-nav-logo-height: 36px;
+  --vp-code-block-bg: var(--vp-c-bg-soft);
 }
 
 .dark {
   --vp-c-brand-1: #91a8f6;
   --vp-c-brand-2: #7894ed;
+  --vp-c-brand-soft: #25324a;
+  --vp-c-text-1: #d5dae5;
+  --vp-c-text-2: #a3adbd;
+  --vp-c-text-3: #939eaf;
+  --vp-c-bg: #141821;
+  --vp-c-bg-soft: #1c2230;
+  --vp-c-divider: #2c3444;
 }
 
-/* 文档外壳复用组件库的原生滚动条，不接管滚动行为或覆盖交互示例。 */
-html,
-.VPSidebar,
+/* 代码块保留原生横向滚动条，页面和侧栏由 ZScrollbar 显示轨道。 */
 .vp-doc div[class*='language-'] pre {
-  @apply cp-scrollbar;
+  @apply z-scrollbar;
 }
 
-.VPSidebar:hover,
-.VPSidebar:focus-within,
 .vp-doc div[class*='language-'] pre:hover {
-  scrollbar-color: var(--cp-scrollbar-thumb-hover-bg) transparent;
+  scrollbar-color: var(--z-scrollbar-thumb-hover-bg) transparent;
 }
 
 @media (forced-colors: active) {
-  html,
-  .VPSidebar,
   .vp-doc div[class*='language-'] pre {
     scrollbar-color: auto;
   }
@@ -40,19 +54,23 @@ html,
   margin: 20px 0;
   overflow: visible;
   border: 1px solid var(--vp-c-divider);
-  border-radius: 12px;
-  background: var(--cp-color-bg-layout);
-  color: var(--cp-color-text);
-  font-family: var(--cp-font-family);
-  font-size: var(--cp-font-size);
+  border-radius: 6px;
+  background: var(--vp-c-bg);
+  color: var(--z-color-text);
+  font-family: var(--z-font-family);
+  font-size: var(--z-font-size);
+}
+
+.docs-example .demo-playground {
+  margin: 0;
+  border: 0;
 }
 
 .demo-stage {
   display: flex;
-  min-height: 200px;
+  min-height: 112px;
   align-items: center;
-  justify-content: center;
-  padding: 36px;
+  padding: 24px;
 }
 
 .demo-preview {
@@ -66,28 +84,29 @@ html,
   max-width: none;
 }
 
-.demo-preview > button {
-  justify-self: center;
-}
-
 .demo-controls {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   gap: 20px;
-  align-items: baseline;
-  padding: 16px 20px;
+  align-items: center;
+  padding: 12px 24px;
   border-top: 1px solid var(--vp-c-divider);
-  border-radius: 0 0 12px 12px;
-  background: var(--cp-color-bg-container);
+  background: var(--vp-c-bg-soft);
+  border-radius: 0 0 6px 6px;
+}
+
+.docs-example .demo-controls {
+  border-radius: 0;
 }
 
 .demo-controls-label {
-  color: var(--cp-color-text-tertiary);
+  align-self: start;
+  color: var(--z-color-text-tertiary);
   font-size: 12px;
+  line-height: 28px;
 }
 
 .demo-controls-fields,
-.demo-control,
 .demo-row {
   display: flex;
   flex-wrap: wrap;
@@ -96,12 +115,25 @@ html,
 }
 
 .demo-controls-fields {
-  gap: 16px 24px;
+  gap: 12px 24px;
+}
+
+.demo-control {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+}
+
+.demo-control > span {
+  flex: none;
+  white-space: nowrap;
 }
 
 .demo-control > span,
 .demo-value {
-  color: var(--cp-color-text-secondary);
+  color: var(--z-color-text-secondary);
   font-size: 12px;
 }
 
@@ -120,42 +152,6 @@ html,
   width: 100%;
 }
 
-.vp-doc .custom-block.details {
-  border: 1px solid var(--vp-c-divider);
-  background: transparent;
-}
-
-.VPSidebar .group + .group {
-  margin-top: 0;
-  padding-top: 8px;
-}
-
-.VPSidebar .group > .VPSidebarItem.level-0 {
-  padding-bottom: 8px;
-}
-
-.VPSidebar .VPSidebarItem.is-link > .item {
-  margin-bottom: 4px;
-}
-
-.VPSidebar .VPSidebarItem.is-link > .items {
-  margin-block: 6px;
-}
-
-.VPSidebar .VPSidebarItem.is-link > .item > .link {
-  padding-inline: 10px;
-  border-radius: 6px;
-  transition: background-color 0.15s;
-}
-
-.VPSidebar .VPSidebarItem.is-link > .item > .link:where(:hover, :focus-visible) {
-  background: var(--vp-c-default-soft);
-}
-
-.VPSidebar .VPSidebarItem.is-active:not(:has(.items .is-active)) > .item > .link {
-  background: var(--vp-c-brand-soft);
-}
-
 @media (max-width: 640px) {
   .demo-stage {
     padding: 24px 16px;
@@ -165,6 +161,10 @@ html,
     grid-template-columns: minmax(0, 1fr);
     gap: 12px;
     padding: 16px;
+  }
+
+  .demo-controls-label {
+    line-height: 20px;
   }
 
   .demo-columns {

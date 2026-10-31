@@ -17,7 +17,7 @@ const autosize = ref(true)
     <template #controls>
       <div class="demo-control">
         <span>行数</span>
-        <ZInputNumber v-model="rows" size="small" aria-label="行数" :min="2" :max="8" />
+        <ZInputNumber v-model="rows" class="w-28" size="small" aria-label="行数" :min="2" :max="8" />
       </div>
       <ZCheckbox v-model="disabled" label="禁用" />
       <ZCheckbox v-model="autosize" label="自适应高度" />

@@ -11,7 +11,7 @@ const scrollTop = shallowRef(0)
   <DemoPlayground wide>
     <ZScrollbar height="224px" horizontal :always-visible="alwaysVisible" @scroll="scrollTop = $event.scrollTop">
       <div class="grid min-w-180 gap-2 pr-4 pb-4">
-        <div v-for="index in 20" :key="index" class="rounded-cp bg-cp-fill-tertiary px-4 py-3">
+        <div v-for="index in 20" :key="index" class="rounded-z bg-z-fill-tertiary px-4 py-3">
           示例内容 {{ index }} · 同时支持横向与纵向滚动
         </div>
       </div>

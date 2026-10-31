@@ -1,5 +1,5 @@
 export type ThemeMode = 'system' | 'light' | 'dark'
-export type ThemeName = 'light' | 'dark'
+export type ThemeScheme = 'light' | 'dark'
 export type ThemeColorPresetId = 'relay-blue' | 'deep-teal' | 'signal-violet' | 'graphite'
 export type ThemeColorId = ThemeColorPresetId | 'custom'
 
@@ -8,7 +8,7 @@ export interface ThemeColorPreset {
   label: string
   description: string
   seed: string
-  appearance?: Partial<Record<ThemeName, ThemeAppearanceSeed>>
+  appearance?: Partial<Record<ThemeScheme, ThemeAppearanceSeed>>
 }
 
 /** 品牌 Seed 派生出的界面底色与正文基色。 */
@@ -44,7 +44,15 @@ export interface ThemeCustomization {
   tokenOverrides?: Partial<ThemeTokens>
 }
 
-export interface ResolvedThemeSeedTokens {
+export interface ThemeOptions {
+  scheme?: ThemeScheme
+  colorId?: ThemeColorId
+  /** 自定义配色的主色，仅在 colorId 为 custom 时使用 */
+  primaryColor?: string
+  customization?: ThemeCustomization
+}
+
+export interface ThemeSeedTokens {
   colorPrimary: string
   colorSuccess: string
   colorWarning: string
@@ -61,11 +69,11 @@ export interface ResolvedThemeSeedTokens {
   shadowStrength: number
 }
 
-export interface ResolvedTheme {
-  name: ThemeName
+export interface Theme {
+  scheme: ThemeScheme
   colorId: ThemeColorId
   seed: string
-  seedTokens: ResolvedThemeSeedTokens
+  seedTokens: ThemeSeedTokens
   tokens: ThemeTokens
 }
 
@@ -319,7 +327,7 @@ type CamelToKebab<Value extends string> = Value extends `${infer Head}${infer Ta
   : Value
 
 export type DirectTokenName = {
-  [Group in DirectThemeMapKey]: `--cp-${CamelToKebab<Extract<keyof ThemeMap[Group], string>>}`
+  [Group in DirectThemeMapKey]: `${CamelToKebab<Extract<keyof ThemeMap[Group], string>>}`
 }[DirectThemeMapKey]
 
 export type FunctionalTokenSuffix
@@ -337,7 +345,7 @@ export type FunctionalTokenSuffix
     | '-text-active'
 
 type SemanticColorName = Extract<keyof ThemeSemanticMap, string>
-export type SemanticTokenName = `--cp-color-${SemanticColorName}${FunctionalTokenSuffix}`
+export type SemanticTokenName = `color-${SemanticColorName}${FunctionalTokenSuffix}`
 
 export type PresetTokenSuffix
   = 'container'
@@ -348,15 +356,15 @@ export type PresetTokenSuffix
     | 'on-container'
 
 type PresetColorName = Extract<keyof ThemePresetColorMap, string>
-export type PresetTokenName = `--cp-color-${PresetColorName}-${PresetTokenSuffix}`
+export type PresetTokenName = `color-${PresetColorName}-${PresetTokenSuffix}`
 
 export type ActivityLevel = 0 | 1 | 2 | 3 | 4
-type ActivityTokenName = `--cp-activity-level-${ActivityLevel}`
+type ActivityTokenName = `activity-level-${ActivityLevel}`
 
 export type ControlTokenName
-  = '--cp-control-item-bg-active'
-    | '--cp-control-item-bg-active-hover'
-    | '--cp-control-outline'
+  = 'control-item-bg-active'
+    | 'control-item-bg-active-hover'
+    | 'control-outline'
 
 export type ThemeTokenName
   = DirectTokenName

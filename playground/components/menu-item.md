@@ -6,19 +6,15 @@ import MenuItemDemo from '../examples/MenuItemDemo.vue'
 
 用于操作列表，可组合图标、禁用、加载与危险操作
 
-## 交互示例
+## 基础用法
+
+<DemoExample>
 
 <ClientOnly>
   <MenuItemDemo />
 </ClientOnly>
 
-## 使用要点
-
-默认插槽提供操作文字，`icon` 插槽放置图标，`type="danger"` 标识危险操作
-
-`disabled` 与 `loading` 阻止点击，组件是按钮，不负责菜单容器的定位与开关
-
-::: details 查看用法代码
+<template #source>
 
 ```vue
 <script setup lang="ts">
@@ -39,16 +35,24 @@ const action = ref('尚未操作')
 </template>
 ```
 
-:::
+</template>
 
-## API
+</DemoExample>
+
+## 用法说明
+
+默认插槽提供操作文字，`icon` 插槽放置图标，`type="danger"` 标识危险操作
+
+`disabled` 与 `loading` 阻止点击，组件是按钮，不负责菜单容器的定位与开关
+
+## MenuItem API {#api}
 
 ### 属性
 
-| 属性                 | 类型                    | 默认值      | 说明                 |
-| -------------------- | ----------------------- | ----------- | -------------------- |
-| `type`               | `'default' \| 'danger'` | `'default'` | 普通或危险操作       |
-| `disabled / loading` | `boolean`               | `false`     | 禁用或加载时阻止点击 |
+| 属性                 | 说明                 | 类型                    | 默认值      |
+| -------------------- | -------------------- | ----------------------- | ----------- |
+| `type`               | 普通或危险操作       | `'default' \| 'danger'` | `'default'` |
+| `disabled / loading` | 禁用或加载时阻止点击 | `boolean`               | `false`     |
 
 ### 事件
 

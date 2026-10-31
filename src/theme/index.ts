@@ -1,41 +1,33 @@
 import type { ThemeTokenName } from './types'
-import {
-  DEFAULT_CUSTOM_THEME_COLOR,
-  DEFAULT_THEME_COLOR,
-} from './core/constants'
-import { resolveTheme } from './core/resolve'
+import { createTheme } from './core/resolve'
 
-/** 所有运行时主题变量，由主题编译器的实际输出生成，供隔离页面安全转发。 */
-export const THEME_TOKEN_NAMES = Object.freeze(
+/** 由主题编译器实际输出生成的语义 Token 名，独立于各页面的 CSS 前缀 */
+export const themeTokenNames = Object.freeze(
   Object.keys(
-    resolveTheme('light', DEFAULT_THEME_COLOR, DEFAULT_CUSTOM_THEME_COLOR).tokens,
+    createTheme().tokens,
   ) as ThemeTokenName[],
 )
 
 export {
-  DEFAULT_CUSTOM_THEME_COLOR,
-  DEFAULT_THEME_COLOR,
-  DEFAULT_THEME_CUSTOMIZATION,
-  DEFAULT_THEME_MODE,
-  THEME_COLOR_PRESETS,
+  defaultThemeColorId,
+  defaultThemeMode,
+  defaultThemePrimaryColor,
+  themeColorPresets,
 } from './core/constants'
 export {
   isThemeColorId,
   isThemeMode,
   normalizeThemeCustomization,
-  themeTokenAllowsAlpha,
+  supportsThemeTokenAlpha,
 } from './core/normalize'
 export {
-  resolveTheme,
-  resolveThemeName,
-  resolveThemeSeed,
-  resolveThemeSeedTokens,
-  themeColorPreset,
+  createTheme,
+  resolveThemeScheme,
 } from './core/resolve'
-export { applyResolvedTheme } from './runtime/browser'
+export { createThemeVars, getThemeVarName, themePrefix } from './namespace'
+export { applyTheme } from './runtime/browser'
 export type {
-  ResolvedTheme,
-  ResolvedThemeSeedTokens,
+  Theme,
   ThemeAppearanceSeed,
   ThemeColorId,
   ThemeColorPreset,
@@ -43,8 +35,10 @@ export type {
   ThemeComponentOverrides,
   ThemeCustomization,
   ThemeMode,
-  ThemeName,
+  ThemeOptions,
+  ThemeScheme,
   ThemeSeedOverrides,
+  ThemeSeedTokens,
   ThemeTokenName,
   ThemeTokens,
 } from './types'

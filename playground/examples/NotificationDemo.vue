@@ -16,11 +16,11 @@ const types = [{ label: '成功', value: 'success' }, { label: '错误', value: 
     <template #controls>
       <div class="demo-control">
         <span>类型</span>
-        <ZSelect v-model="type" :options="types" size="small" aria-label="提示类型" />
+        <ZSelect v-model="type" class="w-36" :options="types" size="small" aria-label="提示类型" />
       </div>
       <div class="demo-control">
         <span>持续时间</span>
-        <ZInputNumber v-model="duration" size="small" aria-label="提示持续时间" :min="1" :max="10" unit="秒" />
+        <ZInputNumber v-model="duration" class="w-28" size="small" aria-label="提示持续时间" :min="1" :max="10" unit="秒" />
       </div>
     </template>
   </DemoPlayground>

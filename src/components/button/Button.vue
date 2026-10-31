@@ -26,9 +26,9 @@ defineSlots<{
 }>()
 
 const sizeClasses: Record<ComponentSize, string> = {
-  small: 'h-cp-control-sm gap-1.5 px-3 text-xs',
-  default: 'h-cp-control gap-2 px-4 text-cp',
-  large: 'h-cp-control-lg gap-2.5 px-5 text-cp-lg',
+  small: 'h-z-control-sm gap-1.5 px-3 text-xs',
+  default: 'h-z-control gap-2 px-4 text-z',
+  large: 'h-z-control-lg gap-2.5 px-5 text-z-lg',
 }
 
 const spinnerSizes: Record<ComponentSize, number> = {
@@ -43,9 +43,9 @@ defineExpose({ focus: () => buttonRef.value?.focus(), blur: () => buttonRef.valu
 } })
 
 const classes = computed(() => [
-  'inline-flex shrink-0 touch-manipulation items-center justify-center rounded-cp-sm border-0 font-bold leading-none outline-none transition-[background-color,box-shadow,color,opacity,transform] duration-150 motion-safe:active:translate-y-px motion-safe:active:scale-[0.985] motion-reduce:transition-none',
-  'focus-visible:ring-2 focus-visible:ring-cp-control-outline focus-visible:ring-offset-2 focus-visible:ring-offset-cp-bg-container',
-  'disabled:cursor-not-allowed disabled:transform-none disabled:bg-cp-bg-container-disabled disabled:text-cp-text-disabled disabled:shadow-none',
+  'inline-flex shrink-0 touch-manipulation items-center justify-center rounded-z-sm border-0 font-bold leading-none outline-none transition-[background-color,box-shadow,color,opacity,transform] duration-150 motion-safe:active:translate-y-px motion-safe:active:scale-[0.985] motion-reduce:transition-none',
+  'focus-visible:ring-2 focus-visible:ring-z-control-outline focus-visible:ring-offset-2 focus-visible:ring-offset-z-bg-container',
+  'disabled:cursor-not-allowed disabled:transform-none disabled:bg-z-bg-container-disabled disabled:text-z-text-disabled disabled:shadow-none',
   sizeClasses[props.size],
   buttonSurface(props.type, props.variant),
 ])

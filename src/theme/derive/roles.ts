@@ -1,6 +1,6 @@
 import type {
   ThemeColorRoleRecipes,
-  ThemeName,
+  ThemeScheme,
 } from '../types'
 
 /** 明暗算法只描述 Palette 到 Map Token 的角色关系，不携带具体品牌颜色。 */
@@ -84,4 +84,4 @@ export const THEME_COLOR_ROLE_RECIPES = {
       minimumTextLightness: 0.7,
     },
   },
-} as const satisfies Record<ThemeName, ThemeColorRoleRecipes>
+} as const satisfies Record<ThemeScheme, ThemeColorRoleRecipes>

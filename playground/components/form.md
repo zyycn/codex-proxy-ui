@@ -6,13 +6,15 @@ import FormDemo from '../examples/FormDemo.vue'
 
 组合相关字段，统一标签、说明与校验状态
 
-## 交互示例
+## 基础用法
+
+<DemoExample>
 
 <ClientOnly>
   <FormDemo />
 </ClientOnly>
 
-::: details 查看用法代码
+<template #source>
 
 ```vue
 <script setup lang="ts">
@@ -53,7 +55,9 @@ async function save() {
 </template>
 ```
 
-:::
+</template>
+
+</DemoExample>
 
 ## 标签与错误反馈
 
@@ -63,7 +67,7 @@ async function save() {
 
 单控件自动关联标签和控件 ID；多控件使用组标签，各控件需要自己的可访问名称。`for` 可显式指定标签关联的控件，辅助按钮放在 `label-extra` 或 `extra`
 
-错误提示绝对定位在控件下方，不改变字段和表单高度。字段之间保留至少 20px 间距，ZForm 默认提供此间距；长错误单行省略，完整内容通过 `title` 和 `aria-describedby` 提供
+顶部标签与控件间距为 8px。错误提示绝对定位在控件下方，不改变字段和表单高度，使用公共 `z-zoom-in-top` 过渡。字段之间保留至少 18px 间距，ZForm 默认提供此间距；长错误单行省略，完整内容通过 `title` 和 `aria-describedby` 提供
 
 ## 校验规则
 
@@ -75,41 +79,35 @@ async function save() {
 
 自定义校验接收 `(rule, value, callback, source, options)`，可通过 `callback(new Error(message))` 报错；`asyncValidator` 也可返回 Promise。跨字段校验从业务模型读取关联值，`source` 是当前字段的校验输入
 
-## API
+## Form API {#api}
 
-### ZForm
+### 属性 {#zform}
 
-| 属性                       | 类型                               | 默认值                 | 说明                             |
-| -------------------------- | ---------------------------------- | ---------------------- | -------------------------------- |
-| `model`                    | `object`                           | —                      | 校验与重置操作的业务模型         |
-| `rules`                    | `FormRules<T>`                     | —                      | 按字段路径配置的规则             |
-| `label-position`           | `'left' \| 'right' \| 'top'`       | `'top'`                | 标签位置                         |
-| `label-width`              | `string \| number`                 | `'auto'`               | 横向标签列宽度                   |
-| `show-message`             | `boolean`                          | `true`                 | 显示字段错误信息                 |
-| `validate-on-rule-change`  | `boolean`                          | `true`                 | 规则变化时重新校验               |
-| `scroll-to-error`          | `boolean`                          | `false`                | 提交校验失败时滚动到首个错误字段 |
-| `scroll-into-view-options` | `boolean \| ScrollIntoViewOptions` | `{ block: 'nearest' }` | 滚动选项                         |
-| `focus-on-error`           | `boolean`                          | `false`                | 提交校验失败时聚焦首个错误字段   |
+| 属性                       | 说明                             | 类型                               | 默认值                 |
+| -------------------------- | -------------------------------- | ---------------------------------- | ---------------------- |
+| `model`                    | 校验与重置操作的业务模型         | `object`                           | —                      |
+| `rules`                    | 按字段路径配置的规则             | `FormRules<T>`                     | —                      |
+| `label-position`           | 标签位置                         | `'left' \| 'right' \| 'top'`       | `'top'`                |
+| `label-width`              | 横向标签列宽度                   | `string \| number`                 | `'auto'`               |
+| `show-message`             | 显示字段错误信息                 | `boolean`                          | `true`                 |
+| `validate-on-rule-change`  | 规则变化时重新校验               | `boolean`                          | `true`                 |
+| `scroll-to-error`          | 提交校验失败时滚动到首个错误字段 | `boolean`                          | `false`                |
+| `scroll-into-view-options` | 滚动选项                         | `boolean \| ScrollIntoViewOptions` | `{ block: 'nearest' }` |
+| `focus-on-error`           | 提交校验失败时聚焦首个错误字段   | `boolean`                          | `false`                |
 
 原生 form 属性透传，submit 阻止浏览器默认提交。使用组件校验时设置 `novalidate`，避免原生校验先拦截提交；保存操作由调用方执行
 
-`validate(prop, isValid, message)` 事件在字段完成校验后触发
+### 事件
 
-### ZFormItem
+| 事件       | 说明               | 参数                     |
+| ---------- | ------------------ | ------------------------ |
+| `validate` | 字段完成校验后触发 | `prop, isValid, message` |
 
-| 属性                          | 类型                                         | 默认值     | 说明                                               |
-| ----------------------------- | -------------------------------------------- | ---------- | -------------------------------------------------- |
-| `prop`                        | `string \| string[]`                         | —          | 模型字段路径，如 `user.name` 或 `['user', 'name']` |
-| `rules`                       | `FormRule \| FormRule[]`                     | —          | 与表单规则合并的字段规则                           |
-| `label-position`              | `'' \| 'left' \| 'right' \| 'top'`           | 继承 Form  | 标签位置                                           |
-| `label-width`                 | `string \| number`                           | 继承 Form  | 标签列宽度                                         |
-| `for`                         | `string`                                     | 自动关联   | 标签关联的控件 ID                                  |
-| `label / description / error` | `string`                                     | —          | 标签、帮助与外部错误；外部错误优先                 |
-| `required`                    | `boolean`                                    | 由规则推导 | 覆盖必填规则与标记                                 |
-| `show-message`                | `boolean`                                    | 继承 Form  | 显示错误信息                                       |
-| `validate-status`             | `'' \| 'validating' \| 'success' \| 'error'` | 自动       | 外部校验状态                                       |
+### 插槽
 
-插槽：`default`、`label`、`label-extra`、`extra`
+| 插槽      | 说明             |
+| --------- | ---------------- |
+| `default` | 表单字段与操作区 |
 
 ### 实例
 
@@ -130,4 +128,42 @@ async function save() {
 
 初值在字段首次挂载时记录，临时卸载后继续保留。异步加载模型后可调用 `setInitialValues(model)` 更新基准；重置直接修改传入模型，模型需可写
 
-`clearValidate` 不修改调用方提供的 `error / validate-status`。FormItem 实例提供 `validate(trigger?, callback?)`、`resetField`、`clearValidate`、`setInitialValue / getInitialValue`、`focus`、`scrollIntoView`，以及 `validateState / validateMessage / fieldValue`
+`clearValidate` 不修改调用方提供的 `error / validate-status`
+
+## FormItem API
+
+### 属性 {#zformitem}
+
+| 属性                          | 说明                                               | 类型                                         | 默认值     |
+| ----------------------------- | -------------------------------------------------- | -------------------------------------------- | ---------- |
+| `prop`                        | 模型字段路径，如 `user.name` 或 `['user', 'name']` | `string \| string[]`                         | —          |
+| `rules`                       | 与表单规则合并的字段规则                           | `FormRule \| FormRule[]`                     | —          |
+| `label-position`              | 标签位置                                           | `'' \| 'left' \| 'right' \| 'top'`           | 继承 Form  |
+| `label-width`                 | 标签列宽度                                         | `string \| number`                           | 继承 Form  |
+| `for`                         | 标签关联的控件 ID                                  | `string`                                     | 自动关联   |
+| `label / description / error` | 标签、帮助与外部错误；外部错误优先                 | `string`                                     | —          |
+| `required`                    | 覆盖必填规则与标记                                 | `boolean`                                    | 由规则推导 |
+| `show-message`                | 显示错误信息                                       | `boolean`                                    | 继承 Form  |
+| `validate-status`             | 外部校验状态                                       | `'' \| 'validating' \| 'success' \| 'error'` | 自动       |
+
+### 插槽
+
+| 插槽          | 说明             |
+| ------------- | ---------------- |
+| `default`     | 字段控件         |
+| `label`       | 自定义标签       |
+| `label-extra` | 标签旁的辅助内容 |
+| `extra`       | 字段辅助内容     |
+
+### 实例
+
+| 方法或属性                                     | 说明                       |
+| ---------------------------------------------- | -------------------------- |
+| `validate(trigger?, callback?)`                | 校验当前字段               |
+| `resetField()`                                 | 恢复字段初值并清空校验状态 |
+| `clearValidate()`                              | 清空组件维护的校验状态     |
+| `setInitialValue(value)` / `getInitialValue()` | 设置或读取重置基准         |
+| `focus()`                                      | 聚焦字段控件               |
+| `scrollIntoView(options?)`                     | 滚动到当前字段             |
+| `validateState` / `validateMessage`            | 当前校验状态与提示         |
+| `fieldValue`                                   | 当前字段值                 |

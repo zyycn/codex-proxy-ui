@@ -29,7 +29,7 @@ Vue 3 · TypeScript · 按需导入 · 主题定制 · 国际化
 需要 Vue 3.5+、Node.js 24+
 
 ```bash
-pnpm add https://github.com/zyycn/codex-proxy-ui/releases/download/v0.7.0/codex-proxy-ui-0.7.0.tgz
+pnpm add https://github.com/zyycn/codex-proxy-ui/releases/download/v0.8.0/codex-proxy-ui-0.8.0.tgz
 ```
 
 包名为 `@codex-proxy/ui`，通过 [GitHub Releases](https://github.com/zyycn/codex-proxy-ui/releases) 分发，尚未发布到 npm registry。每个版本提供 `.tgz` 安装包与 `.sha256` 校验文件，提交应用锁文件以固定版本和完整性摘要
@@ -42,18 +42,16 @@ pnpm add https://github.com/zyycn/codex-proxy-ui/releases/download/v0.7.0/codex-
 
 ```ts
 import {
-  applyResolvedTheme,
-  DEFAULT_CUSTOM_THEME_COLOR,
-  DEFAULT_THEME_COLOR,
-  resolveTheme,
+  applyTheme,
+  createTheme,
 } from '@codex-proxy/ui/theme'
 import { createApp } from 'vue'
 import App from './App.vue'
 import '@codex-proxy/ui/styles.css'
 
-applyResolvedTheme(
+applyTheme(
   document.documentElement,
-  resolveTheme('light', DEFAULT_THEME_COLOR, DEFAULT_CUSTOM_THEME_COLOR),
+  createTheme({ scheme: 'light' }),
 )
 
 createApp(App).mount('#app')
@@ -94,14 +92,15 @@ JavaScript 可按需裁剪，`styles.css` 为完整样式，不随组件导入�
 
 [在线文档与 Playground](https://zyycn.github.io/codex-proxy-ui/) 提供可交互示例、源码和主题切换；固定版本的 API 可查看对应 Git 标签下的文档
 
-| 主题 | 内容 |
-| --- | --- |
+| 主题                                               | 内容                                   |
+| -------------------------------------------------- | -------------------------------------- |
 | [安装与样式集成](playground/guide/installation.md) | 包入口、按需使用与 Tailwind CSS 4 接入 |
-| [组件目录](playground/components/index.md) | 组件示例、属性、事件、插槽与实例方法 |
-| [主题定制](playground/guide/theme.md) | 预置配色、明暗模式、局部主题与组件变量 |
-| [国际化](playground/guide/i18n.md) | 语言包、ConfigProvider 与自定义文案 |
-| [源码联调](playground/guide/development.md) | 在应用中使用组件源码与热更新 |
-| [组件架构](playground/guide/architecture.md) | 目录组织、公开入口与组件职责 |
+| [组件目录](playground/components/index.md)         | 组件示例、属性、事件、插槽与实例方法   |
+| [主题定制](playground/guide/theme.md)              | 预置配色、明暗模式、局部主题与组件变量 |
+| [公开 API](playground/guide/api.md)                | 公开入口、服务、组合式函数与命名约定   |
+| [国际化](playground/guide/i18n.md)                 | 语言包、ConfigProvider 与自定义文案    |
+| [源码联调](playground/guide/development.md)        | 在应用中使用组件源码与热更新           |
+| [组件架构](playground/guide/architecture.md)       | 目录组织、公开入口与组件职责           |
 
 ## 本地开发
 

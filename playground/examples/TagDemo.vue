@@ -21,7 +21,7 @@ const types = ['default', 'primary', 'success', 'info', 'warning', 'danger'].map
     <template #controls>
       <div class="demo-control">
         <span>状态</span>
-        <ZSelect v-model="type" :options="types" size="small" aria-label="标签状态" />
+        <ZSelect v-model="type" class="w-36" :options="types" size="small" aria-label="标签状态" />
       </div>
       <ZCheckbox v-model="closable" label="可关闭" />
       <ZCheckbox v-model="round" label="圆角" />

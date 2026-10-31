@@ -290,7 +290,7 @@ function normalizedInputColor() {
         :id="controlId"
         ref="trigger"
         type="button"
-        class="group inline-flex size-8 items-center justify-center rounded-sm border-0 bg-transparent p-0 outline-none transition-opacity duration-150 hover:opacity-90 focus-visible:ring-2 focus-visible:ring-cp-control-outline disabled:cursor-not-allowed disabled:opacity-60"
+        class="group inline-flex size-8 items-center justify-center rounded-sm border-0 bg-transparent p-0 outline-none transition-opacity duration-150 hover:opacity-90 focus-visible:ring-2 focus-visible:ring-z-control-outline disabled:cursor-not-allowed disabled:opacity-60"
         :disabled="props.disabled"
         :aria-label="controlLabel"
         :aria-describedby="describedBy"
@@ -314,7 +314,7 @@ function normalizedInputColor() {
       <div class="grid h-43 grid-cols-[1fr_14px] gap-2">
         <div
           ref="svPanel"
-          class="base-color-picker__sv relative touch-none overflow-hidden rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-cp-control-outline"
+          class="base-color-picker__sv relative touch-none overflow-hidden rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-z-control-outline"
           :style="{ backgroundColor: hueColor }"
           role="slider"
           tabindex="0"
@@ -335,7 +335,7 @@ function normalizedInputColor() {
 
         <div
           ref="hueSlider"
-          class="base-color-picker__hue relative touch-none rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-cp-control-outline"
+          class="base-color-picker__hue relative touch-none rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-z-control-outline"
           role="slider"
           tabindex="0"
           :aria-label="locale.colorPicker.hue"
@@ -357,7 +357,7 @@ function normalizedInputColor() {
       <div v-if="props.allowAlpha" class="grid grid-cols-[1fr_36px] items-center gap-2">
         <div
           ref="alphaSlider"
-          class="base-color-picker__alpha relative h-3 touch-none rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-cp-control-outline"
+          class="base-color-picker__alpha relative h-3 touch-none rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-z-control-outline"
           :style="alphaTrackStyle"
           role="slider"
           tabindex="0"
@@ -376,7 +376,7 @@ function normalizedInputColor() {
             :style="alphaThumbStyle"
           />
         </div>
-        <span class="text-right font-mono text-cp-xs tabular-nums text-cp-text-secondary">
+        <span class="text-right font-mono text-z-xs tabular-nums text-z-text-secondary">
           {{ Math.round(alpha * 100) }}%
         </span>
       </div>
@@ -386,7 +386,7 @@ function normalizedInputColor() {
           v-for="color in props.presets"
           :key="color"
           type="button"
-          class="relative flex size-6.5 items-center justify-center rounded-sm border-0 outline-none transition-transform duration-150 hover:scale-105 focus-visible:ring-2 focus-visible:ring-cp-control-outline focus-visible:ring-offset-2 focus-visible:ring-offset-cp-bg-container"
+          class="relative flex size-6.5 items-center justify-center rounded-sm border-0 outline-none transition-transform duration-150 hover:scale-105 focus-visible:ring-2 focus-visible:ring-z-control-outline focus-visible:ring-offset-2 focus-visible:ring-offset-z-bg-container"
           :style="{ backgroundColor: color }"
           role="radio"
           :aria-label="color"
@@ -406,7 +406,7 @@ function normalizedInputColor() {
         <div class="min-w-0 flex-1">
           <Input
             v-model="customInput"
-            class="rounded-cp bg-cp-fill-tertiary!"
+            class="rounded-z bg-z-fill-tertiary!"
             :aria-label="props.allowAlpha ? locale.colorPicker.rgba : locale.colorPicker.hex"
             :placeholder="props.allowAlpha ? 'rgba(96, 165, 250, 1)' : '#2563EB'"
             autocomplete="off"
@@ -419,7 +419,7 @@ function normalizedInputColor() {
           <p
             v-if="inputError"
             id="color-input-error"
-            class="mt-1.5 mb-0 text-xs font-emphasis text-cp-error-text"
+            class="mt-1.5 mb-0 text-xs font-emphasis text-z-error-text"
             aria-live="polite"
           >
             {{ inputError }}

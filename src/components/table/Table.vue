@@ -8,6 +8,7 @@ import { useLocale } from '../../locale/context'
 import Empty from '../empty/Empty.vue'
 import Scrollbar from '../scrollbar/Scrollbar.vue'
 import { useTableColumnMotion } from './composables/useTableColumnMotion'
+import { useTableExpandMotion } from './composables/useTableExpandMotion'
 import {
   alignClass,
   cellContentClass,
@@ -55,6 +56,7 @@ const hasRows = computed(() => displayRows.value.length > 0)
 const scrollbarRef = useTemplateRef<InstanceType<typeof Scrollbar>>('scrollbar')
 const tableRef = useTemplateRef<HTMLTableElement>('table')
 useTableColumnMotion(tableRef, () => computedColumns.value.map(column => column.key))
+const expandMotion = useTableExpandMotion()
 const horizontalScrolled = shallowRef(false)
 const horizontalCanScrollRight = shallowRef(false)
 
@@ -91,12 +93,12 @@ watch([() => displayRows.value.length, () => props.columns], async () => {
 })
 
 const headerRowClass = computed(() => [
-  props.size === 'small' ? 'h-8 text-cp-xs' : props.size === 'large' ? 'h-12 text-cp' : 'h-10 text-cp-sm',
-  'font-bold text-cp-text-secondary',
+  props.size === 'small' ? 'h-8 text-z-xs' : props.size === 'large' ? 'h-12 text-z' : 'h-10 text-z-sm',
+  'font-bold text-z-text-secondary',
 ])
-const bodyRowClass = computed(() => (props.size === 'small' ? 'h-cp-table-row-sm' : props.size === 'large' ? 'h-12' : 'h-cp-table-row'))
+const bodyRowClass = computed(() => (props.size === 'small' ? 'h-z-table-row-sm' : props.size === 'large' ? 'h-12' : 'h-z-table-row'))
 const cellPaddingClass = computed(() => (props.size === 'large' ? 'px-4' : 'px-3'))
-const bodyTextClass = computed(() => (props.size === 'small' ? 'text-cp-sm' : props.size === 'large' ? 'text-cp-lg' : 'text-cp'))
+const bodyTextClass = computed(() => (props.size === 'small' ? 'text-z-sm' : props.size === 'large' ? 'text-z-lg' : 'text-z'))
 const bodyCellFrameClass = computed(() =>
   props.size === 'small'
     ? 'border-y-2 border-transparent bg-clip-padding'
@@ -105,8 +107,8 @@ const bodyCellFrameClass = computed(() =>
 const firstRowTopGapClass = computed(() => (props.size === 'small' ? 'border-t-4' : 'border-t-[6px]'))
 const bodyCellContentClass = computed(() =>
   props.size === 'small'
-    ? 'min-h-[calc(var(--cp-table-row-height-sm)-4px)]'
-    : 'min-h-[calc(var(--cp-table-row-height)-6px)]',
+    ? 'min-h-[calc(var(--z-table-row-height-sm)-4px)]'
+    : 'min-h-[calc(var(--z-table-row-height)-6px)]',
 )
 
 function getRowKey(row: Row, index: number) {
@@ -126,18 +128,18 @@ function isRowExpanded(row: Row, index: number) {
 
 function rowBackgroundClass(row: Row, index: number) {
   if (isRowSelected(row, index))
-    return 'bg-(--cp-table-row-selected-bg)'
+    return 'bg-(--z-table-row-selected-bg)'
   if (index % 2 === 1)
-    return 'bg-(--cp-table-row-stripe-bg)'
-  return 'bg-(--cp-table-row-bg)'
+    return 'bg-(--z-table-row-stripe-bg)'
+  return 'bg-(--z-table-row-bg)'
 }
 
 function rowClass(row: Row, index: number) {
   return [
     bodyRowClass.value,
     isRowSelected(row, index)
-      ? 'hover:[&>td]:bg-(--cp-table-row-selected-hover-bg)'
-      : 'hover:[&>td]:bg-(--cp-table-row-hover-bg)',
+      ? 'hover:[&>td]:bg-(--z-table-row-selected-hover-bg)'
+      : 'hover:[&>td]:bg-(--z-table-row-hover-bg)',
   ]
 }
 
@@ -150,8 +152,8 @@ function stickyClass(column: ResolvedTableColumn<Row>, header = false) {
     header ? 'z-40' : 'z-20',
     showShadow
       ? column.sticky === 'left'
-        ? 'shadow-[8px_0_14px_-14px_var(--cp-color-shadow)]'
-        : 'shadow-[-8px_0_14px_-14px_var(--cp-color-shadow)]'
+        ? 'shadow-[8px_0_14px_-14px_var(--z-color-shadow)]'
+        : 'shadow-[-8px_0_14px_-14px_var(--z-color-shadow)]'
       : undefined,
   ]
 }
@@ -202,8 +204,8 @@ function sortButtonLabel(column: ResolvedTableColumn<Row>) {
         class="min-h-0 flex-1"
         :class="
           size === 'small'
-            ? '[--cp-scrollbar-track-inset-block-start:2.25rem]'
-            : '[--cp-scrollbar-track-inset-block-start:2.75rem]'
+            ? '[--z-scrollbar-track-inset-block-start:2.25rem]'
+            : '[--z-scrollbar-track-inset-block-start:2.75rem]'
         "
         :always-visible="scrollbarAlwaysVisible"
         :inert="loading || undefined"
@@ -219,12 +221,12 @@ function sortButtonLabel(column: ResolvedTableColumn<Row>) {
               <th
                 v-for="(column, columnIndex) in computedColumns"
                 :key="column.key"
-                class="sticky top-0 z-30 whitespace-nowrap bg-(--cp-table-header-bg) shadow-[0_10px_16px_-18px_var(--cp-color-shadow)]"
+                class="sticky top-0 z-30 whitespace-nowrap bg-(--z-table-header-bg) shadow-[0_10px_16px_-18px_var(--z-color-shadow)]"
                 :class="[
                   column.paddingClass ?? cellPaddingClass,
                   alignClass(column),
-                  columnIndex === 0 ? 'rounded-l-cp' : undefined,
-                  columnIndex === computedColumns.length - 1 ? 'rounded-r-cp' : undefined,
+                  columnIndex === 0 ? 'rounded-l-z' : undefined,
+                  columnIndex === computedColumns.length - 1 ? 'rounded-r-z' : undefined,
                   stickyClass(column, true),
                 ]"
                 :style="stickyStyle(column)"
@@ -235,7 +237,7 @@ function sortButtonLabel(column: ResolvedTableColumn<Row>) {
                   <button
                     v-if="column.sortable"
                     type="button"
-                    class="inline-flex max-w-full touch-manipulation items-center gap-1 border-0 bg-transparent p-0 text-inherit outline-none transition-colors hover:text-cp-text focus-visible:text-cp-primary-text motion-reduce:transition-none"
+                    class="inline-flex max-w-full touch-manipulation items-center gap-1 border-0 bg-transparent p-0 text-inherit outline-none transition-colors hover:text-z-text focus-visible:text-z-primary-text motion-reduce:transition-none"
                     :aria-label="sortButtonLabel(column)"
                     :title="sortButtonLabel(column)"
                     @click="toggleColumnSort(column)"
@@ -247,7 +249,7 @@ function sortButtonLabel(column: ResolvedTableColumn<Row>) {
                       <Triangle
                         class="size-1.25 fill-current"
                         :class="[
-                          columnSortDirection(column) === 'asc' ? 'text-cp-primary-text' : 'text-cp-text-tertiary',
+                          columnSortDirection(column) === 'asc' ? 'text-z-primary-text' : 'text-z-text-tertiary',
                           columnSortDirection(column) === 'desc' ? 'opacity-30' : undefined,
                         ]"
                         :stroke-width="0"
@@ -255,7 +257,7 @@ function sortButtonLabel(column: ResolvedTableColumn<Row>) {
                       <Triangle
                         class="size-1.25 rotate-180 fill-current"
                         :class="[
-                          columnSortDirection(column) === 'desc' ? 'text-cp-primary-text' : 'text-cp-text-tertiary',
+                          columnSortDirection(column) === 'desc' ? 'text-z-primary-text' : 'text-z-text-tertiary',
                           columnSortDirection(column) === 'asc' ? 'opacity-30' : undefined,
                         ]"
                         :stroke-width="0"
@@ -283,8 +285,8 @@ function sortButtonLabel(column: ResolvedTableColumn<Row>) {
                     column.contentClass,
                     alignClass(column),
                     index === 0 ? firstRowTopGapClass : undefined,
-                    columnIndex === 0 ? 'rounded-l-cp' : undefined,
-                    columnIndex === computedColumns.length - 1 ? 'rounded-r-cp' : undefined,
+                    columnIndex === 0 ? 'rounded-l-z' : undefined,
+                    columnIndex === computedColumns.length - 1 ? 'rounded-r-z' : undefined,
                     stickyClass(column),
                     rowBackgroundClass(row, index),
                   ]"
@@ -305,15 +307,17 @@ function sortButtonLabel(column: ResolvedTableColumn<Row>) {
                   </div>
                 </td>
               </tr>
-              <tr v-if="isRowExpanded(row, index)">
-                <td
-                  :colspan="computedColumns.length"
-                  class="rounded-cp border-y-transparent bg-cp-fill-quaternary bg-clip-padding p-0"
-                  :class="bodyCellFrameClass"
-                >
-                  <slot name="expanded" :row="row" :index="index" />
-                </td>
-              </tr>
+              <Transition :css="false" @enter="expandMotion.enter" @leave="expandMotion.leave">
+                <tr v-if="isRowExpanded(row, index)">
+                  <td :colspan="computedColumns.length" class="p-0">
+                    <div data-expanded-content>
+                      <div class="rounded-z border-y-transparent bg-z-fill-quaternary bg-clip-padding" :class="bodyCellFrameClass">
+                        <slot name="expanded" :row="row" :index="index" />
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </Transition>
             </template>
           </tbody>
         </table>
@@ -330,14 +334,14 @@ function sortButtonLabel(column: ResolvedTableColumn<Row>) {
       <!-- 加载反馈属于表格自身，独立使用和服务端渲染都不依赖宿主注册指令。 -->
       <div
         v-if="loading"
-        class="absolute inset-x-0 bottom-0 z-50 grid place-items-center rounded-[inherit] bg-cp-bg-container/82 backdrop-blur-xs"
+        class="absolute inset-x-0 bottom-0 z-50 grid place-items-center rounded-[inherit] bg-z-bg-container/82 backdrop-blur-xs"
         :class="!hasRows && showHeaderWhenEmpty ? (size === 'small' ? 'top-8' : 'top-10') : 'top-0'"
         role="status"
         aria-live="polite"
       >
-        <span class="inline-flex min-h-10 items-center gap-2.5 px-3 py-2 text-xs leading-none font-heavy text-cp-text-secondary">
+        <span class="inline-flex min-h-10 items-center gap-2.5 px-3 py-2 text-xs leading-none font-heavy text-z-text-secondary">
           <span
-            class="size-4 shrink-0 rounded-full bg-[radial-gradient(circle_at_center,var(--cp-color-bg-container)_0_44%,transparent_46%),conic-gradient(from_0deg,var(--cp-color-primary)_0deg_105deg,var(--cp-color-primary-hover)_105deg_200deg,var(--cp-color-fill-tertiary)_200deg_360deg)] motion-safe:animate-spin"
+            class="size-4 shrink-0 rounded-full bg-[radial-gradient(circle_at_center,var(--z-color-bg-container)_0_44%,transparent_46%),conic-gradient(from_0deg,var(--z-color-primary)_0deg_105deg,var(--z-color-primary-hover)_105deg_200deg,var(--z-color-fill-tertiary)_200deg_360deg)] motion-safe:animate-spin"
             aria-hidden="true"
           />
           <span>{{ locale.common.loading }}</span>

@@ -56,14 +56,14 @@ watch([activeIndex, () => props.options, rootRef], updateIndicator, { flush: 'po
 useResizeObserver(() => [rootRef.value, ...(optionRefs.value ?? [])], updateIndicator)
 
 const rootClasses: Record<ComponentSize, string> = {
-  small: 'h-cp-control-sm',
-  default: 'h-cp-control',
-  large: 'h-cp-control-lg',
+  small: 'h-z-control-sm',
+  default: 'h-z-control',
+  large: 'h-z-control-lg',
 }
 const optionClasses: Record<ComponentSize, string> = {
-  small: 'h-6.5 px-2 text-cp-xs',
+  small: 'h-6.5 px-2 text-z-xs',
   default: 'h-8 px-3 text-xs',
-  large: 'h-9.5 px-4 text-cp',
+  large: 'h-9.5 px-4 text-z',
 }
 
 function enabledIndexes() {
@@ -113,7 +113,7 @@ async function handleKeydown(event: KeyboardEvent, index: number) {
     :id="controlId"
     ref="root"
     tabindex="-1"
-    class="relative inline-grid min-w-0 max-w-full items-center overflow-x-auto rounded-cp bg-(--cp-input-bg) p-0.75 scrollbar-none [&::-webkit-scrollbar]:hidden [&::-webkit-scrollbar]:size-0"
+    class="relative inline-grid min-w-0 max-w-full items-center overflow-x-auto rounded-z bg-(--z-input-bg) p-0.75 scrollbar-none [&::-webkit-scrollbar]:hidden [&::-webkit-scrollbar]:size-0"
     :class="rootClasses[size]"
     :style="gridStyle"
     role="radiogroup"
@@ -126,18 +126,18 @@ async function handleKeydown(event: KeyboardEvent, index: number) {
   >
     <span
       v-if="indicatorStyle && activeIndex >= 0"
-      class="pointer-events-none absolute inset-y-0.75 left-0 rounded-cp bg-cp-bg-container shadow-cp-tertiary transition-[transform,width] duration-200 ease-out motion-reduce:transition-none"
+      class="pointer-events-none absolute inset-y-0.75 left-0 rounded-z bg-z-bg-container shadow-z-tertiary transition-[transform,width] duration-200 ease-out motion-reduce:transition-none"
       :style="indicatorStyle"
     />
     <button
       v-for="(option, index) in options"
       :key="option.value"
       ref="option"
-      class="relative z-10 inline-flex touch-manipulation items-center justify-center gap-1.5 rounded-cp border-0 bg-transparent leading-none font-emphasis outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-cp-control-outline motion-reduce:transition-none"
+      class="relative z-10 inline-flex touch-manipulation items-center justify-center gap-1.5 rounded-z border-0 bg-transparent leading-none font-emphasis outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-z-control-outline motion-reduce:transition-none"
       :class="[
         optionClasses[size],
-        model === option.value ? 'text-cp-text' : 'text-cp-text-secondary hover:text-cp-text',
-        disabled || option.disabled ? 'cursor-not-allowed opacity-60 hover:text-cp-text-secondary' : undefined,
+        model === option.value ? 'text-z-text' : 'text-z-text-secondary hover:text-z-text',
+        disabled || option.disabled ? 'cursor-not-allowed opacity-60 hover:text-z-text-secondary' : undefined,
         display === 'icon' ? 'px-0' : undefined,
       ]"
       type="button"

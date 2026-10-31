@@ -6,13 +6,15 @@ import LoadingDemo from '../examples/LoadingDemo.vue'
 
 通过 `v-loading` 在容器内显示加载状态
 
-## 交互示例
+## 基础用法
+
+<DemoExample>
 
 <ClientOnly>
   <LoadingDemo />
 </ClientOnly>
 
-::: details 查看用法代码
+<template #source>
 
 ```vue
 <script setup lang="ts">
@@ -29,9 +31,11 @@ const loading = ref(true)
 </template>
 ```
 
-:::
+</template>
 
-## 使用要点
+</DemoExample>
+
+## 用法说明
 
 在 `<script setup>` 中导入 `vLoading` 即可局部使用。全局使用时在应用入口注册
 
@@ -45,7 +49,7 @@ app.directive('loading', vLoading)
 
 指令用于原生容器元素；基础组件自身的 `loading` 属性按对应组件文档使用
 
-## API
+## Loading API {#api}
 
 ### 指令值
 

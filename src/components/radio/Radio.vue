@@ -31,10 +31,10 @@ const checked = computed(() => model.value === props.value)
 const indicatorClasses = computed(() => [
   'relative inline-grid size-4 shrink-0 place-items-center rounded-full transition-colors duration-150 motion-reduce:transition-none',
   props.disabled
-    ? 'bg-cp-bg-container-disabled text-cp-text-disabled'
+    ? 'bg-z-bg-container-disabled text-z-text-disabled'
     : checked.value
-      ? 'bg-cp-primary text-(--cp-button-primary-color)'
-      : 'bg-cp-fill-secondary text-transparent',
+      ? 'bg-z-primary text-(--z-button-primary-color)'
+      : 'bg-z-fill-secondary text-transparent',
 ])
 </script>
 
@@ -67,14 +67,14 @@ const indicatorClasses = computed(() => [
     >
     <span
       :class="indicatorClasses"
-      class="peer-focus-visible:ring-2 peer-focus-visible:ring-cp-control-outline peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-cp-bg-container"
+      class="peer-focus-visible:ring-2 peer-focus-visible:ring-z-control-outline peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-z-bg-container"
     >
       <span class="size-1.5 rounded-full bg-current" />
     </span>
     <span v-if="$slots.default" class="min-w-0 flex-1">
       <slot />
     </span>
-    <span v-else-if="label" class="text-cp leading-none font-emphasis">
+    <span v-else-if="label" class="text-z leading-none font-emphasis">
       {{ label }}
     </span>
   </label>

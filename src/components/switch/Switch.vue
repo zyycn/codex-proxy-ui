@@ -41,27 +41,27 @@ const trackStyle = computed(() => props.width === ''
 const trackClasses = computed(() => [
   'relative inline-flex h-6 min-w-11 shrink-0 items-center rounded-full p-0.5 transition-[background-color,box-shadow] duration-180 motion-reduce:transition-none',
   props.disabled
-    ? 'bg-cp-bg-container-disabled shadow-none'
+    ? 'bg-z-bg-container-disabled shadow-none'
     : model.value
-      ? 'bg-cp-primary shadow-cp-tertiary'
-      : 'bg-(--cp-switch-unchecked-bg) shadow-cp-tertiary',
+      ? 'bg-z-primary shadow-z-tertiary'
+      : 'bg-(--z-switch-unchecked-bg) shadow-z-tertiary',
 ])
 const thumbClasses = computed(() => [
-  'absolute top-0.5 z-10 size-5 rounded-full bg-cp-white shadow-cp-tertiary transition-[left] duration-180 ease-out motion-reduce:transition-none',
+  'absolute top-0.5 z-10 size-5 rounded-full bg-z-white shadow-z-tertiary transition-[left] duration-180 ease-out motion-reduce:transition-none',
   model.value ? 'left-[calc(100%-1.375rem)]' : 'left-0.5',
 ])
 const inlineTextClasses = computed(() => [
   'pointer-events-none absolute inset-0 flex min-w-0 select-none items-center justify-center overflow-hidden text-[10px] leading-none font-heavy transition-[padding,color] duration-180 motion-reduce:transition-none',
-  model.value ? 'text-cp-white' : props.disabled ? 'text-cp-text-secondary' : 'text-(--cp-switch-unchecked-color)',
+  model.value ? 'text-z-white' : props.disabled ? 'text-z-text-secondary' : 'text-(--z-switch-unchecked-color)',
   model.value ? 'pr-6 pl-1' : 'pr-1 pl-6',
 ])
 const inactiveTextClasses = computed(() => [
-  'text-cp leading-none font-emphasis transition-colors duration-150 motion-reduce:transition-none',
-  model.value ? 'text-cp-text-secondary' : 'text-cp-primary-text',
+  'text-z leading-none font-emphasis transition-colors duration-150 motion-reduce:transition-none',
+  model.value ? 'text-z-text-secondary' : 'text-z-primary-text',
 ])
 const activeTextClasses = computed(() => [
-  'text-cp leading-none font-emphasis transition-colors duration-150 motion-reduce:transition-none',
-  model.value ? 'text-cp-primary-text' : 'text-cp-text-secondary',
+  'text-z leading-none font-emphasis transition-colors duration-150 motion-reduce:transition-none',
+  model.value ? 'text-z-primary-text' : 'text-z-text-secondary',
 ])
 </script>
 
@@ -97,7 +97,7 @@ const activeTextClasses = computed(() => [
     <span
       :class="trackClasses"
       :style="trackStyle"
-      class="peer-focus-visible:ring-2 peer-focus-visible:ring-cp-control-outline peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-cp-bg-container"
+      class="peer-focus-visible:ring-2 peer-focus-visible:ring-z-control-outline peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-z-bg-container"
     >
       <span v-if="inlinePrompt && inlineText" :class="inlineTextClasses">
         <span class="min-w-0 truncate">{{ inlineText }}</span>
@@ -105,7 +105,7 @@ const activeTextClasses = computed(() => [
       <span :class="thumbClasses" />
     </span>
     <span v-if="activeText && !inlinePrompt" :class="activeTextClasses">{{ activeText }}</span>
-    <span v-else-if="label && !hasStateText" class="text-cp font-emphasis text-cp-text">
+    <span v-else-if="label && !hasStateText" class="text-z font-emphasis text-z-text">
       {{ label }}
     </span>
   </label>

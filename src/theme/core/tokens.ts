@@ -52,9 +52,9 @@ const PRESET_TOKEN_ROLES = [
 ] as const satisfies readonly (readonly [keyof PresetColorRoleMap, PresetTokenSuffix])[]
 
 const CONTROL_TOKEN_BINDINGS = [
-  ['--cp-control-item-bg-active', 'colorPrimaryContainer'],
-  ['--cp-control-item-bg-active-hover', 'colorPrimaryContainerHover'],
-  ['--cp-control-outline', 'colorPrimaryBorder'],
+  ['control-item-bg-active', 'colorPrimaryContainer'],
+  ['control-item-bg-active-hover', 'colorPrimaryContainerHover'],
+  ['control-outline', 'colorPrimaryBorder'],
 ] as const satisfies readonly (readonly [ControlTokenName, keyof ThemePrimaryMap])[]
 
 export function createThemeTokens(themeMap: ThemeMap): ThemeTokens {
@@ -87,7 +87,7 @@ function appendPresetTokens(
     for (const [role, suffix] of PRESET_TOKEN_ROLES) {
       setToken(
         target,
-        `--cp-color-${colorName}-${suffix}` as PresetTokenName,
+        `color-${colorName}-${suffix}` as PresetTokenName,
         roles[role],
       )
     }
@@ -110,7 +110,7 @@ function appendSemanticTokens(
     for (const [role, suffix] of FUNCTIONAL_TOKEN_ROLES) {
       setToken(
         target,
-        `--cp-color-${colorName}${suffix}` as SemanticTokenName,
+        `color-${colorName}${suffix}` as SemanticTokenName,
         roles[role],
       )
     }
@@ -122,13 +122,13 @@ function appendActivityTokens(
   activityLevels: ThemeMap['data']['activityLevels'],
 ): void {
   activityLevels.forEach((value, level) => {
-    setToken(target, `--cp-activity-level-${level as ActivityLevel}`, value)
+    setToken(target, `activity-level-${level as ActivityLevel}`, value)
   })
 }
 
 function directTokenName(key: string): DirectTokenName {
   const kebab = key.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
-  return `--cp-${kebab}` as DirectTokenName
+  return `${kebab}` as DirectTokenName
 }
 
 function setToken(

@@ -1,12 +1,10 @@
-import type { MaybeRefOrGetter } from 'vue'
-import type { UiLocale } from '../../locale/types'
-import type { NotificationHandle, NotificationMessage, NotificationOptions } from './types'
+import type { NotificationConfig, NotificationHandle, NotificationMessage, NotificationOptions, NotificationService } from './types'
 import { h, render } from 'vue'
 import NotificationList from './components/NotificationList.vue'
 
 let nextId = 0
 
-export function createNotification(config: { locale?: MaybeRefOrGetter<UiLocale> } = {}) {
+export function createNotification(config: NotificationConfig = {}): NotificationService {
   let messages: NotificationMessage[] = []
   const timers = new Map<string, ReturnType<typeof setTimeout>>()
   let container: HTMLElement | null = null

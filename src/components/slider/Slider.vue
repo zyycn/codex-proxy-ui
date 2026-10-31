@@ -87,8 +87,8 @@ function updateModel(event: Event) {
   border-radius: 999px;
   background: linear-gradient(
     to right,
-    var(--cp-color-primary) 0 var(--z-slider-progress),
-    var(--cp-color-fill-secondary) var(--z-slider-progress) 100%
+    var(--z-color-primary) 0 var(--z-slider-progress),
+    var(--z-color-fill-secondary) var(--z-slider-progress) 100%
   );
 }
 
@@ -97,9 +97,9 @@ function updateModel(event: Event) {
   height: 14px;
   margin-top: -5px;
   appearance: none;
-  border: 2px solid var(--cp-color-bg-container);
+  border: 2px solid var(--z-color-bg-container);
   border-radius: 999px;
-  background: var(--cp-color-primary);
+  background: var(--z-color-primary);
   transition:
     box-shadow 150ms ease,
     transform 150ms ease;
@@ -108,21 +108,21 @@ function updateModel(event: Event) {
 .z-slider::-moz-range-track {
   height: 4px;
   border-radius: 999px;
-  background: var(--cp-color-fill-secondary);
+  background: var(--z-color-fill-secondary);
 }
 
 .z-slider::-moz-range-progress {
   height: 4px;
   border-radius: 999px;
-  background: var(--cp-color-primary);
+  background: var(--z-color-primary);
 }
 
 .z-slider::-moz-range-thumb {
   width: 10px;
   height: 10px;
-  border: 2px solid var(--cp-color-bg-container);
+  border: 2px solid var(--z-color-bg-container);
   border-radius: 999px;
-  background: var(--cp-color-primary);
+  background: var(--z-color-primary);
   transition:
     box-shadow 150ms ease,
     transform 150ms ease;
@@ -137,11 +137,11 @@ function updateModel(event: Event) {
 }
 
 .z-slider:focus-visible::-webkit-slider-thumb {
-  box-shadow: 0 0 0 3px var(--cp-color-primary-container-hover);
+  box-shadow: 0 0 0 3px var(--z-color-primary-container-hover);
 }
 
 .z-slider:focus-visible::-moz-range-thumb {
-  box-shadow: 0 0 0 3px var(--cp-color-primary-container-hover);
+  box-shadow: 0 0 0 3px var(--z-color-primary-container-hover);
 }
 
 .z-slider:disabled {

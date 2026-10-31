@@ -6,13 +6,15 @@ import NotificationDemo from '../examples/NotificationDemo.vue'
 
 为已经完成或失败的操作提供短反馈
 
-## 交互示例
+## 基础用法
+
+<DemoExample>
 
 <ClientOnly>
   <NotificationDemo />
 </ClientOnly>
 
-::: details 查看用法代码
+<template #source>
 
 ```vue
 <script setup lang="ts">
@@ -26,13 +28,15 @@ import { ZButton, ZNotification } from '@codex-proxy/ui'
 </template>
 ```
 
-:::
+</template>
 
-## 使用要点
+</DemoExample>
+
+## 用法说明
 
 通过 `ZNotification(options)` 或 `ZNotification.success / error / warning / info(options)` 显示通知。服务自动挂载通知列表，全部通知退场后卸载容器
 
-## API
+## Notification API {#api}
 
 ### 服务
 

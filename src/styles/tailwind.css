@@ -11,7 +11,7 @@
 @theme inline {
   /* 基础 */
   --font-sans: var(
-    --cp-font-family,
+    --z-font-family,
     'Inter Variable',
     Inter,
     ui-sans-serif,
@@ -22,7 +22,7 @@
     sans-serif
   );
   --font-mono: var(
-    --cp-font-family-code,
+    --z-font-family-code,
     'JetBrains Mono Variable',
     'JetBrains Mono',
     'SFMono-Regular',
@@ -32,202 +32,202 @@
   );
   --font-weight-emphasis: 650;
   --font-weight-heavy: 760;
-  --animate-cp-skeleton: cp-skeleton-breathe 2.8s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+  --animate-z-skeleton: z-skeleton-breathe 2.8s cubic-bezier(0.37, 0, 0.63, 1) infinite;
 
   /* 排版 */
-  --text-cp-xs: var(--cp-font-size-xs);
-  --text-cp-sm: var(--cp-font-size-sm);
-  --text-cp: var(--cp-font-size);
-  --text-cp-lg: var(--cp-font-size-lg);
-  --text-cp-xl: var(--cp-font-size-xl);
+  --text-z-xs: var(--z-font-size-xs);
+  --text-z-sm: var(--z-font-size-sm);
+  --text-z: var(--z-font-size);
+  --text-z-lg: var(--z-font-size-lg);
+  --text-z-xl: var(--z-font-size-xl);
 
   /* 颜色 · 基元 */
-  --color-cp-white: var(--cp-color-white);
-  --color-cp-transparent: var(--cp-color-transparent);
+  --color-z-white: var(--z-color-white);
+  --color-z-transparent: var(--z-color-transparent);
 
   /* 颜色 · 表面 */
-  --color-cp-bg-layout: var(--cp-color-bg-layout);
-  --color-cp-bg-container: var(--cp-color-bg-container);
-  --color-cp-bg-elevated: var(--cp-color-bg-elevated);
-  --color-cp-bg-spotlight: var(--cp-color-bg-spotlight);
-  --color-cp-bg-mask: var(--cp-color-bg-mask);
-  --color-cp-bg-text-hover: var(--cp-color-bg-text-hover);
-  --color-cp-bg-text-active: var(--cp-color-bg-text-active);
-  --color-cp-bg-container-disabled: var(--cp-color-bg-container-disabled);
-  --color-cp-fill-secondary: var(--cp-color-fill-secondary);
-  --color-cp-fill-tertiary: var(--cp-color-fill-tertiary);
-  --color-cp-fill-quaternary: var(--cp-color-fill-quaternary);
-  --color-cp-fill-alter: var(--cp-color-fill-alter);
-  --color-cp-border: var(--cp-color-border);
-  --color-cp-border-secondary: var(--cp-color-border-secondary);
-  --color-cp-split: var(--cp-color-split);
-  --color-cp-text: var(--cp-color-text);
-  --color-cp-text-heading: var(--cp-color-text-heading);
-  --color-cp-text-secondary: var(--cp-color-text-secondary);
-  --color-cp-text-tertiary: var(--cp-color-text-tertiary);
-  --color-cp-text-quaternary: var(--cp-color-text-quaternary);
-  --color-cp-text-disabled: var(--cp-color-text-disabled);
-  --color-cp-text-light-solid: var(--cp-color-text-light-solid);
+  --color-z-bg-layout: var(--z-color-bg-layout);
+  --color-z-bg-container: var(--z-color-bg-container);
+  --color-z-bg-elevated: var(--z-color-bg-elevated);
+  --color-z-bg-spotlight: var(--z-color-bg-spotlight);
+  --color-z-bg-mask: var(--z-color-bg-mask);
+  --color-z-bg-text-hover: var(--z-color-bg-text-hover);
+  --color-z-bg-text-active: var(--z-color-bg-text-active);
+  --color-z-bg-container-disabled: var(--z-color-bg-container-disabled);
+  --color-z-fill-secondary: var(--z-color-fill-secondary);
+  --color-z-fill-tertiary: var(--z-color-fill-tertiary);
+  --color-z-fill-quaternary: var(--z-color-fill-quaternary);
+  --color-z-fill-alter: var(--z-color-fill-alter);
+  --color-z-border: var(--z-color-border);
+  --color-z-border-secondary: var(--z-color-border-secondary);
+  --color-z-split: var(--z-color-split);
+  --color-z-text: var(--z-color-text);
+  --color-z-text-heading: var(--z-color-text-heading);
+  --color-z-text-secondary: var(--z-color-text-secondary);
+  --color-z-text-tertiary: var(--z-color-text-tertiary);
+  --color-z-text-quaternary: var(--z-color-text-quaternary);
+  --color-z-text-disabled: var(--z-color-text-disabled);
+  --color-z-text-light-solid: var(--z-color-text-light-solid);
 
   /* 颜色 · 主色与链接 */
-  --color-cp-primary-container: var(--cp-color-primary-container);
-  --color-cp-primary-container-hover: var(--cp-color-primary-container-hover);
-  --color-cp-primary-border: var(--cp-color-primary-border);
-  --color-cp-primary-border-hover: var(--cp-color-primary-border-hover);
-  --color-cp-primary-hover: var(--cp-color-primary-hover);
-  --color-cp-primary: var(--cp-color-primary);
-  --color-cp-primary-active: var(--cp-color-primary-active);
-  --color-cp-primary-text-hover: var(--cp-color-primary-text-hover);
-  --color-cp-primary-text: var(--cp-color-primary-text);
-  --color-cp-primary-on-container: var(--cp-color-primary-on-container);
-  --color-cp-primary-text-active: var(--cp-color-primary-text-active);
-  --color-cp-link: var(--cp-color-link);
-  --color-cp-link-hover: var(--cp-color-link-hover);
-  --color-cp-link-active: var(--cp-color-link-active);
+  --color-z-primary-container: var(--z-color-primary-container);
+  --color-z-primary-container-hover: var(--z-color-primary-container-hover);
+  --color-z-primary-border: var(--z-color-primary-border);
+  --color-z-primary-border-hover: var(--z-color-primary-border-hover);
+  --color-z-primary-hover: var(--z-color-primary-hover);
+  --color-z-primary: var(--z-color-primary);
+  --color-z-primary-active: var(--z-color-primary-active);
+  --color-z-primary-text-hover: var(--z-color-primary-text-hover);
+  --color-z-primary-text: var(--z-color-primary-text);
+  --color-z-primary-on-container: var(--z-color-primary-on-container);
+  --color-z-primary-text-active: var(--z-color-primary-text-active);
+  --color-z-link: var(--z-color-link);
+  --color-z-link-hover: var(--z-color-link-hover);
+  --color-z-link-active: var(--z-color-link-active);
 
   /* 颜色 · 语义 */
-  --color-cp-info-container: var(--cp-color-info-container);
-  --color-cp-info-container-hover: var(--cp-color-info-container-hover);
-  --color-cp-info-container-active: var(--cp-color-info-container-active);
-  --color-cp-info-border: var(--cp-color-info-border);
-  --color-cp-info-border-hover: var(--cp-color-info-border-hover);
-  --color-cp-info-hover: var(--cp-color-info-hover);
-  --color-cp-info: var(--cp-color-info);
-  --color-cp-info-active: var(--cp-color-info-active);
-  --color-cp-info-text-hover: var(--cp-color-info-text-hover);
-  --color-cp-info-text: var(--cp-color-info-text);
-  --color-cp-info-on-container: var(--cp-color-info-on-container);
-  --color-cp-info-text-active: var(--cp-color-info-text-active);
-  --color-cp-success-container: var(--cp-color-success-container);
-  --color-cp-success-container-hover: var(--cp-color-success-container-hover);
-  --color-cp-success-container-active: var(--cp-color-success-container-active);
-  --color-cp-success-border: var(--cp-color-success-border);
-  --color-cp-success-border-hover: var(--cp-color-success-border-hover);
-  --color-cp-success-hover: var(--cp-color-success-hover);
-  --color-cp-success: var(--cp-color-success);
-  --color-cp-success-active: var(--cp-color-success-active);
-  --color-cp-success-text-hover: var(--cp-color-success-text-hover);
-  --color-cp-success-text: var(--cp-color-success-text);
-  --color-cp-success-on-container: var(--cp-color-success-on-container);
-  --color-cp-success-text-active: var(--cp-color-success-text-active);
-  --color-cp-warning-container: var(--cp-color-warning-container);
-  --color-cp-warning-container-hover: var(--cp-color-warning-container-hover);
-  --color-cp-warning-container-active: var(--cp-color-warning-container-active);
-  --color-cp-warning-border: var(--cp-color-warning-border);
-  --color-cp-warning-border-hover: var(--cp-color-warning-border-hover);
-  --color-cp-warning-hover: var(--cp-color-warning-hover);
-  --color-cp-warning: var(--cp-color-warning);
-  --color-cp-warning-active: var(--cp-color-warning-active);
-  --color-cp-warning-text-hover: var(--cp-color-warning-text-hover);
-  --color-cp-warning-text: var(--cp-color-warning-text);
-  --color-cp-warning-on-container: var(--cp-color-warning-on-container);
-  --color-cp-warning-text-active: var(--cp-color-warning-text-active);
-  --color-cp-error-container: var(--cp-color-error-container);
-  --color-cp-error-container-hover: var(--cp-color-error-container-hover);
-  --color-cp-error-container-active: var(--cp-color-error-container-active);
-  --color-cp-error-border: var(--cp-color-error-border);
-  --color-cp-error-border-hover: var(--cp-color-error-border-hover);
-  --color-cp-error-hover: var(--cp-color-error-hover);
-  --color-cp-error: var(--cp-color-error);
-  --color-cp-error-active: var(--cp-color-error-active);
-  --color-cp-error-text-hover: var(--cp-color-error-text-hover);
-  --color-cp-error-text: var(--cp-color-error-text);
-  --color-cp-error-on-container: var(--cp-color-error-on-container);
-  --color-cp-error-text-active: var(--cp-color-error-text-active);
+  --color-z-info-container: var(--z-color-info-container);
+  --color-z-info-container-hover: var(--z-color-info-container-hover);
+  --color-z-info-container-active: var(--z-color-info-container-active);
+  --color-z-info-border: var(--z-color-info-border);
+  --color-z-info-border-hover: var(--z-color-info-border-hover);
+  --color-z-info-hover: var(--z-color-info-hover);
+  --color-z-info: var(--z-color-info);
+  --color-z-info-active: var(--z-color-info-active);
+  --color-z-info-text-hover: var(--z-color-info-text-hover);
+  --color-z-info-text: var(--z-color-info-text);
+  --color-z-info-on-container: var(--z-color-info-on-container);
+  --color-z-info-text-active: var(--z-color-info-text-active);
+  --color-z-success-container: var(--z-color-success-container);
+  --color-z-success-container-hover: var(--z-color-success-container-hover);
+  --color-z-success-container-active: var(--z-color-success-container-active);
+  --color-z-success-border: var(--z-color-success-border);
+  --color-z-success-border-hover: var(--z-color-success-border-hover);
+  --color-z-success-hover: var(--z-color-success-hover);
+  --color-z-success: var(--z-color-success);
+  --color-z-success-active: var(--z-color-success-active);
+  --color-z-success-text-hover: var(--z-color-success-text-hover);
+  --color-z-success-text: var(--z-color-success-text);
+  --color-z-success-on-container: var(--z-color-success-on-container);
+  --color-z-success-text-active: var(--z-color-success-text-active);
+  --color-z-warning-container: var(--z-color-warning-container);
+  --color-z-warning-container-hover: var(--z-color-warning-container-hover);
+  --color-z-warning-container-active: var(--z-color-warning-container-active);
+  --color-z-warning-border: var(--z-color-warning-border);
+  --color-z-warning-border-hover: var(--z-color-warning-border-hover);
+  --color-z-warning-hover: var(--z-color-warning-hover);
+  --color-z-warning: var(--z-color-warning);
+  --color-z-warning-active: var(--z-color-warning-active);
+  --color-z-warning-text-hover: var(--z-color-warning-text-hover);
+  --color-z-warning-text: var(--z-color-warning-text);
+  --color-z-warning-on-container: var(--z-color-warning-on-container);
+  --color-z-warning-text-active: var(--z-color-warning-text-active);
+  --color-z-error-container: var(--z-color-error-container);
+  --color-z-error-container-hover: var(--z-color-error-container-hover);
+  --color-z-error-container-active: var(--z-color-error-container-active);
+  --color-z-error-border: var(--z-color-error-border);
+  --color-z-error-border-hover: var(--z-color-error-border-hover);
+  --color-z-error-hover: var(--z-color-error-hover);
+  --color-z-error: var(--z-color-error);
+  --color-z-error-active: var(--z-color-error-active);
+  --color-z-error-text-hover: var(--z-color-error-text-hover);
+  --color-z-error-text: var(--z-color-error-text);
+  --color-z-error-on-container: var(--z-color-error-on-container);
+  --color-z-error-text-active: var(--z-color-error-text-active);
 
   /* 颜色 · 预设（色系按字母排序，角色顺序固定） */
-  --color-cp-blue-container: var(--cp-color-blue-container);
-  --color-cp-blue-container-strong: var(--cp-color-blue-container-strong);
-  --color-cp-blue-border: var(--cp-color-blue-border);
-  --color-cp-blue-solid: var(--cp-color-blue-solid);
-  --color-cp-blue-text: var(--cp-color-blue-text);
-  --color-cp-blue-on-container: var(--cp-color-blue-on-container);
-  --color-cp-cyan-container: var(--cp-color-cyan-container);
-  --color-cp-cyan-container-strong: var(--cp-color-cyan-container-strong);
-  --color-cp-cyan-border: var(--cp-color-cyan-border);
-  --color-cp-cyan-solid: var(--cp-color-cyan-solid);
-  --color-cp-cyan-text: var(--cp-color-cyan-text);
-  --color-cp-cyan-on-container: var(--cp-color-cyan-on-container);
-  --color-cp-green-container: var(--cp-color-green-container);
-  --color-cp-green-container-strong: var(--cp-color-green-container-strong);
-  --color-cp-green-border: var(--cp-color-green-border);
-  --color-cp-green-solid: var(--cp-color-green-solid);
-  --color-cp-green-text: var(--cp-color-green-text);
-  --color-cp-green-on-container: var(--cp-color-green-on-container);
-  --color-cp-orange-container: var(--cp-color-orange-container);
-  --color-cp-orange-container-strong: var(--cp-color-orange-container-strong);
-  --color-cp-orange-border: var(--cp-color-orange-border);
-  --color-cp-orange-solid: var(--cp-color-orange-solid);
-  --color-cp-orange-text: var(--cp-color-orange-text);
-  --color-cp-orange-on-container: var(--cp-color-orange-on-container);
-  --color-cp-purple-container: var(--cp-color-purple-container);
-  --color-cp-purple-container-strong: var(--cp-color-purple-container-strong);
-  --color-cp-purple-border: var(--cp-color-purple-border);
-  --color-cp-purple-solid: var(--cp-color-purple-solid);
-  --color-cp-purple-text: var(--cp-color-purple-text);
-  --color-cp-purple-on-container: var(--cp-color-purple-on-container);
-  --color-cp-red-container: var(--cp-color-red-container);
-  --color-cp-red-container-strong: var(--cp-color-red-container-strong);
-  --color-cp-red-border: var(--cp-color-red-border);
-  --color-cp-red-solid: var(--cp-color-red-solid);
-  --color-cp-red-text: var(--cp-color-red-text);
-  --color-cp-red-on-container: var(--cp-color-red-on-container);
+  --color-z-blue-container: var(--z-color-blue-container);
+  --color-z-blue-container-strong: var(--z-color-blue-container-strong);
+  --color-z-blue-border: var(--z-color-blue-border);
+  --color-z-blue-solid: var(--z-color-blue-solid);
+  --color-z-blue-text: var(--z-color-blue-text);
+  --color-z-blue-on-container: var(--z-color-blue-on-container);
+  --color-z-cyan-container: var(--z-color-cyan-container);
+  --color-z-cyan-container-strong: var(--z-color-cyan-container-strong);
+  --color-z-cyan-border: var(--z-color-cyan-border);
+  --color-z-cyan-solid: var(--z-color-cyan-solid);
+  --color-z-cyan-text: var(--z-color-cyan-text);
+  --color-z-cyan-on-container: var(--z-color-cyan-on-container);
+  --color-z-green-container: var(--z-color-green-container);
+  --color-z-green-container-strong: var(--z-color-green-container-strong);
+  --color-z-green-border: var(--z-color-green-border);
+  --color-z-green-solid: var(--z-color-green-solid);
+  --color-z-green-text: var(--z-color-green-text);
+  --color-z-green-on-container: var(--z-color-green-on-container);
+  --color-z-orange-container: var(--z-color-orange-container);
+  --color-z-orange-container-strong: var(--z-color-orange-container-strong);
+  --color-z-orange-border: var(--z-color-orange-border);
+  --color-z-orange-solid: var(--z-color-orange-solid);
+  --color-z-orange-text: var(--z-color-orange-text);
+  --color-z-orange-on-container: var(--z-color-orange-on-container);
+  --color-z-purple-container: var(--z-color-purple-container);
+  --color-z-purple-container-strong: var(--z-color-purple-container-strong);
+  --color-z-purple-border: var(--z-color-purple-border);
+  --color-z-purple-solid: var(--z-color-purple-solid);
+  --color-z-purple-text: var(--z-color-purple-text);
+  --color-z-purple-on-container: var(--z-color-purple-on-container);
+  --color-z-red-container: var(--z-color-red-container);
+  --color-z-red-container-strong: var(--z-color-red-container-strong);
+  --color-z-red-border: var(--z-color-red-border);
+  --color-z-red-solid: var(--z-color-red-solid);
+  --color-z-red-text: var(--z-color-red-text);
+  --color-z-red-on-container: var(--z-color-red-on-container);
 
   /* 颜色 · 数据 */
-  --color-cp-activity-level-0: var(--cp-activity-level-0);
-  --color-cp-activity-level-1: var(--cp-activity-level-1);
-  --color-cp-activity-level-2: var(--cp-activity-level-2);
-  --color-cp-activity-level-3: var(--cp-activity-level-3);
-  --color-cp-activity-level-4: var(--cp-activity-level-4);
+  --color-z-activity-level-0: var(--z-activity-level-0);
+  --color-z-activity-level-1: var(--z-activity-level-1);
+  --color-z-activity-level-2: var(--z-activity-level-2);
+  --color-z-activity-level-3: var(--z-activity-level-3);
+  --color-z-activity-level-4: var(--z-activity-level-4);
 
   /* 颜色 · 组件 */
-  --color-cp-button-secondary-bg: var(--cp-button-secondary-bg);
-  --color-cp-button-secondary-hover-bg: var(--cp-button-secondary-hover-bg);
-  --color-cp-button-secondary-active-bg: var(--cp-button-secondary-active-bg);
-  --color-cp-icon-button-secondary-bg: var(--cp-icon-button-secondary-bg);
-  --color-cp-icon-button-secondary-hover-bg: var(--cp-icon-button-secondary-hover-bg);
-  --color-cp-icon-button-secondary-active-bg: var(--cp-icon-button-secondary-active-bg);
-  --color-cp-control-item-bg-active: var(--cp-control-item-bg-active);
-  --color-cp-control-item-bg-active-hover: var(--cp-control-item-bg-active-hover);
-  --color-cp-control-outline: var(--cp-control-outline);
-  --color-cp-menu-item-selected-bg: var(--cp-menu-item-selected-bg);
-  --color-cp-modal-bg: var(--cp-modal-bg);
-  --color-cp-popover-header-bg: var(--cp-popover-header-bg);
-  --color-cp-progress-remaining: var(--cp-progress-remaining-color);
+  --color-z-button-secondary-bg: var(--z-button-secondary-bg);
+  --color-z-button-secondary-hover-bg: var(--z-button-secondary-hover-bg);
+  --color-z-button-secondary-active-bg: var(--z-button-secondary-active-bg);
+  --color-z-icon-button-secondary-bg: var(--z-icon-button-secondary-bg);
+  --color-z-icon-button-secondary-hover-bg: var(--z-icon-button-secondary-hover-bg);
+  --color-z-icon-button-secondary-active-bg: var(--z-icon-button-secondary-active-bg);
+  --color-z-control-item-bg-active: var(--z-control-item-bg-active);
+  --color-z-control-item-bg-active-hover: var(--z-control-item-bg-active-hover);
+  --color-z-control-outline: var(--z-control-outline);
+  --color-z-menu-item-selected-bg: var(--z-menu-item-selected-bg);
+  --color-z-modal-bg: var(--z-modal-bg);
+  --color-z-popover-header-bg: var(--z-popover-header-bg);
+  --color-z-progress-remaining: var(--z-progress-remaining-color);
 
   /* 圆角 */
-  --radius-cp-sm: var(--cp-border-radius-sm);
-  --radius-cp: var(--cp-border-radius);
-  --radius-cp-lg: var(--cp-border-radius-lg);
-  --radius-cp-card: var(--cp-card-border-radius);
+  --radius-z-sm: var(--z-border-radius-sm);
+  --radius-z: var(--z-border-radius);
+  --radius-z-lg: var(--z-border-radius-lg);
+  --radius-z-card: var(--z-card-border-radius);
 
   /* 阴影 */
-  --shadow-cp: var(--cp-box-shadow);
-  --shadow-cp-secondary: var(--cp-box-shadow-secondary);
-  --shadow-cp-tertiary: var(--cp-box-shadow-tertiary);
-  --shadow-cp-card: var(--cp-card-shadow);
-  --shadow-cp-input: var(--cp-input-shadow);
-  --shadow-cp-input-hover: var(--cp-input-hover-shadow);
-  --shadow-cp-input-active: var(--cp-input-active-shadow);
-  --shadow-cp-input-error-active: var(--cp-input-error-active-shadow);
-  --shadow-cp-layout-sider: var(--cp-layout-sider-shadow);
+  --shadow-z: var(--z-box-shadow);
+  --shadow-z-secondary: var(--z-box-shadow-secondary);
+  --shadow-z-tertiary: var(--z-box-shadow-tertiary);
+  --shadow-z-card: var(--z-card-shadow);
+  --shadow-z-input: var(--z-input-shadow);
+  --shadow-z-input-hover: var(--z-input-hover-shadow);
+  --shadow-z-input-active: var(--z-input-active-shadow);
+  --shadow-z-input-error-active: var(--z-input-error-active-shadow);
+  --shadow-z-layout-sider: var(--z-layout-sider-shadow);
 
   /* 间距与尺寸 */
-  --spacing-cp-control-sm: var(--cp-control-height-sm);
-  --spacing-cp-control: var(--cp-control-height);
-  --spacing-cp-control-lg: var(--cp-control-height-lg);
-  --spacing-cp-size-step: var(--cp-size-step);
-  --spacing-cp-table-row: var(--cp-table-row-height);
-  --spacing-cp-table-row-sm: var(--cp-table-row-height-sm);
+  --spacing-z-control-sm: var(--z-control-height-sm);
+  --spacing-z-control: var(--z-control-height);
+  --spacing-z-control-lg: var(--z-control-height-lg);
+  --spacing-z-size-step: var(--z-size-step);
+  --spacing-z-table-row: var(--z-table-row-height);
+  --spacing-z-table-row-sm: var(--z-table-row-height-sm);
 }
 
-@keyframes cp-skeleton-breathe {
+@keyframes z-skeleton-breathe {
   0%,
   100% {
-    background-color: var(--cp-color-fill-tertiary);
+    background-color: var(--z-color-fill-tertiary);
   }
 
   50% {
-    background-color: var(--cp-color-fill-secondary);
+    background-color: var(--z-color-fill-secondary);
   }
 }

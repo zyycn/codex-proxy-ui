@@ -5,22 +5,17 @@ import TableToolsDemo from '../examples/TableToolsDemo.vue'
 
 # Table 表格
 
-声明列职责，由基础表格统一处理对齐、尺寸和内容展示
+展示结构化数据，支持自定义列、行选择、展开内容和列设置
 
-## 交互示例
+## 基础用法
+
+<DemoExample>
 
 <ClientOnly>
   <TableDemo />
 </ClientOnly>
 
-## 使用要点
-
-`columns` 描述列，`data` 提供数据，`row-key` 保持行身份稳定
-
-`loading` 显示内置加载反馈，无需注册指令，刷新时会保留已有数据
-`show-header-when-empty` 控制空数据和初次加载时是否保留表头
-
-::: details 查看用法代码
+<template #source>
 
 ```vue
 <script setup lang="ts">
@@ -43,7 +38,16 @@ const columns = defineTableColumns<typeof rows[number]>([
 </template>
 ```
 
-:::
+</template>
+
+</DemoExample>
+
+## 用法说明
+
+`columns` 描述列，`data` 提供数据，`row-key` 保持行身份稳定
+
+`loading` 显示内置加载反馈，无需注册指令，刷新时会保留已有数据
+`show-header-when-empty` 控制空数据和初次加载时是否保留表头
 
 ## 分页与列设置 {#configuration}
 
@@ -100,21 +104,21 @@ function changePageSize(value: number) {
 
 示例只保存自己的列偏好，点击列设置中的恢复按钮可清除
 
-## API
+## Table API {#api}
 
 ### 属性
 
-| 属性                                                | 类型                                           | 默认值       | 说明                            |
-| --------------------------------------------------- | ---------------------------------------------- | ------------ | ------------------------------- |
-| `columns`                                           | `TableColumn<Row>[]`                           | 必填         | 列定义                          |
-| `data`                                              | `Row[]`                                        | 必填         | 当前页数据                      |
-| `row-key`                                           | `string \| ((row, index) => string \| number)` | `'id'`       | 稳定行标识                      |
-| `selected-row-keys / expanded-row-keys`             | `(string \| number)[]`                         | `[]`         | 选中行样式与展开行              |
-| `size`                                              | `'small' \| 'default' \| 'large'`              | `'default'`  | 表格密度                        |
-| `loading`                                           | `boolean`                                      | `false`      | 加载状态，刷新时保留已有行      |
-| `empty-text`                                        | `string`                                       | `'暂无数据'` | 空状态文字                      |
-| `show-header-when-empty / scrollbar-always-visible` | `boolean`                                      | `false`      | 空数据表头与滚动条可见性        |
-| `sort`                                              | `TableSort`                                    | —            | 排序状态，包含 key 与 direction |
+| 属性                                                | 说明                            | 类型                                           | 默认值       |
+| --------------------------------------------------- | ------------------------------- | ---------------------------------------------- | ------------ |
+| `columns`                                           | 列定义                          | `TableColumn<Row>[]`                           | 必填         |
+| `data`                                              | 当前页数据                      | `Row[]`                                        | 必填         |
+| `row-key`                                           | 稳定行标识                      | `string \| ((row, index) => string \| number)` | `'id'`       |
+| `selected-row-keys / expanded-row-keys`             | 选中行样式与展开行              | `(string \| number)[]`                         | `[]`         |
+| `size`                                              | 表格密度                        | `'small' \| 'default' \| 'large'`              | `'default'`  |
+| `loading`                                           | 加载状态，刷新时保留已有行      | `boolean`                                      | `false`      |
+| `empty-text`                                        | 空状态文字                      | `string`                                       | `'暂无数据'` |
+| `show-header-when-empty / scrollbar-always-visible` | 空数据表头与滚动条可见性        | `boolean`                                      | `false`      |
+| `sort`                                              | 排序状态，包含 key 与 direction | `TableSort`                                    | —            |
 
 ### 列合同
 
@@ -137,11 +141,13 @@ TableColumn 的 width、minWidth 为像素数值；fixed 支持 true（左侧）
 | `expanded`      | 展开内容，接收 `{ row, index }`                          |
 | `empty`         | 空状态内容                                               |
 
+展开行使用 200ms 的高度与透明度过渡，完成后恢复自然高度；系统启用 `prefers-reduced-motion: reduce` 时直接切换
+
 ### 列设置属性与事件
 
-| 属性      | 类型                  | 默认值 | 说明                                            |
-| --------- | --------------------- | ------ | ----------------------------------------------- |
-| `options` | `TableColumnOption[]` | 必填   | 包含 key、label、visible、disabled、reorderable |
+| 属性      | 说明                                            | 类型                  | 默认值 |
+| --------- | ----------------------------------------------- | --------------------- | ------ |
+| `options` | 包含 key、label、visible、disabled、reorderable | `TableColumnOption[]` | 必填   |
 
 | 事件      | 参数                            | 说明           |
 | --------- | ------------------------------- | -------------- |

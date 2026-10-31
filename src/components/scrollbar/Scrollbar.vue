@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useEventListener, useResizeObserver, useTimeoutFn } from '@vueuse/core'
 import { clamp } from 'es-toolkit'
-import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, useTemplateRef } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, useTemplateRef, watch } from 'vue'
 
 const props = withDefaults(
   defineProps<{
@@ -10,6 +10,7 @@ const props = withDefaults(
     horizontal?: boolean
     vertical?: boolean
     alwaysVisible?: boolean
+    target?: HTMLElement | 'document'
   }>(),
   {
     maxHeight: undefined,
@@ -17,6 +18,7 @@ const props = withDefaults(
     horizontal: false,
     vertical: true,
     alwaysVisible: false,
+    target: undefined,
   },
 )
 
@@ -27,7 +29,12 @@ const emit = defineEmits<{
 const overflowTolerance = 1
 
 const rootRef = useTemplateRef<HTMLDivElement>('root')
-const wrapRef = useTemplateRef<HTMLDivElement>('wrap')
+const internalWrapRef = useTemplateRef<HTMLDivElement>('wrap')
+const wrapRef = computed(() => {
+  if (props.target === 'document')
+    return typeof document === 'undefined' ? null : document.scrollingElement as HTMLElement | null
+  return props.target ?? internalWrapRef.value
+})
 const viewRef = useTemplateRef<HTMLElement>('view')
 const verticalTrackRef = useTemplateRef<HTMLDivElement>('verticalTrack')
 const horizontalTrackRef = useTemplateRef<HTMLDivElement>('horizontalTrack')
@@ -82,7 +89,7 @@ const rootClasses = computed(() => [
   props.maxHeight || props.height ? undefined : 'h-full',
 ])
 const wrapClasses = computed(() => [
-  'min-h-0 max-h-[inherit] overflow-auto outline-none scrollbar-none [&::-webkit-scrollbar]:hidden [&::-webkit-scrollbar]:size-0',
+  'min-h-0 max-h-[inherit] overflow-auto outline-none z-scrollbar-hidden',
   props.maxHeight ? undefined : 'h-full',
 ])
 const verticalTrackClass = computed(() => (props.horizontal && canScrollX.value ? 'bottom-1.5' : 'bottom-0'))
@@ -438,8 +445,35 @@ onBeforeUnmount(() => {
   }
 })
 
-useResizeObserver([wrapRef, viewRef], update)
-useEventListener(wrapRef, 'scroll', handleScroll, { passive: true })
+useResizeObserver(
+  computed(() => [
+    wrapRef.value,
+    props.target === 'document' && typeof document !== 'undefined' ? document.body : viewRef.value,
+  ]),
+  update,
+)
+// 文档滚动监听 window，避免用嵌套容器破坏锚点、目录高亮和浏览器位置恢复。
+useEventListener(
+  () => props.target === 'document' ? (typeof window === 'undefined' ? null : window) : wrapRef.value,
+  'scroll',
+  handleScroll,
+  { passive: true },
+)
+watch(wrapRef, () => nextTick(update), { flush: 'post' })
+watch(
+  () => props.target ? wrapRef.value : null,
+  (target, _, onCleanup) => {
+    if (!target)
+      return
+    const added = !target.classList.contains('z-scrollbar-hidden')
+    target.classList.add('z-scrollbar-hidden')
+    onCleanup(() => {
+      if (added)
+        target.classList.remove('z-scrollbar-hidden')
+    })
+  },
+  { immediate: true, flush: 'post' },
+)
 useEventListener(dragDocument, 'pointermove', handleDocumentPointerMove)
 useEventListener(dragDocument, ['pointerup', 'pointercancel'], handleDocumentPointerUp)
 useEventListener(rootRef, 'mouseenter', handleRootMouseEnter)
@@ -462,7 +496,7 @@ defineExpose({
 
 <template>
   <div ref="root" :class="rootClasses" :style="{ maxHeight, height }">
-    <div ref="wrap" :class="wrapClasses" tabindex="0">
+    <div v-if="!target" ref="wrap" :class="wrapClasses" tabindex="0">
       <div ref="view">
         <slot />
       </div>
@@ -471,12 +505,12 @@ defineExpose({
     <div
       v-show="canScrollY"
       ref="verticalTrack"
-      class="absolute right-0 bottom-0 top-(--cp-scrollbar-track-inset-block-start,0.25rem) z-40 flex w-3 justify-end transition-opacity duration-200"
+      class="absolute right-0 bottom-0 top-(--z-scrollbar-track-inset-block-start,0.25rem) z-40 flex w-3 justify-end transition-opacity duration-200"
       :class="[verticalTrackClass, verticalScrollbarVisible ? 'opacity-100' : 'pointer-events-none opacity-0']"
     >
       <div
-        class="w-1.5 rounded-full bg-(--cp-scrollbar-thumb-bg) transition-colors duration-200 hover:bg-(--cp-scrollbar-thumb-hover-bg)"
-        :class="dragging ? 'bg-(--cp-scrollbar-thumb-hover-bg)' : ''"
+        class="w-1.5 rounded-full bg-(--z-scrollbar-thumb-bg) transition-colors duration-200 hover:bg-(--z-scrollbar-thumb-hover-bg)"
+        :class="dragging ? 'bg-(--z-scrollbar-thumb-hover-bg)' : ''"
         :style="thumbStyle"
         @pointerdown="handleThumbPointerDown"
       />
@@ -489,8 +523,8 @@ defineExpose({
       :class="[horizontalTrackClass, horizontalScrollbarVisible ? 'opacity-100' : 'pointer-events-none opacity-0']"
     >
       <div
-        class="h-1.5 rounded-full bg-(--cp-scrollbar-thumb-bg) transition-colors duration-200 hover:bg-(--cp-scrollbar-thumb-hover-bg)"
-        :class="horizontalDragging ? 'bg-(--cp-scrollbar-thumb-hover-bg)' : ''"
+        class="h-1.5 rounded-full bg-(--z-scrollbar-thumb-bg) transition-colors duration-200 hover:bg-(--z-scrollbar-thumb-hover-bg)"
+        :class="horizontalDragging ? 'bg-(--z-scrollbar-thumb-hover-bg)' : ''"
         :style="horizontalThumbStyle"
         @pointerdown="handleHorizontalThumbPointerDown"
       />

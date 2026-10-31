@@ -11,10 +11,10 @@ const preserveContent = shallowRef(false)
 
 <template>
   <DemoPlayground wide>
-    <div v-loading="{ loading, text, preserveContent }" class="grid h-44 content-center gap-3 rounded-cp-lg border border-cp-border bg-cp-bg-container p-5">
-      <div v-for="name in ['生产环境', '测试环境', '开发环境']" :key="name" class="flex items-center justify-between gap-3 text-cp-sm">
+    <div v-loading="{ loading, text, preserveContent }" class="grid h-44 content-center gap-3 rounded-z-lg border border-z-border bg-z-bg-container p-5">
+      <div v-for="name in ['生产环境', '测试环境', '开发环境']" :key="name" class="flex items-center justify-between gap-3 text-z-sm">
         <span>{{ name }}</span>
-        <span class="text-cp-text-secondary">配置已就绪</span>
+        <span class="text-z-text-secondary">配置已就绪</span>
       </div>
     </div>
     <template #controls>

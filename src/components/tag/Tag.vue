@@ -33,22 +33,22 @@ const contentId = useId()
 const closeId = useId()
 
 const typeClasses: Record<TagType, string> = {
-  default: 'bg-cp-fill-tertiary text-cp-text-secondary',
-  primary: 'bg-cp-primary-container text-cp-primary-on-container',
-  success: 'bg-cp-success-container text-cp-success-on-container',
-  info: 'bg-cp-info-container text-cp-info-on-container',
-  warning: 'bg-cp-warning-container text-cp-warning-on-container',
-  danger: 'bg-cp-error-container text-cp-error-on-container',
+  default: 'bg-z-fill-tertiary text-z-text-secondary',
+  primary: 'bg-z-primary-container text-z-primary-on-container',
+  success: 'bg-z-success-container text-z-success-on-container',
+  info: 'bg-z-info-container text-z-info-on-container',
+  warning: 'bg-z-warning-container text-z-warning-on-container',
+  danger: 'bg-z-error-container text-z-error-on-container',
 }
 const sizeClasses: Record<ComponentSize, string> = {
-  small: 'min-h-5 gap-1 px-1.5 py-0.5 text-cp-xs',
-  default: 'min-h-6 gap-1.5 px-2 py-0.5 text-cp-xs',
-  large: 'min-h-7 gap-2 px-2.5 py-1 text-cp-sm',
+  small: 'min-h-5 gap-1 px-1.5 py-0.5 text-z-xs',
+  default: 'min-h-6 gap-1.5 px-2 py-0.5 text-z-xs',
+  large: 'min-h-7 gap-2 px-2.5 py-1 text-z-sm',
 }
 const classes = computed(() => [
   sizeClasses[props.size],
-  props.round ? 'rounded-full' : 'rounded-cp',
-  props.disabled ? 'bg-cp-bg-container-disabled text-cp-text-disabled' : typeClasses[props.type],
+  props.round ? 'rounded-full' : 'rounded-z',
+  props.disabled ? 'bg-z-bg-container-disabled text-z-text-disabled' : typeClasses[props.type],
 ])
 </script>
 
@@ -63,7 +63,7 @@ const classes = computed(() => [
       :disabled="disabled"
       :aria-label="closeLabel"
       :aria-labelledby="closeLabel ? undefined : `${closeId} ${contentId}`"
-      class="inline-grid size-4 shrink-0 cursor-pointer place-items-center rounded-full border-0 bg-transparent p-0 text-inherit outline-none transition-colors duration-150 hover:bg-current/10 focus-visible:ring-2 focus-visible:ring-cp-control-outline active:bg-current/20 disabled:cursor-not-allowed disabled:hover:bg-transparent motion-reduce:transition-none"
+      class="inline-grid size-4 shrink-0 cursor-pointer place-items-center rounded-full border-0 bg-transparent p-0 text-inherit outline-none transition-colors duration-150 hover:bg-current/10 focus-visible:ring-2 focus-visible:ring-z-control-outline active:bg-current/20 disabled:cursor-not-allowed disabled:hover:bg-transparent motion-reduce:transition-none"
       @click.stop="$emit('close', $event)"
     >
       <span :id="closeId" class="sr-only">{{ locale.common.remove }}</span>

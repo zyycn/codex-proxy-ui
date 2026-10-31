@@ -6,23 +6,15 @@ import ConfirmDialogDemo from '../examples/ConfirmDialogDemo.vue'
 
 提供一致的确认与取消入口，用于需要用户确认的操作
 
-## 交互示例
+## 基础用法
+
+<DemoExample>
 
 <ClientOnly>
   <ConfirmDialogDemo />
 </ClientOnly>
 
-## 使用要点
-
-`v-model` 控制显隐，`title` 与 `description` 说明操作，`destructive` 强调危险行为
-
-监听 `confirm` 执行操作，成功后由调用方关闭弹窗；异步操作期间设置 `loading`，以避免重复提交
-
-确认对象与提示内容在退出期间保持不变，内部内容在动画结束后自动卸载。调用方可在下次打开时替换确认对象，仅在需要额外收尾时监听 `closed`
-
-`confirm-text`、`cancel-text` 定义按钮文案，`confirm-disabled` 禁用确认
-
-::: details 查看用法代码
+<template #source>
 
 ```vue
 <script setup lang="ts">
@@ -54,21 +46,33 @@ function confirm() {
 </template>
 ```
 
-:::
+</template>
 
-## API
+</DemoExample>
+
+## 用法说明
+
+`v-model` 控制显隐，`title` 与 `description` 说明操作，`destructive` 强调危险行为
+
+监听 `confirm` 执行操作，成功后由调用方关闭弹窗；异步操作期间设置 `loading`，以避免重复提交
+
+确认对象与提示内容在退出期间保持不变，内部内容在动画结束后自动卸载。调用方可在下次打开时替换确认对象，仅在需要额外收尾时监听 `closed`
+
+`confirm-text`、`cancel-text` 定义按钮文案，`confirm-disabled` 禁用确认
+
+## ConfirmDialog API {#api}
 
 ### 属性
 
-| 属性                         | 类型      | 默认值            | 说明               |
-| ---------------------------- | --------- | ----------------- | ------------------ |
-| `v-model`                    | `boolean` | `false`           | 控制打开状态       |
-| `title`                      | `string`  | 必填              | 确认标题           |
-| `description`                | `string`  | —                 | 确认说明           |
-| `destructive`                | `boolean` | `false`           | 使用危险操作样式   |
-| `confirm-text / cancel-text` | `string`  | `'确认' / '取消'` | 操作按钮文案       |
-| `loading`                    | `boolean` | `false`           | 阻止重复确认和关闭 |
-| `confirm-disabled`           | `boolean` | `false`           | 禁用确认按钮       |
+| 属性                         | 说明               | 类型      | 默认值            |
+| ---------------------------- | ------------------ | --------- | ----------------- |
+| `v-model`                    | 控制打开状态       | `boolean` | `false`           |
+| `title`                      | 确认标题           | `string`  | 必填              |
+| `description`                | 确认说明           | `string`  | —                 |
+| `destructive`                | 使用危险操作样式   | `boolean` | `false`           |
+| `confirm-text / cancel-text` | 操作按钮文案       | `string`  | `'确认' / '取消'` |
+| `loading`                    | 阻止重复确认和关闭 | `boolean` | `false`           |
+| `confirm-disabled`           | 禁用确认按钮       | `boolean` | `false`           |
 
 ### 事件
 

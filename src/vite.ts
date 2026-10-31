@@ -1,23 +1,41 @@
-import type { Plugin } from 'vite'
+import type { CSSOptions, Plugin } from 'vite'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import { searchForWorkspaceRoot } from 'vite'
+import { themePrefixStyles } from './build/theme-prefix'
+import { defaultThemePrefix } from './theme/namespace'
 
 export interface CodexProxyUIOptions {
   /** 本地 UI 仓库目录；省略时使用已安装的编译产物。 */
   source?: URL
+  /** CSS 变量前缀，与组件导出名及 utility 类名独立 */
+  themePrefix?: string
 }
 
-export default function CodexProxyUI({ source }: CodexProxyUIOptions = {}) {
+export default function CodexProxyUI({ source, themePrefix = defaultThemePrefix }: CodexProxyUIOptions = {}) {
+  if (!/^[a-z][a-z0-9-]*$/.test(themePrefix))
+    throw new Error('主题前缀必须以小写字母开头，只能包含小写字母、数字和连字符')
+
   return {
     name: 'codex-proxy-ui',
     // 配置类型只暴露读取的字段，供文档站与应用共用。
-    config(config: { root?: string, server?: { fs?: { allow?: string[] } } }) {
+    async config(this: void, config: { root?: string, server?: { fs?: { allow?: string[] } }, css?: { postcss?: CSSOptions['postcss'] } }) {
       const dedupe = ['vue', '@lucide/vue']
+      const customPrefix = themePrefix !== defaultThemePrefix
+      const shared = {
+        define: { __CODEX_PROXY_UI_THEME_PREFIX__: JSON.stringify(themePrefix) },
+        ...(customPrefix
+          ? {
+              css: { postcss: await themePrefixStyles(themePrefix, resolve(config.root ?? process.cwd()), config.css?.postcss) } as Pick<CSSOptions, 'postcss'>,
+              // 预构建不能固化库内默认前缀，源码和编译产物都由当前项目替换构建常量
+              optimizeDeps: { exclude: ['@codex-proxy/ui'] },
+            }
+          : {}),
+      }
       if (!source)
-        return { resolve: { dedupe } }
+        return { ...shared, resolve: { dedupe } }
 
       const root = fileURLToPath(source)
       const manifest = JSON.parse(readFileSync(resolve(root, 'package.json'), 'utf8')) as {
@@ -40,6 +58,7 @@ export default function CodexProxyUI({ source }: CodexProxyUIOptions = {}) {
         })
 
       return {
+        ...shared,
         resolve: { dedupe, alias },
         // Vue 源组件不能与内联共享状态的预构建入口混用。
         optimizeDeps: { exclude: [manifest.name] },
@@ -50,6 +69,9 @@ export default function CodexProxyUI({ source }: CodexProxyUIOptions = {}) {
           },
         },
       }
+    },
+    transformIndexHtml() {
+      return [{ tag: 'meta', attrs: { name: 'codex-proxy-ui-theme-prefix', content: themePrefix }, injectTo: 'head' }]
     },
   } satisfies Plugin
 }

@@ -6,13 +6,15 @@ import CardDemo from '../examples/CardDemo.vue'
 
 组织同一主题的标题、说明与内容
 
-## 交互示例
+## 基础用法
+
+<DemoExample>
 
 <ClientOnly>
   <CardDemo />
 </ClientOnly>
 
-::: details 查看用法代码
+<template #source>
 
 ```vue
 <script setup lang="ts">
@@ -26,21 +28,23 @@ import { ZCard } from '@codex-proxy/ui'
 </template>
 ```
 
-:::
+</template>
 
-## 使用要点
+</DemoExample>
+
+## 用法说明
 
 `padding` 控制内容间距，`actions` 插槽承载卡片操作。标题和操作区放不下时换行，操作区最大宽度为卡片内容宽度；内容需要完整展示时避免固定卡片高度
 
-## API
+## Card API {#api}
 
 ### 属性
 
-| 属性                  | 类型                               | 默认值      | 说明       |
-| --------------------- | ---------------------------------- | ----------- | ---------- |
-| `as`                  | `keyof HTMLElementTagNameMap`      | `'section'` | 根元素标签 |
-| `padding`             | `'none' \| 'compact' \| 'default'` | `'default'` | 内容间距   |
-| `title / description` | `string`                           | —           | 标题与说明 |
+| 属性                  | 说明       | 类型                               | 默认值      |
+| --------------------- | ---------- | ---------------------------------- | ----------- |
+| `as`                  | 根元素标签 | `keyof HTMLElementTagNameMap`      | `'section'` |
+| `padding`             | 内容间距   | `'none' \| 'compact' \| 'default'` | `'default'` |
+| `title / description` | 标题与说明 | `string`                           | —           |
 
 ### 插槽
 

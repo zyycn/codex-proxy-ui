@@ -1,15 +1,15 @@
 import type {
   ColorToneOptions,
   RgbColor,
-  ThemeName,
+  ThemeScheme,
 } from '../types'
 import { generate } from '@ant-design/colors'
 import { FastColor } from '@ant-design/fast-color'
 import { normalizeHexColor } from '../../shared/utils/color'
 import {
   BLACK,
-  DEFAULT_CUSTOM_THEME_COLOR,
   DEFAULT_DIMENSIONS,
+  defaultThemePrimaryColor,
   WHITE,
 } from './constants'
 
@@ -17,7 +17,7 @@ const MAX_RGB_DISTANCE = Math.sqrt(3) * 255
 
 export function generateColorPalette(
   seed: string,
-  theme: ThemeName,
+  theme: ThemeScheme,
   containerBg?: string,
 ): string[] {
   return generate(seed, theme === 'dark'
@@ -55,7 +55,7 @@ export function ensureContrast(color: string, background: string | readonly stri
 }
 
 export function ensureLightness(color: string, minimum: number): string {
-  const normalized = normalizeHexColor(color) ?? DEFAULT_CUSTOM_THEME_COLOR
+  const normalized = normalizeHexColor(color) ?? defaultThemePrimaryColor
   const hsl = new FastColor(normalized).toHsl()
   const lightness = Math.min(1, Math.max(0, minimum))
   if (hsl.l >= lightness)
@@ -126,7 +126,7 @@ function mixHue(first: number, second: number, secondWeight: number): number {
 }
 
 export function withAlpha(color: string, alpha: number): string {
-  const normalized = normalizeHexColor(color) ?? DEFAULT_CUSTOM_THEME_COLOR
+  const normalized = normalizeHexColor(color) ?? defaultThemePrimaryColor
   const alphaHex = Math.round(Math.min(1, Math.max(0, alpha)) * 255)
     .toString(16)
     .padStart(2, '0')
@@ -167,7 +167,7 @@ function relativeLuminance(color: RgbColor): number {
 }
 
 function hexToRgb(value: string): RgbColor {
-  const normalized = normalizeHexColor(value) ?? DEFAULT_CUSTOM_THEME_COLOR
+  const normalized = normalizeHexColor(value) ?? defaultThemePrimaryColor
   return {
     red: Number.parseInt(normalized.slice(1, 3), 16),
     green: Number.parseInt(normalized.slice(3, 5), 16),

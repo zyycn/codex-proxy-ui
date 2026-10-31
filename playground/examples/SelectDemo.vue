@@ -22,7 +22,7 @@ const groups = [
 
 <template>
   <DemoPlayground>
-    <ZFormItem label="账号分组" class="mx-auto w-60 max-w-full">
+    <ZFormItem label="账号分组" class="w-60 max-w-full">
       <ZSelect v-if="multiple" v-model="selected" :options="groups" multiple :filterable="filterable" clearable :collapse-tags="collapse" collapse-tags-tooltip :max-collapse-tags="maxCollapseTags" :disabled="disabled" :loading="loading" />
       <ZSelect v-else v-model="single" :options="groups" :filterable="filterable" clearable :disabled="disabled" :loading="loading" />
     </ZFormItem>
@@ -35,7 +35,7 @@ const groups = [
         <ZCheckbox v-model="collapse" label="折叠标签" />
         <div v-if="collapse" class="demo-control">
           <span>可见标签</span>
-          <ZInputNumber v-model="maxCollapseTags" size="small" aria-label="可见标签数量" :min="1" :max="4" />
+          <ZInputNumber v-model="maxCollapseTags" class="w-28" size="small" aria-label="可见标签数量" :min="1" :max="4" />
         </div>
       </template>
     </template>

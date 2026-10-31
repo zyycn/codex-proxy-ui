@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, shallowRef, useTemplateRef } from 'vue'
+import { getThemeVarName } from '../../theme/namespace'
 import markdownStyles from './styles/markdown.css?inline'
 import { renderMarkdown } from './utils/markdown'
 
@@ -18,7 +19,8 @@ onMounted(() => {
   const shadowRoot = host.value.attachShadow({ mode: 'open' })
   const style = document.createElement('style')
   const content = document.createElement('div')
-  style.textContent = markdownStyles
+  // 内联样式打包为 JS 字符串后不会再经过消费方的 CSS 转换，按当前命名空间绑定变量。
+  style.textContent = markdownStyles.replace(/--z-([a-z0-9-]+)/gu, (_, token: string) => getThemeVarName(token))
   shadowRoot.append(style, content)
   contentRoot.value = content
 })

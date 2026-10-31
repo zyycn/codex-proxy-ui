@@ -141,12 +141,12 @@ async function keydown(event: KeyboardEvent) {
 </script>
 
 <template>
-  <Popover v-bind="rootAttrs" v-model="open" class="z-date-picker" :data-type="type" :disabled="blocked" :placement="placement" :offset="10" :teleported="teleported" @open="restoringFocus = false" @close="restoringFocus = true" @closed="restoringFocus = false">
+  <Popover v-bind="rootAttrs" v-model="open" class="z-date-picker" transition="z-slide-fade" :data-type="type" :disabled="blocked" :placement="placement" :offset="10" :teleported="teleported" @open="restoringFocus = false" @close="restoringFocus = true" @closed="restoringFocus = false">
     <template #reference="{ id }">
       <div ref="inputRoot" :class="inputClasses">
-        <component :is="prefixIcon || (time ? Clock : CalendarDays)" class="size-4 shrink-0" :class="disabled ? 'text-cp-text-disabled' : invalid ? 'text-cp-error' : 'text-cp-text-quaternary'" />
+        <component :is="prefixIcon || (time ? Clock : CalendarDays)" class="size-4 shrink-0" :class="disabled ? 'text-z-text-disabled' : invalid ? 'text-z-error' : 'text-z-text-quaternary'" />
         <template v-for="(placeholder, index) in fields" :key="index">
-          <span v-if="index" class="shrink-0 text-cp-xs text-cp-text-tertiary"><slot name="range-separator">{{ rangeSeparator }}</slot></span>
+          <span v-if="index" class="shrink-0 text-z-xs text-z-text-tertiary"><slot name="range-separator">{{ rangeSeparator }}</slot></span>
           <input
             :id="index === 0 ? controlId : controlId ? `${controlId}-end` : undefined"
             ref="inputs"

@@ -151,7 +151,7 @@ watch(open, async (value) => {
   <Popover
     v-model="open"
     placement="bottom-end"
-    :arrow-surface-class="{ top: 'bg-(--cp-popover-header-bg)' }"
+    :arrow-surface-class="{ top: 'bg-(--z-popover-header-bg)' }"
   >
     <template #reference>
       <IconButton
@@ -172,14 +172,14 @@ watch(open, async (value) => {
       ref="panel"
       role="dialog"
       :aria-label="locale.table.columns"
-      class="w-60 max-w-full overflow-hidden rounded-cp-lg"
+      class="w-60 max-w-full overflow-hidden rounded-z-lg"
       @keydown.esc.stop.prevent="closeAndFocus"
       @keydown.tab="handleTab"
       @focusout="handleFocusOut"
     >
-      <div class="flex items-center justify-between gap-3 bg-cp-popover-header-bg px-3 py-2.5">
-        <span class="text-cp-sm font-bold text-cp-text">{{ locale.table.columns }}</span>
-        <span class="text-cp-xs text-cp-text-secondary">{{ visibleCount }} / {{ options.length }}</span>
+      <div class="flex items-center justify-between gap-3 bg-z-popover-header-bg px-3 py-2.5">
+        <span class="text-z-sm font-bold text-z-text">{{ locale.table.columns }}</span>
+        <span class="text-z-xs text-z-text-secondary">{{ visibleCount }} / {{ options.length }}</span>
       </div>
       <p :id="`${panelId}-reorder-help`" class="sr-only">
         {{ locale.table.columnInstructions }}
@@ -203,7 +203,7 @@ watch(open, async (value) => {
             :data-column-key="option.key"
             :data-reorderable="option.reorderable"
             :data-highlighted="hoveredColumnKey === option.key"
-            class="flex min-h-9 items-center rounded-cp pr-1 data-[highlighted=true]:bg-cp-bg-text-hover"
+            class="flex min-h-9 items-center rounded-z pr-1 data-[highlighted=true]:bg-z-bg-text-hover"
           >
             <Checkbox
               :model-value="option.visible"

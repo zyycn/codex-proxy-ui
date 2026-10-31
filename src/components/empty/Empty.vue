@@ -30,8 +30,8 @@ const resolvedTitle = computed(() => props.title ?? locale.value.common.empty)
 const resolvedIcon = computed(() => props.icon ?? Inbox)
 
 const surfaceClasses: Record<EmptySurface, string> = {
-  subtle: 'rounded-cp-lg bg-cp-fill-alter',
-  inset: 'rounded-cp-lg bg-cp-fill-alter/70',
+  subtle: 'rounded-z-lg bg-z-fill-alter',
+  inset: 'rounded-z-lg bg-z-fill-alter/70',
   none: 'bg-transparent',
 }
 </script>
@@ -46,18 +46,18 @@ const surfaceClasses: Record<EmptySurface, string> = {
   >
     <slot name="icon">
       <span
-        class="inline-flex items-center justify-center rounded-cp bg-cp-fill-tertiary text-cp-text-quaternary"
+        class="inline-flex items-center justify-center rounded-z bg-z-fill-tertiary text-z-text-quaternary"
         :class="size === 'small' ? 'size-8' : 'size-10'"
       >
         <component :is="resolvedIcon" :size="size === 'small' ? 16 : 18" />
       </span>
     </slot>
-    <p class="m-0 text-cp leading-[1.15] font-heavy text-cp-text">
+    <p class="m-0 text-z leading-[1.15] font-heavy text-z-text">
       {{ resolvedTitle }}
     </p>
     <p
       v-if="description"
-      class="m-0 max-w-72 text-xs leading-[1.45] font-semibold text-cp-text-secondary"
+      class="m-0 max-w-72 text-xs leading-[1.45] font-semibold text-z-text-secondary"
     >
       {{ description }}
     </p>

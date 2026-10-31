@@ -22,6 +22,7 @@ const props = withDefaults(
     referenceElement?: HTMLElement | null
     role?: 'tooltip' | 'dialog'
     animatePosition?: boolean
+    transition?: string
     teleported?: boolean
     /** 箭头贴合不同内容边缘时使用的表面类；字符串表示所有边缘共用。 */
     arrowSurfaceClass?: PopoverArrowSurfaceClass
@@ -36,6 +37,7 @@ const props = withDefaults(
     enterable: true,
     referenceElement: null,
     animatePosition: false,
+    transition: 'z-fade',
     teleported: true,
   },
 )
@@ -57,7 +59,7 @@ const leavingStyle = new WeakMap<HTMLElement, string>()
 const viewportTarget = computed(() => (open.value && typeof window !== 'undefined' ? window : null))
 
 const popoverClasses = computed(() => [
-  'fixed z-50 overflow-visible rounded-cp-lg border-0 bg-cp-bg-elevated font-sans text-left text-cp leading-relaxed text-cp-text shadow-cp',
+  'fixed z-50 overflow-visible rounded-z-lg border-0 bg-z-bg-elevated font-sans text-left text-z leading-relaxed text-z-text shadow-z',
   props.animatePosition
     ? 'transition-[left,top] duration-150 ease-out motion-reduce:transition-none'
     : undefined,
@@ -252,12 +254,7 @@ onBeforeUnmount(() => {
 
     <Teleport to="body" :disabled="!teleported">
       <Transition
-        enter-active-class="transition-[opacity,transform] duration-150 ease-out motion-reduce:transition-none"
-        enter-from-class="-translate-y-1 opacity-0"
-        enter-to-class="translate-y-0 opacity-100"
-        leave-active-class="transition-opacity duration-150 ease-in motion-reduce:transition-none"
-        leave-from-class="opacity-100"
-        leave-to-class="opacity-0"
+        :name="transition"
         @after-enter="open && emit('opened')"
         @before-enter="restorePosition"
         @before-leave="freezeLeavePosition"
@@ -269,7 +266,7 @@ onBeforeUnmount(() => {
           :id="panelId"
           ref="popoverRef"
           :role="role"
-          data-cp-overlay
+          data-z-overlay
           :class="popoverClasses"
           :style="popoverStyle"
         >

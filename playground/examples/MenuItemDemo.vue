@@ -10,7 +10,7 @@ const action = shallowRef('尚未操作')
 <template>
   <DemoPlayground wide>
     <div class="demo-stack">
-      <div class="w-full max-w-64 rounded-cp bg-cp-bg-elevated p-1">
+      <div class="w-full max-w-64 rounded-z bg-z-bg-elevated p-1">
         <ZMenuItem @click="action = '编辑配置'">
           <template #icon>
             <Pencil :size="14" />

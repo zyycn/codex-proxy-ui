@@ -63,7 +63,7 @@ function handleConfirm() {
     @closed="emit('closed')"
   >
     <template v-if="$slots.default" #default>
-      <div class="text-cp-lg leading-[1.55] font-emphasis text-cp-text-secondary">
+      <div class="text-z-lg leading-[1.55] font-emphasis text-z-text-secondary">
         <slot />
       </div>
     </template>

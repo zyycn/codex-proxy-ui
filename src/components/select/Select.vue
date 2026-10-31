@@ -93,58 +93,58 @@ const sizeConfig: Record<
   }
 > = {
   default: {
-    trigger: 'h-cp-control px-3.5 pr-9 text-cp rounded-cp',
-    multiple: 'min-h-cp-control py-0.5 pl-2 pr-9 text-cp rounded-cp',
-    option: 'h-8.5 px-3 text-cp',
+    trigger: 'h-z-control px-3.5 pr-9 text-z rounded-z',
+    multiple: 'min-h-z-control py-0.5 pl-2 pr-9 text-z rounded-z',
+    option: 'h-8.5 px-3 text-z',
     icon: 16,
   },
   small: {
-    trigger: 'h-cp-control-sm px-2.5 pr-7 text-xs rounded-cp',
-    multiple: 'min-h-cp-control-sm py-0 pl-1.5 pr-7 text-xs rounded-cp',
+    trigger: 'h-z-control-sm px-2.5 pr-7 text-xs rounded-z',
+    multiple: 'min-h-z-control-sm py-0 pl-1.5 pr-7 text-xs rounded-z',
     option: 'h-8 px-2.5 text-xs',
     icon: 14,
   },
   large: {
-    trigger: 'h-cp-control-lg px-4 pr-10 text-cp-lg rounded-cp',
-    multiple: 'min-h-cp-control-lg py-1 pl-2.5 pr-10 text-cp-lg rounded-cp',
-    option: 'h-10 px-3.5 text-cp-lg',
+    trigger: 'h-z-control-lg px-4 pr-10 text-z-lg rounded-z',
+    multiple: 'min-h-z-control-lg py-1 pl-2.5 pr-10 text-z-lg rounded-z',
+    option: 'h-10 px-3.5 text-z-lg',
     icon: 17,
   },
 }
 
 const triggerClasses = computed(() => [
-  'relative inline-flex w-full min-w-0 items-center gap-2 overflow-visible border-0 text-left font-emphasis leading-none shadow-cp-input outline-none transition-[background-color,box-shadow,color] duration-160',
+  'relative inline-flex w-full min-w-0 items-center gap-2 overflow-visible border-0 text-left font-emphasis leading-none shadow-z-input outline-none transition-[background-color,box-shadow,color] duration-160',
   props.multiple ? sizeConfig[props.size].multiple : sizeConfig[props.size].trigger,
   props.clearable && selectedValues.value.length && !props.disabled ? 'pr-15!' : undefined,
   props.disabled
-    ? 'cursor-not-allowed bg-cp-bg-container-disabled text-cp-text-disabled shadow-none'
+    ? 'cursor-not-allowed bg-z-bg-container-disabled text-z-text-disabled shadow-none'
     : invalid.value
       ? [
-          'cursor-pointer bg-cp-error-container text-cp-error-on-container',
+          'cursor-pointer bg-z-error-container text-z-error-on-container',
           open.value
-            ? 'bg-(--cp-input-error-active-bg) shadow-cp-input-error-active'
-            : 'hover:not-focus-within:bg-(--cp-input-error-active-bg) hover:not-focus-within:shadow-cp-input-error-active focus-within:bg-(--cp-input-error-active-bg) focus-within:shadow-cp-input-error-active',
+            ? 'bg-(--z-input-error-active-bg) shadow-z-input-error-active'
+            : 'hover:not-focus-within:bg-(--z-input-error-active-bg) hover:not-focus-within:shadow-z-input-error-active focus-within:bg-(--z-input-error-active-bg) focus-within:shadow-z-input-error-active',
         ]
       : open.value
-        ? 'cursor-pointer bg-(--cp-input-active-bg) text-cp-text shadow-cp-input-active'
+        ? 'cursor-pointer bg-(--z-input-active-bg) text-z-text shadow-z-input-active'
         : [
-            'cursor-pointer bg-(--cp-input-bg) text-cp-text',
-            'hover:not-focus-within:bg-(--cp-input-hover-bg) hover:not-focus-within:shadow-cp-input-hover',
-            'focus-within:bg-(--cp-input-active-bg) focus-within:shadow-cp-input-active',
+            'cursor-pointer bg-(--z-input-bg) text-z-text',
+            'hover:not-focus-within:bg-(--z-input-hover-bg) hover:not-focus-within:shadow-z-input-hover',
+            'focus-within:bg-(--z-input-active-bg) focus-within:shadow-z-input-active',
           ],
 ])
 
 function optionClasses(option: SelectOption<Value>, index: number) {
   return [
-    'flex w-full shrink-0 touch-manipulation items-center gap-2 rounded-cp-sm border-0 px-3 text-left font-emphasis leading-none outline-none transition-colors motion-reduce:transition-none',
+    'flex w-full shrink-0 touch-manipulation items-center gap-2 rounded-z-sm border-0 px-3 text-left font-emphasis leading-none outline-none transition-colors motion-reduce:transition-none',
     sizeConfig[props.size].option,
     option.disabled
-      ? 'cursor-not-allowed bg-transparent text-cp-text-disabled'
+      ? 'cursor-not-allowed bg-transparent text-z-text-disabled'
       : selectedValues.value.includes(option.value)
-        ? 'cursor-pointer bg-cp-control-item-bg-active text-cp-primary-text'
+        ? 'cursor-pointer bg-z-control-item-bg-active text-z-primary-text'
         : activeIndex.value === index
-          ? 'cursor-pointer bg-cp-bg-text-hover text-cp-text'
-          : 'cursor-pointer bg-transparent text-cp-text hover:bg-cp-bg-text-hover',
+          ? 'cursor-pointer bg-z-bg-text-hover text-z-text'
+          : 'cursor-pointer bg-transparent text-z-text hover:bg-z-bg-text-hover',
   ]
 }
 watch(open, visible => emit('visibleChange', visible))
@@ -167,7 +167,7 @@ defineExpose({ focus: () => triggerRef.value?.focus(), blur: () => triggerRef.va
         :id="controlId"
         ref="triggerRef"
         type="button"
-        :class="multiple ? 'absolute inset-0 size-full rounded-cp border-0 bg-transparent p-0 text-inherit outline-none disabled:cursor-not-allowed' : triggerClasses"
+        :class="multiple ? 'absolute inset-0 size-full rounded-z border-0 bg-transparent p-0 text-inherit outline-none disabled:cursor-not-allowed' : triggerClasses"
         :disabled="disabled"
         role="combobox"
         :aria-expanded="open"
@@ -181,7 +181,7 @@ defineExpose({ focus: () => triggerRef.value?.focus(), blur: () => triggerRef.va
         @blur="emit('blur', $event); validate('blur')"
         @keydown="handleTriggerKeydown"
       >
-        <span v-if="multiple" :class="selectedOptions.length ? 'sr-only' : 'block px-3 text-left text-cp-text-quaternary'">{{ selectionLabel || (placeholder ?? locale.select.placeholder) }}</span>
+        <span v-if="multiple" :class="selectedOptions.length ? 'sr-only' : 'block px-3 text-left text-z-text-quaternary'">{{ selectionLabel || (placeholder ?? locale.select.placeholder) }}</span>
         <span v-else class="min-w-0 truncate" :class="selectedOption?.description ? 'max-w-1/2 shrink-0' : 'flex-1'">
           {{ selectedOption?.label ?? placeholder ?? locale.select.placeholder }}
         </span>
@@ -189,14 +189,14 @@ defineExpose({ focus: () => triggerRef.value?.focus(), blur: () => triggerRef.va
           v-if="!multiple && selectedOption?.description"
           :title="selectedOption.description"
           class="min-w-0 flex-1 truncate font-normal"
-          :class="disabled ? 'text-cp-text-disabled' : 'text-cp-text-tertiary'"
+          :class="disabled ? 'text-z-text-disabled' : 'text-z-text-tertiary'"
         >
           {{ selectedOption.description }}
         </span>
         <ChevronDown
           class="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 transition-transform"
           :class="
-            disabled ? 'text-cp-text-disabled' : open ? 'rotate-180 text-cp-primary-text' : 'text-cp-text-quaternary'
+            disabled ? 'text-z-text-disabled' : open ? 'rotate-180 text-z-primary-text' : 'text-z-text-quaternary'
           "
           :size="sizeConfig[size].icon"
         />
@@ -229,18 +229,13 @@ defineExpose({ focus: () => triggerRef.value?.focus(), blur: () => triggerRef.va
 
     <Teleport to="body">
       <Transition
-        enter-active-class="transition-[opacity,transform] duration-150 ease-out motion-reduce:transition-none"
-        enter-from-class="-translate-y-1 opacity-0"
-        enter-to-class="translate-y-0 opacity-100"
-        leave-active-class="transition-opacity duration-150 ease-in motion-reduce:transition-none"
-        leave-from-class="opacity-100"
-        leave-to-class="opacity-0"
+        name="z-slide-fade"
       >
         <div
           v-if="open"
           ref="popoverRef"
-          data-cp-overlay
-          class="fixed z-50 rounded-cp-lg border-0 bg-cp-bg-elevated shadow-cp"
+          data-z-overlay
+          class="fixed z-50 rounded-z-lg border-0 bg-z-bg-elevated shadow-z"
           :style="popoverStyle"
         >
           <div v-if="filterable" ref="searchRef" class="p-2">
@@ -259,7 +254,7 @@ defineExpose({ focus: () => triggerRef.value?.focus(), blur: () => triggerRef.va
               @keydown="handleTriggerKeydown"
             />
           </div>
-          <Scrollbar ref="scrollbarRef" :max-height="popoverMaxHeight" class="rounded-cp-lg">
+          <Scrollbar ref="scrollbarRef" :max-height="popoverMaxHeight" class="rounded-z-lg">
             <div
               :id="`${selectId}-listbox`"
               ref="listboxRef"
@@ -273,7 +268,7 @@ defineExpose({ focus: () => triggerRef.value?.focus(), blur: () => triggerRef.va
                 <slot name="empty" :search="search">
                   <Empty :title="loading ? locale.common.loading : search ? locale.select.noMatches : (emptyText ?? locale.select.empty)" size="small" surface="none" role="status">
                     <template v-if="loading" #icon>
-                      <LoaderCircle :size="18" class="animate-spin text-cp-text-quaternary motion-reduce:animate-none" />
+                      <LoaderCircle :size="18" class="animate-spin text-z-text-quaternary motion-reduce:animate-none" />
                     </template>
                   </Empty>
                 </slot>
@@ -302,14 +297,14 @@ defineExpose({ focus: () => triggerRef.value?.focus(), blur: () => triggerRef.va
                       v-if="option.description"
                       :title="option.description"
                       class="min-w-0 flex-1 truncate font-normal"
-                      :class="option.disabled ? 'text-cp-text-disabled' : 'text-cp-text-tertiary'"
+                      :class="option.disabled ? 'text-z-text-disabled' : 'text-z-text-tertiary'"
                     >
                       {{ option.description }}
                     </span>
                   </slot>
                   <Check
                     v-if="selectedValues.includes(option.value)"
-                    class="shrink-0 text-cp-primary-text"
+                    class="shrink-0 text-z-primary-text"
                     :size="size === 'small' ? 13 : size === 'large' ? 17 : 15"
                   />
                 </button>

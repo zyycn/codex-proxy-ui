@@ -6,19 +6,15 @@ import PageHeaderDemo from '../examples/PageHeaderDemo.vue'
 
 统一页面标题、副标题与右侧操作区
 
-## 交互示例
+## 基础用法
+
+<DemoExample>
 
 <ClientOnly>
   <PageHeaderDemo />
 </ClientOnly>
 
-## 使用要点
-
-`title` 定义页面主标题，`description` 提供简短说明，`actions` 插槽放置操作按钮
-
-组件使用一级标题，实际页面通常只放置一个页头
-
-::: details 查看用法代码
+<template #source>
 
 ```vue
 <script setup lang="ts">
@@ -39,16 +35,24 @@ const count = ref(0)
 </template>
 ```
 
-:::
+</template>
 
-## API
+</DemoExample>
+
+## 用法说明
+
+`title` 定义页面主标题，`description` 提供简短说明，`actions` 插槽放置操作按钮
+
+组件使用一级标题，实际页面通常只放置一个页头
+
+## PageHeader API {#api}
 
 ### 属性
 
-| 属性          | 类型     | 默认值 | 说明     |
-| ------------- | -------- | ------ | -------- |
-| `title`       | `string` | 必填   | 页面标题 |
-| `description` | `string` | —      | 辅助说明 |
+| 属性          | 说明     | 类型     | 默认值 |
+| ------------- | -------- | -------- | ------ |
+| `title`       | 页面标题 | `string` | 必填   |
+| `description` | 辅助说明 | `string` | —      |
 
 ### 插槽
 

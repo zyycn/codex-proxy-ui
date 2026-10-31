@@ -48,7 +48,7 @@ watch(type, () => value.value = null)
       <ZFormItem label="日期">
         <ZDatePicker v-model="value" :type="type" :value-format="valueFormat" :disabled="disabled" :readonly="readonly" :editable="editable" :clearable="clearable" :disabled-date="disabledDate" :shortcuts="shortcuts" :unlink-panels="unlinkPanels" :single-panel="singlePanel" :default-value="new Date(2026, 9, 1)" />
       </ZFormItem>
-      <output class="break-all font-mono text-cp-xs text-cp-text-secondary" aria-label="绑定值">{{ JSON.stringify(value) }}</output>
+      <output class="break-all font-mono text-z-xs text-z-text-secondary" aria-label="绑定值">{{ JSON.stringify(value) }}</output>
     </div>
     <template #controls>
       <div class="demo-control">

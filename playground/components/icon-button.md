@@ -6,13 +6,15 @@ import IconButtonDemo from '../examples/IconButtonDemo.vue'
 
 在紧凑空间中呈现单一操作
 
-## 交互示例
+## 基础用法
+
+<DemoExample>
 
 <ClientOnly>
   <IconButtonDemo />
 </ClientOnly>
 
-::: details 查看用法代码
+<template #source>
 
 ```vue
 <script setup lang="ts">
@@ -32,28 +34,36 @@ const count = ref(0)
 </template>
 ```
 
-:::
+</template>
 
-## 使用要点
+</DemoExample>
+
+## 用法说明
 
 使用 `aria-label` 提供可访问名称。内置加载图标与未指定尺寸的 Lucide 图标随 `size` 缩放，自定义 SVG 的尺寸由调用方设置
 
-## API
+## IconButton API {#api}
 
 ### 属性
 
-| 属性                 | 类型                                                                     | 默认值      | 说明                     |
-| -------------------- | ------------------------------------------------------------------------ | ----------- | ------------------------ |
-| `aria-label`         | `string`                                                                 | —           | 提供可访问名称与悬停提示 |
-| `type`               | `'default' \| 'primary' \| 'success' \| 'info' \| 'warning' \| 'danger'` | `'default'` | 语义类型                 |
-| `variant`            | `'solid' \| 'plain' \| 'text' \| 'link'`                                 | `'text'`    | 外观                     |
-| `size`               | `'small' \| 'default' \| 'large'`                                        | `'default'` | 组件尺寸                 |
-| `native-type`        | `'button' \| 'submit' \| 'reset'`                                        | `'button'`  | 原生按钮行为             |
-| `loading / disabled` | `boolean`                                                                | `false`     | 加载与禁用均阻止点击     |
-| `pressed`            | `boolean`                                                                | `false`     | 切换动作的按下状态       |
+| 属性                 | 说明                     | 类型                                                                     | 默认值      |
+| -------------------- | ------------------------ | ------------------------------------------------------------------------ | ----------- |
+| `aria-label`         | 提供可访问名称与悬停提示 | `string`                                                                 | —           |
+| `type`               | 语义类型                 | `'default' \| 'primary' \| 'success' \| 'info' \| 'warning' \| 'danger'` | `'default'` |
+| `variant`            | 外观                     | `'solid' \| 'plain' \| 'text' \| 'link'`                                 | `'text'`    |
+| `size`               | 组件尺寸                 | `'small' \| 'default' \| 'large'`                                        | `'default'` |
+| `native-type`        | 原生按钮行为             | `'button' \| 'submit' \| 'reset'`                                        | `'button'`  |
+| `loading / disabled` | 加载与禁用均阻止点击     | `boolean`                                                                | `false`     |
+| `pressed`            | 切换动作的按下状态       | `boolean`                                                                | `false`     |
 
-### 事件、插槽与实例
+### 事件
 
 - `click(event: MouseEvent)`：用户点击
-- 插槽：`default`、`loading`
-- 实例：`focus()`、`blur()`、`element`
+
+### 插槽
+
+`default`、`loading`
+
+### 实例
+
+`focus()`、`blur()`、`element`

@@ -28,20 +28,20 @@ const iconMap = {
 
 const colorClasses = {
   success: {
-    iconBg: 'bg-cp-success-container',
-    icon: 'text-cp-success',
+    iconBg: 'bg-z-success-container',
+    icon: 'text-z-success',
   },
   error: {
-    iconBg: 'bg-cp-error-container',
-    icon: 'text-cp-error',
+    iconBg: 'bg-z-error-container',
+    icon: 'text-z-error',
   },
   warning: {
-    iconBg: 'bg-cp-warning-container',
-    icon: 'text-cp-warning',
+    iconBg: 'bg-z-warning-container',
+    icon: 'text-z-warning',
   },
   info: {
-    iconBg: 'bg-cp-info-container',
-    icon: 'text-cp-info',
+    iconBg: 'bg-z-info-container',
+    icon: 'text-z-info',
   },
 }
 </script>
@@ -53,12 +53,12 @@ const colorClasses = {
         v-for="message in messages"
         :id="message.id"
         :key="message.id"
-        class="pointer-events-auto flex min-h-16 w-90 max-w-[calc(100vw-1.5rem)] items-center gap-3 rounded-cp-card bg-cp-bg-elevated px-3.5 py-3 shadow-cp"
+        class="pointer-events-auto flex min-h-16 w-90 max-w-[calc(100vw-1.5rem)] items-center gap-3 rounded-z-card bg-z-bg-elevated px-3.5 py-3 shadow-z"
         :role="message.type === 'error' ? 'alert' : 'status'"
         aria-atomic="true"
       >
         <div
-          class="flex size-8.5 shrink-0 items-center justify-center rounded-cp"
+          class="flex size-8.5 shrink-0 items-center justify-center rounded-z"
           :class="colorClasses[message.type].iconBg"
         >
           <component
@@ -69,11 +69,11 @@ const colorClasses = {
         </div>
 
         <div class="flex min-w-0 flex-1 flex-col gap-1">
-          <p class="m-0 truncate text-cp leading-[1.15] font-bold text-cp-text">
+          <p class="m-0 truncate text-z leading-[1.15] font-bold text-z-text">
             {{ message.title ?? locale.notification[message.type] }}
           </p>
           <p
-            class="m-0 max-h-8 overflow-hidden text-xs leading-tight font-semibold text-cp-text-secondary"
+            class="m-0 max-h-8 overflow-hidden text-xs leading-tight font-semibold text-z-text-secondary"
           >
             {{ message.message }}
           </p>
@@ -84,7 +84,7 @@ const colorClasses = {
           :aria-label="locale.notification.close(message.title ?? locale.notification[message.type])"
           @click="emit('close', message.id)"
         >
-          <X :size="16" class="text-cp-text-quaternary" />
+          <X :size="16" class="text-z-text-quaternary" />
         </IconButton>
       </article>
     </TransitionGroup>

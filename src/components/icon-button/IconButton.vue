@@ -26,9 +26,9 @@ defineSlots<{
 }>()
 
 const sizeClasses: Record<ComponentSize, string> = {
-  small: 'size-cp-control-sm',
-  default: 'size-cp-control',
-  large: 'size-cp-control-lg',
+  small: 'size-z-control-sm',
+  default: 'size-z-control',
+  large: 'size-z-control-lg',
 }
 
 const iconSizes: Record<ComponentSize, number> = {
@@ -51,12 +51,12 @@ defineExpose({ focus: () => buttonRef.value?.focus(), blur: () => buttonRef.valu
 } })
 
 const classes = computed(() => [
-  'inline-grid shrink-0 touch-manipulation place-items-center rounded-cp border-0 leading-none outline-none transition-[background-color,box-shadow,color,opacity,transform] duration-150 motion-safe:active:scale-[0.96] motion-reduce:transition-none',
-  'focus-visible:ring-2 focus-visible:ring-cp-control-outline focus-visible:ring-offset-2 focus-visible:ring-offset-cp-bg-container',
-  'disabled:cursor-not-allowed disabled:transform-none disabled:bg-cp-bg-container-disabled disabled:text-cp-text-disabled disabled:shadow-none',
+  'inline-grid shrink-0 touch-manipulation place-items-center rounded-z border-0 leading-none outline-none transition-[background-color,box-shadow,color,opacity,transform] duration-150 motion-safe:active:scale-[0.96] motion-reduce:transition-none',
+  'focus-visible:ring-2 focus-visible:ring-z-control-outline focus-visible:ring-offset-2 focus-visible:ring-offset-z-bg-container',
+  'disabled:cursor-not-allowed disabled:transform-none disabled:bg-z-bg-container-disabled disabled:text-z-text-disabled disabled:shadow-none',
   sizeClasses[props.size],
   buttonSurface(props.type, props.variant, true),
-  props.pressed ? 'bg-cp-bg-text-active text-cp-text' : undefined,
+  props.pressed ? 'bg-z-bg-text-active text-z-text' : undefined,
 ])
 </script>
 

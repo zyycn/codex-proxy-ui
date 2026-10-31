@@ -6,9 +6,15 @@ import PaginationDemo from '../examples/PaginationDemo.vue'
 
 独立控制页码与每页条数，表格和其他列表共用
 
+## 基础用法
+
+<DemoExample>
+
 <ClientOnly>
   <PaginationDemo />
 </ClientOnly>
+
+<template #source>
 
 ```vue
 <script setup lang="ts">
@@ -24,16 +30,31 @@ const size = ref(20)
 </template>
 ```
 
-## API
+</template>
 
-| 属性                   | 类型       | 默认值              | 说明         |
-| ---------------------- | ---------- | ------------------- | ------------ |
-| `v-model:current-page` | `number`   | `1`                 | 当前页码     |
-| `v-model:page-size`    | `number`   | `20`                | 每页条数     |
-| `total`                | `number`   | 必填                | 总条数       |
-| `page-sizes`           | `number[]` | `[10, 20, 50, 100]` | 条数选项     |
-| `disabled`             | `boolean`  | `false`             | 禁用全部操作 |
+</DemoExample>
 
-用户操作分别更新对应模型并发送 current-change(page)、size-change(size)。条数变化不隐式重置页码、不请求数据；调用方需要重置时在 size-change 中处理
+## Pagination API {#api}
 
-超出总页数的模型只限制显示与操作范围，程序更新不产生用户事件。没有数据时显示第 1 页。组件不提供自定义插槽
+### 属性
+
+| 属性                   | 说明         | 类型       | 默认值              |
+| ---------------------- | ------------ | ---------- | ------------------- |
+| `v-model:current-page` | 当前页码     | `number`   | `1`                 |
+| `v-model:page-size`    | 每页条数     | `number`   | `20`                |
+| `total`                | 总条数       | `number`   | 必填                |
+| `page-sizes`           | 条数选项     | `number[]` | `[10, 20, 50, 100]` |
+| `disabled`             | 禁用全部操作 | `boolean`  | `false`             |
+
+### 事件
+
+| 事件                 | 说明             | 参数           |
+| -------------------- | ---------------- | -------------- |
+| `update:currentPage` | 更新当前页码     | `page: number` |
+| `update:pageSize`    | 更新每页条数     | `size: number` |
+| `current-change`     | 用户切换页码     | `page: number` |
+| `size-change`        | 用户调整每页条数 | `size: number` |
+
+条数变化不隐式重置页码、不请求数据，调用方需要重置时在 `size-change` 中处理
+
+超出总页数的模型只限制显示与操作范围，程序更新不产生用户事件。总条数按非负整数显示，缺失、非数值或非有限值按 `0` 处理；没有数据时显示第 1 页。组件不提供自定义插槽

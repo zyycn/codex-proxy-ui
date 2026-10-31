@@ -1,13 +1,13 @@
 import type {
   ThemeAppearanceSeed,
-  ThemeName,
+  ThemeScheme,
 } from '../types'
 import { normalizeHexColor } from '../../shared/utils/color'
 import { generateColorPalette, mix } from '../core/color'
 import {
   DARK_CONTAINER_BASE,
   DARK_TEXT_BASE,
-  DEFAULT_CUSTOM_THEME_COLOR,
+  defaultThemePrimaryColor,
   LIGHT_CONTAINER_BASE,
   LIGHT_TEXT_BASE,
 } from '../core/constants'
@@ -15,14 +15,14 @@ import {
 const CUSTOM_APPEARANCE_DERIVERS = {
   light: deriveLightCustomAppearance,
   dark: deriveDarkCustomAppearance,
-} satisfies Record<ThemeName, (colorPrimary: string) => ThemeAppearanceSeed>
+} satisfies Record<ThemeScheme, (colorPrimary: string) => ThemeAppearanceSeed>
 
 /** 自定义主色仅向中性界面注入少量色温，再交给统一 Surface Map 派生。 */
 export function deriveCustomThemeAppearance(
-  theme: ThemeName,
+  theme: ThemeScheme,
   colorPrimary: string,
 ): ThemeAppearanceSeed {
-  const normalized = normalizeHexColor(colorPrimary) ?? DEFAULT_CUSTOM_THEME_COLOR
+  const normalized = normalizeHexColor(colorPrimary) ?? defaultThemePrimaryColor
   return CUSTOM_APPEARANCE_DERIVERS[theme](normalized)
 }
 

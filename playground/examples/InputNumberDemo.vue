@@ -15,7 +15,7 @@ const disabled = ref(false)
     <template #controls>
       <div class="demo-control">
         <span>步长</span>
-        <ZInputNumber v-model="step" size="small" aria-label="步长" :min="1" :max="10" />
+        <ZInputNumber v-model="step" class="w-28" size="small" aria-label="步长" :min="1" :max="10" />
       </div>
       <ZCheckbox v-model="disabled" label="禁用" />
     </template>

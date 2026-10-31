@@ -6,13 +6,15 @@ import SwitchDemo from '../examples/SwitchDemo.vue'
 
 即时切换启用或停用状态
 
-## 交互示例
+## 基础用法
+
+<DemoExample>
 
 <ClientOnly>
   <SwitchDemo />
 </ClientOnly>
 
-::: details 查看用法代码
+<template #source>
 
 ```vue
 <script setup lang="ts">
@@ -27,24 +29,26 @@ const enabled = ref(true)
 </template>
 ```
 
-:::
+</template>
 
-## 使用要点
+</DemoExample>
+
+## 用法说明
 
 通过 `active-text`、`inactive-text` 描述状态，`inline-prompt` 将文字放入开关内部
 
-## API
+## Switch API {#api}
 
 ### 属性
 
-| 属性                          | 类型               | 默认值  | 说明                              |
-| ----------------------------- | ------------------ | ------- | --------------------------------- |
-| `v-model`                     | `boolean`          | `false` | 开关状态                          |
-| `label`                       | `string`           | —       | 可见标签；隐藏标签使用 aria-label |
-| `active-text / inactive-text` | `string`           | `''`    | 开启与关闭文字                    |
-| `inline-prompt`               | `boolean`          | `false` | 在开关内部显示状态文字            |
-| `width`                       | `string \| number` | `''`    | 轨道宽度，数字按 px 处理          |
-| `disabled`                    | `boolean`          | `false` | 禁止修改                          |
+| 属性                          | 说明                              | 类型               | 默认值  |
+| ----------------------------- | --------------------------------- | ------------------ | ------- |
+| `v-model`                     | 开关状态                          | `boolean`          | `false` |
+| `label`                       | 可见标签；隐藏标签使用 aria-label | `string`           | —       |
+| `active-text / inactive-text` | 开启与关闭文字                    | `string`           | `''`    |
+| `inline-prompt`               | 在开关内部显示状态文字            | `boolean`          | `false` |
+| `width`                       | 轨道宽度，数字按 px 处理          | `string \| number` | `''`    |
+| `disabled`                    | 禁止修改                          | `boolean`          | `false` |
 
 ### 事件
 

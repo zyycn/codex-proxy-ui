@@ -90,22 +90,22 @@ defineExpose({ focus: () => textareaRef.value?.focus(), blur: () => textareaRef.
 
 const sizeClasses: Record<ComponentSize, string> = {
   small: 'px-3 py-2.5 text-xs',
-  default: 'px-3.5 py-3 text-cp',
-  large: 'px-4 py-3.5 text-cp-lg',
+  default: 'px-3.5 py-3 text-z',
+  large: 'px-4 py-3.5 text-z-lg',
 }
 
 const textareaClasses = computed(() => [
-  'cp-scrollbar w-full rounded-cp border-0 text-cp-text shadow-cp-input outline-none transition-[background-color,box-shadow,color] duration-160 placeholder:font-normal placeholder:text-cp-text-quaternary motion-reduce:transition-none',
+  'z-scrollbar w-full rounded-z border-0 text-z-text shadow-z-input outline-none transition-[background-color,box-shadow,color] duration-160 placeholder:font-normal placeholder:text-z-text-quaternary motion-reduce:transition-none',
   'leading-[1.55] font-emphasis',
   sizeClasses[props.size],
   props.disabled
-    ? 'cursor-not-allowed bg-cp-bg-container-disabled text-cp-text-disabled shadow-none'
+    ? 'cursor-not-allowed bg-z-bg-container-disabled text-z-text-disabled shadow-none'
     : invalid.value
-      ? 'bg-cp-error-container hover:not-focus:bg-(--cp-input-error-active-bg) hover:not-focus:shadow-cp-input-error-active focus:bg-(--cp-input-error-active-bg) focus:shadow-cp-input-error-active'
+      ? 'bg-z-error-container hover:not-focus:bg-(--z-input-error-active-bg) hover:not-focus:shadow-z-input-error-active focus:bg-(--z-input-error-active-bg) focus:shadow-z-input-error-active'
       : [
-          'bg-(--cp-input-bg)',
-          'hover:not-focus:bg-(--cp-input-hover-bg) hover:not-focus:shadow-cp-input-hover',
-          'focus:bg-(--cp-input-active-bg) focus:shadow-cp-input-active',
+          'bg-(--z-input-bg)',
+          'hover:not-focus:bg-(--z-input-hover-bg) hover:not-focus:shadow-z-input-hover',
+          'focus:bg-(--z-input-active-bg) focus:shadow-z-input-active',
         ],
 ])
 </script>

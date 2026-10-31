@@ -1,7 +1,7 @@
 /* 主题无关的颜色基元；皮肤 Token 由主题 Store 在 Vue 挂载前生成。 */
 :root {
-  --cp-color-white: #ffffff;
-  --cp-color-transparent: #ffffff00;
+  --z-color-white: #ffffff;
+  --z-color-transparent: #ffffff00;
 }
 
 [data-theme='light'] {

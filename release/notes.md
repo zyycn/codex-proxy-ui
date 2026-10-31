@@ -1,33 +1,49 @@
-# v0.7.0
+# v0.8.0
 
-## 表单
+## 表单与交互
 
-- 扩展 `FormRules<T>`，支持类型、长度、范围、正则、嵌套字段和异步校验，校验引擎使用 `@rc-component/async-validator`
-- 支持表单与字段各自设置 `label-position` 的 `left`、`right`、`top`，横向标签可指定宽度或自动对齐
-- 增加字段重置、初值管理、校验回调和状态事件，可在提交失败时滚动并聚焦首个错误字段
-- 修复同一字段内多个控件共用 ID 导致的标签误关联，错误提示显示时保持表单高度稳定
+- 表单默认字段间距调整为 18px，错误提示使用 12px 字号与行高、常规字重，并保留与控件的间隔
+- 表单错误提示增加展开与收起动画，显示和隐藏时保持表单布局稳定
+- 表格展开行增加高度与透明度过渡，结束后恢复自然高度，支持快速反复切换
+- 复选框避免连续点击时误选相邻文字，保留原生键盘操作
+- 分页总数缺失或无效时显示 0，负数归零、小数取整
 
-## 修复
+## 公共动画
 
-- 确认弹窗没有正文时移除空内容区，收紧说明与操作按钮之间的留白
-- 模态焦点管理跳过隐藏与禁用控件，并提供 `useModalFocus` 供自定义模态面板复用
-- 避免窗口重新激活时因鼠标焦点恢复而意外打开悬停浮层
-- 表格默认尺寸的单元格左右内边距由 16px 调整为 12px，日期面板与输入框的间距调整为 10px
-- 单行省略文本保留字形上下沿，避免紧凑行高造成纵向裁切
+- 提供 `z-fade`、`z-slide-fade`、`z-zoom-in-top` 三种公共 Vue Transition 名称，导入 `styles.css` 后即可复用
+- Popover 默认淡入淡出，并支持通过 `transition` 属性指定过渡名称
+- Select 与 DatePicker 复用轻微下移的入场动画，所有动画遵循减少动态效果的系统设置
 
-## 主题
+## Markdown 与滚动容器
 
-- 导出 `resolveThemeSeedTokens`，只读取种子值时可跳过完整色阶与 CSS Token 生成
+- Markdown 支持 GitHub 的 `NOTE`、`TIP`、`IMPORTANT`、`WARNING`、`CAUTION` 提示块，图标和颜色跟随主题，内容继续经过安全过滤
+- Markdown 的 Shadow DOM 样式支持消费方配置的主题变量前缀
+- Scrollbar 支持连接页面或已有滚动元素，保留原生滚动、锚点跳转和滚动位置恢复
 
-## 升级注意
+## 文档与示例
 
-- `validate()` 与 `validateField()` 未传回调时，校验失败会 reject 字段错误对象，调用方应使用 `catch` 或改用校验回调；传入回调时，失败仍 resolve `false`
-- 自定义 `validator` 改为接收 `(rule, value, callback, source, options)`，通过回调报告校验结果；异步校验可使用返回 Promise 的 `asyncValidator`，跨字段校验从业务模型读取关联值
+- 调整导航品牌区、侧栏、正文和右侧目录，统一示例预览、配置区与代码展开布局
+- 组件介绍按基础用法、使用说明和 API 组织，补充按钮状态及 Markdown 提示块示例
+- 文档站使用统一的自定义滚动条，增加站点图标、GitHub 入口与导航点阵磨砂背景
+
+## 主题命名空间（不兼容变更）
+
+- 默认主题 CSS 变量、组件 DOM 类名和 utility 类名统一使用 `z`，移除原有 `cp` 命名，不保留兼容别名
+- Vite 插件新增 `themePrefix` 构建配置，同时控制 CSS 变量生成与样式引用；与组件导出名、DOM 类名及 utility 类名独立
+- `ThemeTokens`、`themeTokenNames` 与 `tokenOverrides` 使用不带 CSS 前缀的语义名，如 `color-primary`、`input-bg`
+- 新增 `getThemeVarName()` 与 `createThemeVars()`，供 JavaScript 取色、局部主题绑定与跨页面主题传递使用
+
+## 公开 API（不兼容变更）
+
+- 主题入口统一为 `createTheme(options?)`、`applyTheme(root, theme)`，创建参数改为具名配置，返回 `Theme`，通过 `scheme` 表示明暗
+- 主题默认值与预置集合统一为小驼峰命名；系统模式解析使用 `resolveThemeScheme()`，CSS 变量使用 `getThemeVarName()` 与 `createThemeVars()`
+- 内部颜色派生、分页计算、表格布局和 Markdown 渲染工具不再从公开入口导出，公开能力见[API 文档](https://zyycn.github.io/codex-proxy-ui/guide/api)
+- 通知服务提供 `NotificationConfig`、`NotificationService` 类型，颜色校验工具同时支持主入口与 `color-picker` 子路径
 
 ## 安装
 
 ```bash
-pnpm add https://github.com/zyycn/codex-proxy-ui/releases/download/v0.7.0/codex-proxy-ui-0.7.0.tgz
+pnpm add https://github.com/zyycn/codex-proxy-ui/releases/download/v0.8.0/codex-proxy-ui-0.8.0.tgz
 ```
 
 需要 Node.js 24+、Vue 3.5+，包名为 `@codex-proxy/ui`

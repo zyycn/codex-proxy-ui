@@ -1,0 +1,323 @@
+/* 文档外壳使用 VitePress 的变量，示例区保留组件库自己的主题和密度 */
+.docs-page-scrollbar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: calc(var(--vp-z-index-nav) + 1);
+  width: 12px;
+  height: auto;
+}
+
+.docs-brand-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.docs-brand-name {
+  font-size: 16px;
+  font-weight: 650;
+  line-height: 20px;
+}
+
+.docs-brand-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  color: var(--vp-c-text-2);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0;
+}
+
+.docs-version {
+  padding: 0 6px;
+  border-radius: 4px;
+  background: var(--vp-c-bg-soft);
+  font-family: var(--vp-font-family-mono);
+  font-size: 11px;
+  line-height: 16px;
+}
+
+.docs-site .VPNav {
+  --vp-nav-bg-color: transparent;
+}
+
+.docs-site .VPNavBar {
+  background-image: radial-gradient(transparent 1px, var(--vp-c-bg) 1px);
+  background-size: 4px 4px;
+  -webkit-backdrop-filter: saturate(50%) blur(4px);
+  backdrop-filter: saturate(50%) blur(4px);
+}
+
+@media (prefers-reduced-transparency: reduce), (forced-colors: active) {
+  .docs-site .VPNavBar {
+    background-color: var(--vp-c-bg);
+    background-image: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+.docs-site .VPNavBarTitle .title {
+  border-bottom: 0;
+  color: var(--vp-c-text-1);
+  letter-spacing: -0.02em;
+}
+
+.docs-site .VPNavBarTitle .logo {
+  margin-right: 10px;
+}
+
+.docs-site .VPNavBarMenuLink.active {
+  box-shadow: inset 0 -2px var(--vp-c-brand-1);
+}
+
+.docs-site .VPSidebar .group {
+  width: 100%;
+  border-top: 0;
+  padding-top: 0;
+}
+
+.docs-site .VPSidebar .group + .group {
+  margin-top: 16px;
+}
+
+.docs-site .VPSidebar .group > .VPSidebarItem.level-0 {
+  padding-bottom: 0;
+}
+
+.docs-site .VPSidebarItem.level-0 > .item > .text {
+  padding: 4px 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.docs-site .VPSidebarItem.is-link > .item {
+  margin-bottom: 4px;
+}
+
+.docs-site .VPSidebarItem.is-link > .items {
+  margin-block: 6px;
+}
+
+.docs-site .VPSidebarItem.is-link > .item > .link {
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: background-color 150ms;
+}
+
+.docs-site .VPSidebarItem.is-link > .item > .link > .text {
+  padding: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+.docs-site .VPSidebarItem.is-link > .item > .link:where(:hover, :focus-visible) {
+  background: var(--vp-c-default-soft);
+}
+
+.docs-site .VPSidebarItem.is-active:not(:has(.items .is-active)) > .item > .link {
+  background: var(--vp-c-brand-soft);
+}
+
+.docs-site .VPSidebarItem.is-active > .item > .link > .text {
+  font-weight: 500;
+}
+
+.docs-site .VPDoc.has-aside > .container > .content > .content-container {
+  max-width: none;
+}
+
+.docs-site .VPDocAsideOutline > .content {
+  border-left: 0;
+  padding-left: 16px;
+}
+
+.docs-site .VPDocAsideOutline .outline-title {
+  color: var(--vp-c-text-2);
+  font-size: 12px;
+  line-height: 32px;
+}
+
+.docs-site .VPDocOutlineItem .outline-link {
+  color: var(--vp-c-text-3);
+  font-size: 13px;
+  line-height: 28px;
+  transition: color 150ms;
+}
+
+.docs-site .VPDocOutlineItem .outline-link:where(:hover, .active) {
+  color: var(--vp-c-brand-1);
+}
+
+.docs-site .VPDocOutlineItem.nested {
+  padding-right: 0;
+  padding-left: 12px;
+}
+
+.docs-site .VPDocAsideOutline .outline-marker {
+  left: 0;
+  width: 3px;
+  height: 14px;
+}
+
+/* 避开 vp-raw 内的真实组件，避免文档标题和表格规则影响示例 */
+.docs-site .vp-doc h1:not(:where(.vp-raw, .vp-raw *)) {
+  margin-bottom: 20px;
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+
+.docs-site .vp-doc h2:not(:where(.vp-raw, .vp-raw *)) {
+  margin: 44px 0 20px;
+  border-top: 0;
+  padding-top: 0;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+
+.docs-site .vp-doc h3:not(:where(.vp-raw, .vp-raw *)) {
+  margin: 28px 0 16px;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.docs-site .vp-doc .header-anchor:not(:where(.vp-raw, .vp-raw *)) {
+  top: 0;
+  display: inline-flex;
+  height: 100%;
+  align-items: center;
+  font-size: 0.8em;
+  line-height: 1;
+  margin-left: -1.15em;
+}
+
+.docs-site .vp-doc :where(p, li):not(:where(.vp-raw, .vp-raw *)) {
+  line-height: 1.75;
+}
+
+.docs-site .vp-doc h1 + p:not(:where(.vp-raw, .vp-raw *)) {
+  color: var(--vp-c-text-2);
+}
+
+.docs-site .vp-doc table:not(:where(.vp-raw, .vp-raw *)) {
+  width: 100%;
+  font-size: 14px;
+}
+
+.docs-site .vp-doc tr:not(:where(.vp-raw, .vp-raw *)) {
+  border-top: 0;
+  background: transparent;
+}
+
+.docs-site .vp-doc :where(th, td):not(:where(.vp-raw, .vp-raw *)) {
+  max-width: 400px;
+  border: 0;
+  border-bottom: 1px solid var(--vp-c-divider);
+  padding: 12px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.docs-site .vp-doc th:not(:where(.vp-raw, .vp-raw *)) {
+  color: var(--vp-c-text-2);
+  font-weight: 500;
+}
+
+.docs-site .vp-doc td code:not(:where(.vp-raw, .vp-raw *)) {
+  background: transparent;
+  padding: 0;
+}
+
+@media (min-width: 768px) {
+  .docs-site .VPNavBarSearch {
+    flex-grow: 0;
+    padding-right: 24px;
+  }
+
+  .docs-site .vp-doc table:not(:where(.vp-raw, .vp-raw *)) {
+    display: table;
+  }
+}
+
+@media (min-width: 960px) {
+  .docs-site .VPContent.has-sidebar {
+    padding-right: 0;
+    padding-left: var(--vp-sidebar-width);
+  }
+
+  .docs-site .VPNavBar.has-sidebar .wrapper {
+    padding: 0 32px;
+  }
+
+  .docs-site .VPNavBar.has-sidebar > .wrapper > .container > .title {
+    position: static;
+    width: auto;
+    padding: 0;
+  }
+
+  .docs-site .VPNavBar.has-sidebar > .wrapper > .container > .content,
+  .docs-site .VPNavBar.has-sidebar > .divider {
+    padding: 0;
+  }
+
+  .docs-site .VPSidebar {
+    padding: 24px 24px 40px 32px;
+  }
+
+  .docs-site .VPSidebar .curtain {
+    display: none;
+  }
+
+  .docs-site .VPDoc {
+    padding: 48px 32px 0 40px;
+  }
+
+  .docs-site .VPDoc > .container {
+    max-width: none;
+    gap: 32px;
+  }
+
+  .docs-site .VPDoc > .container > .content {
+    min-width: 0;
+    padding: 0 0 80px;
+  }
+
+  .docs-site .VPDoc > .container > .aside {
+    flex: 0 0 168px;
+    padding-left: 0;
+  }
+
+  .docs-site .VPDoc .aside-container,
+  .docs-site .VPDoc .aside-curtain {
+    width: 168px;
+  }
+}
+
+@media (max-width: 639px) {
+  .docs-site .vp-doc h1:not(:where(.vp-raw, .vp-raw *)) {
+    font-size: 28px;
+  }
+
+  .docs-site .vp-doc h2:not(:where(.vp-raw, .vp-raw *)) {
+    margin-top: 32px;
+    font-size: 22px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .docs-site .VPSidebarItem.is-link > .item > .link,
+  .docs-site .VPDocOutlineItem .outline-link,
+  .docs-site .VPDocAsideOutline .outline-marker {
+    transition: none;
+  }
+}

@@ -91,15 +91,15 @@ function stepBy(direction: -1 | 1) {
 <template>
   <div
     v-bind="rootAttrs"
-    class="z-input-number inline-flex min-w-0 items-center rounded-cp px-1.5 text-cp-text transition-[background-color,box-shadow] duration-150 motion-reduce:transition-none"
+    class="z-input-number inline-flex min-w-0 items-center rounded-z px-1.5 text-z-text transition-[background-color,box-shadow] duration-150 motion-reduce:transition-none"
     :data-size="size"
     :class="[
-      size === 'default' ? 'h-cp-control' : 'h-cp-control-sm',
+      size === 'default' ? 'h-z-control' : 'h-z-control-sm',
       disabled
-        ? 'cursor-not-allowed bg-cp-bg-container-disabled'
+        ? 'cursor-not-allowed bg-z-bg-container-disabled'
         : invalid
-          ? 'bg-cp-error-container shadow-cp-input hover:not-focus-within:bg-(--cp-input-error-active-bg) hover:not-focus-within:shadow-cp-input-error-active focus-within:bg-(--cp-input-error-active-bg) focus-within:shadow-cp-input-error-active'
-          : 'bg-(--cp-input-bg) shadow-cp-input hover:not-focus-within:bg-(--cp-input-hover-bg) hover:not-focus-within:shadow-cp-input-hover focus-within:bg-(--cp-input-active-bg) focus-within:shadow-cp-input-active',
+          ? 'bg-z-error-container shadow-z-input hover:not-focus-within:bg-(--z-input-error-active-bg) hover:not-focus-within:shadow-z-input-error-active focus-within:bg-(--z-input-error-active-bg) focus-within:shadow-z-input-error-active'
+          : 'bg-(--z-input-bg) shadow-z-input hover:not-focus-within:bg-(--z-input-hover-bg) hover:not-focus-within:shadow-z-input-hover focus-within:bg-(--z-input-active-bg) focus-within:shadow-z-input-active',
     ]"
   >
     <IconButton
@@ -131,14 +131,14 @@ function stepBy(direction: -1 | 1) {
         :step="step"
         :disabled="disabled"
         :readonly="readonly"
-        class="min-w-0 appearance-[textfield] border-0 bg-transparent p-0 font-mono tabular-nums text-cp-text outline-none disabled:text-cp-text-disabled [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
-        :class="size === 'default' ? 'w-full text-center text-cp' : 'w-9 text-right text-cp-xs font-bold'"
+        class="min-w-0 appearance-[textfield] border-0 bg-transparent p-0 font-mono tabular-nums text-z-text outline-none disabled:text-z-text-disabled [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
+        :class="size === 'default' ? 'w-full text-center text-z' : 'w-9 text-right text-z-xs font-bold'"
         @input="updateDraft"
         @change="commitDraft"
         @focus="emit('focus', $event)"
         @blur="commitDraft(); emit('blur', $event); validate('blur')"
       >
-      <span v-if="unit" class="shrink-0 text-[9px] font-emphasis text-cp-text-quaternary">
+      <span v-if="unit" class="shrink-0 text-[9px] font-emphasis text-z-text-quaternary">
         {{ unit }}
       </span>
     </span>

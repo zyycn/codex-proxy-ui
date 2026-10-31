@@ -1,12 +1,12 @@
 import type {
   FunctionalColorMap,
-  ResolvedThemeSeedTokens,
   ThemeComponentMap,
   ThemeComponentOverrides,
   ThemeDimensionMap,
   ThemeFillMap,
-  ThemeName,
   ThemePrimaryMap,
+  ThemeScheme,
+  ThemeSeedTokens,
   ThemeShadowMap,
   ThemeSurfaceMap,
 } from '../types'
@@ -28,10 +28,10 @@ type SurfaceComponentMap = Omit<ThemeComponentMap, `buttonPrimary${string}` | `s
 const SHADOW_MAP_DERIVERS = {
   light: deriveLightShadowMap,
   dark: deriveDarkShadowMap,
-} satisfies Record<ThemeName, (shadowStrength: number) => ThemeShadowMap>
+} satisfies Record<ThemeScheme, (shadowStrength: number) => ThemeShadowMap>
 
 export function deriveThemeDimensionMap(
-  seedTokens: ResolvedThemeSeedTokens,
+  seedTokens: ThemeSeedTokens,
   componentOverrides: ThemeComponentOverrides | undefined,
 ): ThemeDimensionMap {
   const fontSize = seedTokens.fontSize
@@ -73,7 +73,7 @@ export function deriveThemeDimensionMap(
 }
 
 export function deriveThemeShadowMap(
-  theme: ThemeName,
+  theme: ThemeScheme,
   shadowStrength: number,
 ): ThemeShadowMap {
   return SHADOW_MAP_DERIVERS[theme](shadowStrength)
@@ -133,7 +133,7 @@ function deriveDarkComponentMap(
   const inputInteractionBg = mix(surfaces.colorBgContainer, surfaces.colorFillSecondary, 0.69)
   // 悬停与聚焦共用反馈；装饰阴影关闭时仍保留可见外圈。
   const inputInteractionShadow = [
-    '0 0 0 3px var(--cp-color-primary-container-hover)',
+    `0 0 0 3px ${primary.colorPrimaryContainerHover}`,
     shadowStrength > 0
       ? scaleShadowAlpha(`0 14px 28px -22px ${withAlpha(BLACK, 0.72)}`, shadowStrength)
       : null,

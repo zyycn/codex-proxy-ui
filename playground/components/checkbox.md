@@ -6,13 +6,15 @@ import CheckboxDemo from '../examples/CheckboxDemo.vue'
 
 独立选择一个选项，也可呈现半选状态
 
-## 交互示例
+## 基础用法
+
+<DemoExample>
 
 <ClientOnly>
   <CheckboxDemo />
 </ClientOnly>
 
-::: details 查看用法代码
+<template #source>
 
 ```vue
 <script setup lang="ts">
@@ -27,22 +29,24 @@ const checked = ref(false)
 </template>
 ```
 
-:::
+</template>
 
-## 使用要点
+</DemoExample>
+
+## 用法说明
 
 `v-model` 绑定布尔值，`indeterminate` 仅表示半选外观
 
-## API
+## Checkbox API {#api}
 
 ### 属性
 
-| 属性            | 类型      | 默认值  | 说明                              |
-| --------------- | --------- | ------- | --------------------------------- |
-| `v-model`       | `boolean` | `false` | 选中状态                          |
-| `label`         | `string`  | —       | 可见标签；隐藏标签使用 aria-label |
-| `indeterminate` | `boolean` | `false` | 半选外观，不改写绑定值            |
-| `disabled`      | `boolean` | `false` | 禁止修改                          |
+| 属性            | 说明                              | 类型      | 默认值  |
+| --------------- | --------------------------------- | --------- | ------- |
+| `v-model`       | 选中状态                          | `boolean` | `false` |
+| `label`         | 可见标签；隐藏标签使用 aria-label | `string`  | —       |
+| `indeterminate` | 半选外观，不改写绑定值            | `boolean` | `false` |
+| `disabled`      | 禁止修改                          | `boolean` | `false` |
 
 ### 事件
 
@@ -52,7 +56,10 @@ const checked = ref(false)
 | `change`            | boolean，用户切换选中状态 |
 | `focus / blur`      | FocusEvent，焦点变化      |
 
-### 插槽与实例
+### 插槽
 
 - `label`：自定义可见标签
-- 实例：`focus()`、`blur()`
+
+### 实例
+
+`focus()`、`blur()`

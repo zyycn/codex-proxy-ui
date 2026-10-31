@@ -95,7 +95,7 @@ watch(() => [props.menuOpen, props.disabled, hidden.value.length], () => {
           :aria-expanded="open"
           :aria-controls="open ? panelId : undefined"
           aria-haspopup="dialog"
-          class="cursor-pointer rounded-cp border-0 bg-transparent p-0 outline-none focus-visible:ring-2 focus-visible:ring-cp-control-outline disabled:cursor-not-allowed"
+          class="cursor-pointer rounded-z border-0 bg-transparent p-0 outline-none focus-visible:ring-2 focus-visible:ring-z-control-outline disabled:cursor-not-allowed"
           @keydown.esc="close"
           @keydown.enter.prevent="focusHidden"
           @keydown.space.prevent="focusHidden"

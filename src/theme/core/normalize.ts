@@ -12,10 +12,10 @@ import {
   ALPHA_COLOR_TOKEN_NAMES,
   EDITABLE_COLOR_TOKEN_NAMES,
   EDITABLE_SHADOW_TOKEN_NAMES,
-  THEME_COLOR_PRESETS,
+  themeColorPresets,
 } from './constants'
 
-export function themeTokenAllowsAlpha(name: string): boolean {
+export function supportsThemeTokenAlpha(name: string): boolean {
   return ALPHA_COLOR_TOKEN_NAMES.has(name)
 }
 
@@ -39,7 +39,7 @@ export function isThemeMode(value: unknown): value is ThemeMode {
 }
 
 export function isThemeColorId(value: unknown): value is ThemeColorId {
-  return value === 'custom' || THEME_COLOR_PRESETS.some(preset => preset.id === value)
+  return value === 'custom' || themeColorPresets.some(preset => preset.id === value)
 }
 
 function normalizeThemeSeedOverrides(value: unknown): ThemeSeedOverrides {
@@ -108,7 +108,7 @@ function normalizeThemeTokenOverrides(value: unknown): Partial<ThemeTokens> {
 
     if (EDITABLE_COLOR_TOKEN_NAMES.has(name)) {
       const normalized = normalizeHexColor(rawValue)
-        ?? (themeTokenAllowsAlpha(name) ? normalizeRgbaHexColor(rawValue) : null)
+        ?? (supportsThemeTokenAlpha(name) ? normalizeRgbaHexColor(rawValue) : null)
       if (normalized)
         result[name] = normalized
       continue

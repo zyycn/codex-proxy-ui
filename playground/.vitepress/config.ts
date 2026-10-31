@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import tailwindcss from '@tailwindcss/postcss'
 import { defineConfig, postcssIsolateStyles } from 'vitepress'
 import CodexProxyUI from '../../src/vite'
@@ -7,8 +9,16 @@ export default defineConfig({
   description: '为插件与管理工具构建一致的界面',
   lang: 'zh-CN',
   cleanUrls: true,
+  // 图标与导航复用同一 SVG，内联后不受部署子路径和 404 页面地址影响。
+  head: [['link', {
+    rel: 'icon',
+    type: 'image/svg+xml',
+    href: `data:image/svg+xml;base64,${readFileSync(new URL('../public/logo.svg', import.meta.url), 'base64')}`,
+  }]],
   themeConfig: {
-    logo: { src: '/logo.svg', alt: 'Codex Proxy' },
+    siteTitle: false,
+    logo: { src: '/logo.svg', alt: '' },
+    socialLinks: [{ icon: 'github', link: 'https://github.com/zyycn/codex-proxy-ui', ariaLabel: 'UI 源码仓库' }],
     nav: [
       { text: '指南', link: '/guide/installation', activeMatch: '/guide/' },
       { text: '组件', link: '/components/', activeMatch: '/components/' },
@@ -64,6 +74,7 @@ export default defineConfig({
       '/': [{ text: '开始使用', items: [
         { text: '概览', link: '/' },
         { text: '安装与按需使用', link: '/guide/installation' },
+        { text: '公开 API', link: '/guide/api' },
         { text: '源码联调与热更新', link: '/guide/development' },
         { text: '组件架构与目录', link: '/guide/architecture' },
         { text: '国际化', link: '/guide/i18n' },
@@ -79,13 +90,23 @@ export default defineConfig({
     search: { provider: 'local' },
   },
   vite: {
+    resolve: {
+      alias: [{
+        // 只替换默认 Layout 的相对引用，包装组件仍可导入原始侧栏。
+        find: /^\.\/components\/VPSidebar\.vue$/u,
+        replacement: fileURLToPath(new URL('./theme/DocsSidebar.vue', import.meta.url)),
+      }, {
+        find: '#vitepress-sidebar',
+        replacement: fileURLToPath(import.meta.resolve('vitepress/dist/client/theme-default/components/VPSidebar.vue')),
+      }],
+    },
     // VitePress 稳定版与库构建使用不同主版本的 Vite，使用官方 PostCSS 集成避免耦合插件类型。
     css: { postcss: { plugins: [
       tailwindcss(),
       postcssIsolateStyles({
         includeFiles: [/vitepress\/dist\/client\/theme-default\/styles\/(?:base|components\/vp-doc)\.css/u],
         // 浮层被 Teleport 到 body，仍需避开文档基线，而不是给示例组件加覆盖样式。
-        prefix: ':not(:where(.vp-raw, .vp-raw *, [data-cp-overlay], [data-cp-overlay] *, [role="presentation"], [role="presentation"] *, [role="status"], [role="status"] *, [role="alert"], [role="alert"] *))',
+        prefix: ':not(:where(.vp-raw, .vp-raw *, [data-z-overlay], [data-z-overlay] *, [role="presentation"], [role="presentation"] *, [role="status"], [role="status"] *, [role="alert"], [role="alert"] *))',
       }),
     ] } },
     server: { watch: { ignored: ['**/.vitepress/dist/**'] } },

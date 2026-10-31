@@ -5,35 +5,61 @@
 ## 独立应用
 
 ```ts
-import { applyResolvedTheme, DEFAULT_CUSTOM_THEME_COLOR, DEFAULT_THEME_COLOR, resolveTheme } from '@codex-proxy/ui/theme'
+import { applyTheme, createTheme } from '@codex-proxy/ui/theme'
 import '@codex-proxy/ui/styles.css'
 
-applyResolvedTheme(
+applyTheme(
   document.documentElement,
-  resolveTheme('light', DEFAULT_THEME_COLOR, DEFAULT_CUSTOM_THEME_COLOR),
+  createTheme({ scheme: 'light' }),
 )
 ```
 
-`resolveTheme` 是纯派生函数，返回主题标识、Seed 与完整 CSS Token。`applyResolvedTheme` 把 Token 写入文档级样式表，并在文档根元素设置主题标识；它用于 `document.documentElement`，不用于局部容器
+`createTheme` 是纯派生函数，返回主题标识、Seed 与完整语义 Token。Token 使用 `color-primary`、`input-bg` 等名称，不包含 CSS 前缀；`tokenOverrides` 和 `themeTokenNames` 使用相同的语义名
+
+`applyTheme` 把 Token 转为带前缀的 CSS 变量，写入文档级样式表，并在文档根元素设置主题标识；它用于 `document.documentElement`，不用于局部容器
 
 浏览器适配函数只在客户端调用，SSR 中应放在 `onMounted` 或客户端生命周期内。模式监听、配置保存与切换动画由应用负责
 
-## 配色与密度
+## 自定义主题前缀
 
-`resolveTheme` 的第二个参数选择预置配色，使用 `'custom'` 时从第三个参数读取主色 HEX。第四个参数调整 Seed、组件尺寸或允许覆盖的 Token
+默认 CSS 变量前缀为 `z`，如 `--z-color-primary`。在消费方 Vite 配置中通过 `themePrefix` 设置，变量生成与样式引用使用同一构建配置，源码联调与已安装包均适用
 
 ```ts
-import { resolveTheme } from '@codex-proxy/ui/theme'
+import CodexProxyUI from '@codex-proxy/ui/vite'
+import { defineConfig } from 'vite'
 
-const theme = resolveTheme('light', 'custom', '#0E7C72', {
-  seed: { fontSize: 14, controlHeight: 40, borderRadius: 10 },
-  component: { tableRowHeight: 64, cardBorderRadius: 20 },
+export default defineConfig({
+  plugins: [CodexProxyUI({ themePrefix: 'acme' })],
+})
+```
+
+前缀以小写字母开头，支持小写字母、数字和连字符。更改后重新构建，运行时不切换前缀
+
+组件导出名、DOM 类名和 utility 类名各自保持独立，例如 `ZButton`、`z-input`、`bg-z-primary`；它们引用的主题变量变为 `--acme-*`。CSS 中按默认 `--z-*` 引用变量，构建插件会转换声明与引用，并保留现有 PostCSS 配置
+
+JavaScript 中使用 `getThemeVarName('color-primary')` 获取当前前缀下的变量名，使用 `createThemeVars(theme.tokens)` 生成可绑定到元素的 CSS 变量对象。主题配置的存储和传递始终使用语义 Token 名，不包含前缀
+
+## 配色与密度
+
+`createTheme(options?)` 接收 `ThemeOptions`：`scheme` 选择明暗，`colorId` 选择预置配色，使用 `'custom'` 时通过 `primaryColor` 传入主色 HEX。`customization` 调整 Seed、组件尺寸或允许覆盖的 Token
+
+```ts
+import { createTheme } from '@codex-proxy/ui/theme'
+
+const theme = createTheme({
+  scheme: 'light',
+  colorId: 'custom',
+  primaryColor: '#0E7C72',
+  customization: {
+    seed: { fontSize: 14, controlHeight: 40, borderRadius: 10 },
+    component: { tableRowHeight: 64, cardBorderRadius: 20 },
+  },
 })
 ```
 
 输入经统一规范化：无效的 Seed 颜色覆盖被忽略，自定义主色无效时回退默认色，尺寸限制在允许范围内；`tokenOverrides` 只接受开放的组件字段，不能覆盖任意 CSS 变量。优先调整 Seed 以保留状态之间的派生关系
 
-只需种子值时可调用 `resolveThemeSeedTokens(mode, primaryColor, overrides?, appearance?)`，无需生成完整色阶与 CSS Token。主色和覆盖值应已规范化，预置外观取自 `THEME_COLOR_PRESETS` 对应项的 `appearance[mode]`
+返回值 `Theme` 包含 `scheme`、`colorId`、主色 `seed`、规范化的 `seedTokens` 和完整 `tokens`；预览和编辑器从同一结果读取派生值
 
 ## 局部主题
 
@@ -42,13 +68,13 @@ const theme = resolveTheme('light', 'custom', '#0E7C72', {
 ```vue
 <script setup lang="ts">
 import { ZButton } from '@codex-proxy/ui'
-import { DEFAULT_CUSTOM_THEME_COLOR, resolveTheme } from '@codex-proxy/ui/theme'
+import { createTheme, createThemeVars } from '@codex-proxy/ui/theme'
 
-const theme = resolveTheme('dark', 'deep-teal', DEFAULT_CUSTOM_THEME_COLOR)
+const theme = createTheme({ scheme: 'dark', colorId: 'deep-teal' })
 </script>
 
 <template>
-  <section :data-theme="theme.name" :data-theme-color="theme.colorId" :style="theme.tokens">
+  <section :data-theme="theme.scheme" :data-theme-color="theme.colorId" :style="createThemeVars(theme.tokens)">
     <ZButton type="primary">
       局部主题按钮
     </ZButton>
@@ -60,6 +86,22 @@ const theme = resolveTheme('dark', 'deep-teal', DEFAULT_CUSTOM_THEME_COLOR)
 
 ## 深色与浅色
 
-`resolveTheme` 接受 `'light'` 或 `'dark'`。跟随系统时先用 `resolveThemeName('system', prefersDark)` 解析模式，`prefersDark` 由应用读取系统偏好
+`createTheme` 的 `scheme` 接受 `'light'` 或 `'dark'`。跟随系统时先用 `resolveThemeScheme('system', prefersDark)` 解析模式，`prefersDark` 由应用读取系统偏好
 
 文档顶部的主题开关可用于检查所有示例的明暗状态
+
+## 公开 API
+
+| 导出                                                                  | 用途                                             |
+| --------------------------------------------------------------------- | ------------------------------------------------ |
+| `createTheme(options?)`                                               | 生成独立的 `Theme`，省略配置时使用浅色与默认配色 |
+| `applyTheme(root, theme)`                                             | 将主题应用到文档根元素                           |
+| `resolveThemeScheme(mode, prefersDark)`                               | 将系统跟随模式解析为明暗方案                     |
+| `createThemeVars(tokens)`、`getThemeVarName(name)`                    | 生成当前构建前缀下的 CSS 变量                    |
+| `isThemeMode(value)`、`isThemeColorId(value)`                         | 校验外部或持久化配置中的枚举值                   |
+| `normalizeThemeCustomization(value)`                                  | 规范化持久化的主题覆盖配置                       |
+| `supportsThemeTokenAlpha(name)`                                       | 判断指定 Token 是否允许透明填充                  |
+| `defaultThemeMode`、`defaultThemeColorId`、`defaultThemePrimaryColor` | 应用初始化和重置可复用的默认值                   |
+| `themeColorPresets`、`themeTokenNames`、`themePrefix`                 | 预置配色、语义 Token 名和当前 CSS 变量前缀       |
+
+内部颜色派生步骤不作为公开 API；类型、参数与返回值以该版本的 TypeScript 声明为准

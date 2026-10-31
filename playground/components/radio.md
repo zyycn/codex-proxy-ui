@@ -6,13 +6,15 @@ import RadioDemo from '../examples/RadioDemo.vue'
 
 从同一组选项中选择一项
 
-## 交互示例
+## 基础用法
+
+<DemoExample>
 
 <ClientOnly>
   <RadioDemo />
 </ClientOnly>
 
-::: details 查看用法代码
+<template #source>
 
 ```vue
 <script setup lang="ts">
@@ -28,22 +30,24 @@ const scope = ref('selected')
 </template>
 ```
 
-:::
+</template>
 
-## 使用要点
+</DemoExample>
+
+## 用法说明
 
 同组使用相同的 `name` 与 `v-model`，每个选项设置不同的 `value`
 
-## API
+## Radio API {#api}
 
 ### 属性
 
-| 属性           | 类型               | 默认值  | 说明                                      |
-| -------------- | ------------------ | ------- | ----------------------------------------- |
-| `v-model`      | `string \| number` | 必填    | 当前选中值                                |
-| `value`        | `string \| number` | 必填    | 选项值，与模型使用相同的值类型            |
-| `name / label` | `string`           | —       | 分组名和可见标签；隐藏名称使用 aria-label |
-| `disabled`     | `boolean`          | `false` | 禁用此选项                                |
+| 属性           | 说明                                      | 类型               | 默认值  |
+| -------------- | ----------------------------------------- | ------------------ | ------- |
+| `v-model`      | 当前选中值                                | `string \| number` | 必填    |
+| `value`        | 选项值，与模型使用相同的值类型            | `string \| number` | 必填    |
+| `name / label` | 分组名和可见标签；隐藏名称使用 aria-label | `string`           | —       |
+| `disabled`     | 禁用此选项                                | `boolean`          | `false` |
 
 ### 事件
 

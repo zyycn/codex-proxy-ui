@@ -64,10 +64,10 @@ const containerClasses = computed(() => getInputClasses(props.size, props.disabl
 
 const iconClasses = computed(() => [
   'inline-flex shrink-0',
-  props.disabled ? 'text-cp-text-disabled' : invalid.value ? 'text-cp-error' : 'text-cp-text-quaternary',
+  props.disabled ? 'text-z-text-disabled' : invalid.value ? 'text-z-error' : 'text-z-text-quaternary',
 ])
 
-const actionClasses = 'inline-flex size-4 shrink-0 items-center justify-center border-0 bg-transparent p-0 text-cp-text-quaternary outline-none transition-colors hover:text-cp-text-secondary focus-visible:ring-2 focus-visible:ring-cp-control-outline disabled:cursor-not-allowed disabled:text-cp-text-disabled'
+const actionClasses = 'inline-flex size-4 shrink-0 items-center justify-center border-0 bg-transparent p-0 text-z-text-quaternary outline-none transition-colors hover:text-z-text-secondary focus-visible:ring-2 focus-visible:ring-z-control-outline disabled:cursor-not-allowed disabled:text-z-text-disabled'
 
 function updateModel(event: Event) {
   if (composing.value)
@@ -165,9 +165,9 @@ function syncAutofill(event: AnimationEvent) {
   animation-name: z-input-autofill-sync;
   animation-duration: 1ms;
   background-clip: text !important;
-  caret-color: var(--cp-color-text);
+  caret-color: var(--z-color-text);
   -webkit-background-clip: text !important;
-  -webkit-text-fill-color: var(--cp-color-text) !important;
+  -webkit-text-fill-color: var(--z-color-text) !important;
   -webkit-box-shadow: none !important;
   box-shadow: none !important;
 }

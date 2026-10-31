@@ -23,7 +23,12 @@ const locale = useLocale()
 
 const page = defineModel<number>('currentPage', { default: 1 })
 const pageSize = defineModel<number>('pageSize', { default: 20 })
-const pagination = computed(() => ({ currentPage: page.value, pageSize: pageSize.value, total: props.total, pageSizes: props.pageSizes }))
+const pagination = computed(() => ({
+  currentPage: page.value,
+  pageSize: pageSize.value,
+  total: Number.isFinite(props.total) ? Math.max(0, Math.trunc(props.total)) : 0,
+  pageSizes: props.pageSizes,
+}))
 const totalPages = computed(() => getTotalPages(pagination.value))
 const currentPage = computed(() => getCurrentPage(pagination.value, totalPages.value))
 const pageSizeOptions = computed(() => getPageSizeOptions(pagination.value, locale.value.pagination.pageSize))
@@ -97,10 +102,10 @@ function goToPage(target: number) {
 
 function paginationPageClass(page: number) {
   return [
-    'inline-flex h-8 min-w-8 shrink-0 items-center justify-center rounded-cp border-0 px-2 text-xs font-bold leading-none whitespace-nowrap transition-colors duration-150 outline-none',
+    'inline-flex h-8 min-w-8 shrink-0 items-center justify-center rounded-z border-0 px-2 text-xs font-bold leading-none whitespace-nowrap transition-colors duration-150 outline-none',
     page === currentPage.value
-      ? 'cursor-default bg-(--cp-button-primary-bg) text-(--cp-button-primary-color)'
-      : 'cursor-pointer bg-cp-fill-quaternary text-cp-text hover:bg-cp-bg-text-hover focus-visible:ring-2 focus-visible:ring-cp-control-outline focus-visible:ring-offset-2 focus-visible:ring-offset-cp-bg-container',
+      ? 'cursor-default bg-(--z-button-primary-bg) text-(--z-button-primary-color)'
+      : 'cursor-pointer bg-z-fill-quaternary text-z-text hover:bg-z-bg-text-hover focus-visible:ring-2 focus-visible:ring-z-control-outline focus-visible:ring-offset-2 focus-visible:ring-offset-z-bg-container',
   ]
 }
 </script>
@@ -114,7 +119,7 @@ function paginationPageClass(page: number) {
       class="grid min-w-0 items-center gap-2 @min-[36rem]/pagination:gap-3"
       :class="showPageSize ? 'grid-cols-[auto_minmax(0,1fr)] @min-[36rem]/pagination:grid-cols-[minmax(0,1fr)_auto_auto]' : 'grid-cols-1 @min-[36rem]/pagination:grid-cols-[minmax(0,1fr)_auto]'"
     >
-      <span ref="totalLabel" class="hidden min-w-0 truncate text-cp-sm font-emphasis text-cp-text-secondary @min-[36rem]/pagination:block">
+      <span ref="totalLabel" class="hidden min-w-0 truncate text-z-sm font-emphasis text-z-text-secondary @min-[36rem]/pagination:block">
         {{ locale.pagination.total(pagination.total) }}
       </span>
       <div ref="sizeControl" class="w-28 shrink-0" :class="showPageSize ? undefined : 'pointer-events-none invisible fixed'">
@@ -157,7 +162,7 @@ function paginationPageClass(page: number) {
             <template v-for="(item, index) in items" :key="`${item}-${index}`">
               <span
                 v-if="item === 'ellipsis'"
-                class="inline-flex size-8 items-center justify-center text-xs font-bold text-cp-text-quaternary"
+                class="inline-flex size-8 items-center justify-center text-xs font-bold text-z-text-quaternary"
               >
                 …
               </span>

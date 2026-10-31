@@ -1,6 +1,5 @@
 import type {
-  ResolvedTheme,
-  ResolvedThemeSeedTokens,
+  Theme,
   ThemeAppearanceSeed,
   ThemeColorId,
   ThemeColorPreset,
@@ -8,8 +7,10 @@ import type {
   ThemeCustomization,
   ThemeMap,
   ThemeMode,
-  ThemeName,
+  ThemeOptions,
+  ThemeScheme,
   ThemeSeedOverrides,
+  ThemeSeedTokens,
   ThemeTokens,
 } from '../types'
 import { normalizeHexColor } from '../../shared/utils/color'
@@ -33,18 +34,19 @@ import {
 import {
   DARK_CONTAINER_BASE,
   DARK_TEXT_BASE,
-  DEFAULT_CUSTOM_THEME_COLOR,
   DEFAULT_DIMENSIONS,
   DEFAULT_SEED_COLORS,
-  DEFAULT_THEME_CUSTOMIZATION,
+  defaultThemeColorId,
+  defaultThemeCustomization,
+  defaultThemePrimaryColor,
   LIGHT_CONTAINER_BASE,
   LIGHT_TEXT_BASE,
-  THEME_COLOR_PRESETS,
+  themeColorPresets,
 } from './constants'
 import { normalizeThemeCustomization } from './normalize'
 import { createThemeTokens } from './tokens'
 
-export function resolveThemeName(mode: ThemeMode, prefersDark: boolean): ThemeName {
+export function resolveThemeScheme(mode: ThemeMode, prefersDark: boolean): ThemeScheme {
   if (mode === 'system')
     return prefersDark ? 'dark' : 'light'
   return mode
@@ -52,35 +54,35 @@ export function resolveThemeName(mode: ThemeMode, prefersDark: boolean): ThemeNa
 
 export function resolveThemeSeed(colorId: ThemeColorId, customColor: string): string {
   if (colorId === 'custom')
-    return normalizeHexColor(customColor) ?? DEFAULT_CUSTOM_THEME_COLOR
+    return normalizeHexColor(customColor) ?? defaultThemePrimaryColor
   return themeColorPreset(colorId).seed
 }
 
-export function resolveTheme(
-  name: ThemeName,
-  colorId: ThemeColorId,
-  customColor: string,
-  customization: ThemeCustomization = DEFAULT_THEME_CUSTOMIZATION,
-): ResolvedTheme {
-  const seed = resolveThemeSeed(colorId, customColor)
+export function createTheme({
+  scheme = 'light',
+  colorId = defaultThemeColorId,
+  primaryColor = defaultThemePrimaryColor,
+  customization = defaultThemeCustomization,
+}: ThemeOptions = {}): Theme {
+  const seed = resolveThemeSeed(colorId, primaryColor)
   const normalizedCustomization = normalizeThemeCustomization(customization)
   const appearance = colorId === 'custom'
-    ? deriveCustomThemeAppearance(name, seed)
-    : themeColorPreset(colorId).appearance?.[name]
+    ? deriveCustomThemeAppearance(scheme, seed)
+    : themeColorPreset(colorId).appearance?.[scheme]
   const seedTokens = resolveThemeSeedTokens(
-    name,
+    scheme,
     seed,
     normalizedCustomization.seed,
     appearance,
   )
-  const themeMap = deriveThemeMap(name, seed, seedTokens, normalizedCustomization)
+  const themeMap = deriveThemeMap(scheme, seed, seedTokens, normalizedCustomization)
   const tokensWithOverrides: ThemeTokens = {
     ...createThemeTokens(themeMap),
     ...normalizedCustomization.tokenOverrides,
   }
 
   return {
-    name,
+    scheme,
     colorId,
     seed,
     seedTokens,
@@ -89,13 +91,13 @@ export function resolveTheme(
 }
 
 export function themeColorPreset(id: ThemeColorPresetId): ThemeColorPreset {
-  return THEME_COLOR_PRESETS.find(preset => preset.id === id) ?? THEME_COLOR_PRESETS[0]!
+  return themeColorPresets.find(preset => preset.id === id) ?? themeColorPresets[0]!
 }
 
 function deriveThemeMap(
-  name: ThemeName,
+  name: ThemeScheme,
   seed: string,
-  seedTokens: ResolvedThemeSeedTokens,
+  seedTokens: ThemeSeedTokens,
   customization: ThemeCustomization,
 ): ThemeMap {
   const fills = name === 'light' ? deriveLightThemeFillMap(seedTokens) : null
@@ -127,11 +129,11 @@ function deriveThemeMap(
 }
 
 export function resolveThemeSeedTokens(
-  theme: ThemeName,
+  theme: ThemeScheme,
   colorPrimary: string,
   overrides?: ThemeSeedOverrides,
   appearance?: ThemeAppearanceSeed,
-): ResolvedThemeSeedTokens {
+): ThemeSeedTokens {
   return {
     colorPrimary,
     colorSuccess: overrides?.colorSuccess ?? DEFAULT_SEED_COLORS.colorSuccess,

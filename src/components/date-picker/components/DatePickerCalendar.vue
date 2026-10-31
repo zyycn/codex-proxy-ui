@@ -86,7 +86,7 @@ const tabStop = computed(() => cells.value.find(cell => !cell.disabled && cell.t
   ?? cells.value.find(cell => !cell.disabled && cell.isSelected)
   ?? cells.value.find(cell => !cell.disabled && cell.type === 'today')
   ?? cells.value.find(cell => !cell.disabled))
-const actionClass = 'inline-flex size-7 shrink-0 items-center justify-center rounded-cp-sm border-0 bg-transparent p-0 text-cp-text-secondary outline-none hover:bg-cp-fill-tertiary hover:text-cp-primary focus-visible:ring-2 focus-visible:ring-cp-control-outline'
+const actionClass = 'inline-flex size-7 shrink-0 items-center justify-center rounded-z-sm border-0 bg-transparent p-0 text-z-text-secondary outline-none hover:bg-z-fill-tertiary hover:text-z-primary focus-visible:ring-2 focus-visible:ring-z-control-outline'
 
 function navigate(amount: number, large = false) {
   const unit = mode.value === 'date' && !large ? 'month' : 'year'
@@ -156,10 +156,10 @@ watch(() => props.view, value => mode.value = value)
       <div class="flex flex-1 items-center justify-center gap-1 font-emphasis" aria-live="polite">
         <span v-if="mode === 'year'">{{ decade }} – {{ decade + 9 }}</span>
         <template v-else>
-          <button type="button" class="rounded-cp-sm border-0 bg-transparent px-1 text-cp-text outline-none hover:text-cp-primary focus-visible:ring-2 focus-visible:ring-cp-control-outline" :aria-label="locale.datePicker.chooseYear" @click="changeView('year')">
+          <button type="button" class="rounded-z-sm border-0 bg-transparent px-1 text-z-text outline-none hover:text-z-primary focus-visible:ring-2 focus-visible:ring-z-control-outline" :aria-label="locale.datePicker.chooseYear" @click="changeView('year')">
             {{ date.format('YYYY') }}
           </button>
-          <button v-if="mode === 'date'" type="button" class="rounded-cp-sm border-0 bg-transparent px-1 text-cp-text outline-none hover:text-cp-primary focus-visible:ring-2 focus-visible:ring-cp-control-outline" :aria-label="locale.datePicker.chooseMonth" @click="changeView('month')">
+          <button v-if="mode === 'date'" type="button" class="rounded-z-sm border-0 bg-transparent px-1 text-z-text outline-none hover:text-z-primary focus-visible:ring-2 focus-visible:ring-z-control-outline" :aria-label="locale.datePicker.chooseMonth" @click="changeView('month')">
             {{ date.format('MMM') }}
           </button>
         </template>
@@ -176,13 +176,13 @@ watch(() => props.view, value => mode.value = value)
       </button>
     </div>
     <div ref="grid" role="grid" :aria-label="mode === 'year' ? `${decade} – ${decade + 9}` : date.format('YYYY MMMM')" :aria-multiselectable="range || selected.length > 1">
-      <div v-if="mode === 'date'" role="row" class="mb-1 grid text-center text-cp-xs text-cp-text-tertiary" :style="{ gridTemplateColumns: `repeat(${showWeekNumber ? 8 : 7}, minmax(0, 1fr))` }">
+      <div v-if="mode === 'date'" role="row" class="mb-1 grid text-center text-z-xs text-z-text-tertiary" :style="{ gridTemplateColumns: `repeat(${showWeekNumber ? 8 : 7}, minmax(0, 1fr))` }">
         <span v-if="showWeekNumber" role="columnheader" class="py-1">{{ locale.datePicker.week }}</span>
         <span v-for="(day, index) in weekdays" :key="index" role="columnheader" class="py-1">{{ day }}</span>
       </div>
       <div v-for="(row, index) in rows" :key="index" role="row" class="grid py-0.5" :style="{ gridTemplateColumns: `repeat(${columns + (mode === 'date' && showWeekNumber ? 1 : 0)}, minmax(0, 1fr))` }">
-        <span v-if="mode === 'date' && showWeekNumber" role="rowheader" class="flex items-center justify-center text-cp-xs text-cp-text-quaternary">{{ row[0]?.dayjs.week() }}</span>
-        <div v-for="cell in row" :key="cell.timestamp" role="gridcell" :aria-selected="cell.isSelected || cell.inRange" :aria-disabled="cell.disabled" :class="[cell.inRange && 'bg-cp-control-item-bg-active', cell.start && 'rounded-l-cp-sm', cell.end && 'rounded-r-cp-sm', cell.customClass]" class="flex items-center justify-center">
+        <span v-if="mode === 'date' && showWeekNumber" role="rowheader" class="flex items-center justify-center text-z-xs text-z-text-quaternary">{{ row[0]?.dayjs.week() }}</span>
+        <div v-for="cell in row" :key="cell.timestamp" role="gridcell" :aria-selected="cell.isSelected || cell.inRange" :aria-disabled="cell.disabled" :class="[cell.inRange && 'bg-z-control-item-bg-active', cell.start && 'rounded-l-z-sm', cell.end && 'rounded-r-z-sm', cell.customClass]" class="flex items-center justify-center">
           <button
             type="button"
             :data-date="cell.timestamp"
@@ -190,11 +190,11 @@ watch(() => props.view, value => mode.value = value)
             :disabled="cell.disabled"
             :aria-label="cell.dayjs.format(mode === 'date' ? 'YYYY-MM-DD' : mode === 'month' ? 'YYYY-MM' : mode === 'year' ? 'YYYY' : 'YYYY-[Q]Q')"
             :aria-current="cell.type === 'today' ? 'date' : undefined"
-            class="inline-flex items-center justify-center rounded-cp-sm border-0 bg-transparent p-0 text-cp-xs tabular-nums outline-none transition-colors focus-visible:ring-2 focus-visible:ring-cp-control-outline disabled:cursor-not-allowed disabled:text-cp-text-disabled"
+            class="inline-flex items-center justify-center rounded-z-sm border-0 bg-transparent p-0 text-z-xs tabular-nums outline-none transition-colors focus-visible:ring-2 focus-visible:ring-z-control-outline disabled:cursor-not-allowed disabled:text-z-text-disabled"
             :class="[
               mode === 'date' ? 'size-8' : 'my-1 h-10 w-full',
-              cell.isSelected || cell.start || cell.end ? 'bg-cp-primary! font-emphasis text-white' : cell.type === 'today' ? 'font-emphasis text-cp-primary' : cell.type === 'prev-month' || cell.type === 'next-month' ? 'text-cp-text-quaternary' : 'text-cp-text',
-              !cell.disabled && !cell.isSelected && !cell.start && !cell.end && 'hover:bg-cp-fill-secondary',
+              cell.isSelected || cell.start || cell.end ? 'bg-z-primary! font-emphasis text-white' : cell.type === 'today' ? 'font-emphasis text-z-primary' : cell.type === 'prev-month' || cell.type === 'next-month' ? 'text-z-text-quaternary' : 'text-z-text',
+              !cell.disabled && !cell.isSelected && !cell.start && !cell.end && 'hover:bg-z-fill-secondary',
             ]"
             @click="choose(cell)"
             @mouseenter="emit('cellHover', cell.dayjs)"

@@ -6,19 +6,15 @@ import SliderDemo from '../examples/SliderDemo.vue'
 
 连续调节数值，支持键盘操作、步长和禁用状态
 
-## 交互示例
+## 基础用法
+
+<DemoExample>
 
 <ClientOnly>
   <SliderDemo />
 </ClientOnly>
 
-## 使用要点
-
-`v-model` 绑定数值，`min`、`max`、`step` 定义可选范围
-
-通过 `aria-label` 说明调节用途，`unit` 补充读屏数值单位，`disabled` 禁用交互
-
-::: details 查看用法代码
+<template #source>
 
 ```vue
 <script setup lang="ts">
@@ -33,20 +29,28 @@ const opacity = ref(60)
 </template>
 ```
 
-:::
+</template>
 
-## API
+</DemoExample>
+
+## 用法说明
+
+`v-model` 绑定数值，`min`、`max`、`step` 定义可选范围
+
+通过 `aria-label` 说明调节用途，`unit` 补充读屏数值单位，`disabled` 禁用交互
+
+## Slider API {#api}
 
 ### 属性
 
-| 属性         | 类型      | 默认值    | 说明                         |
-| ------------ | --------- | --------- | ---------------------------- |
-| `v-model`    | `number`  | 必填      | 当前数值                     |
-| `aria-label` | `string`  | `'数值'`  | 可访问名称，建议填写具体用途 |
-| `min / max`  | `number`  | `0 / 100` | 数值范围                     |
-| `step`       | `number`  | `1`       | 步长                         |
-| `unit`       | `string`  | —         | 辅助技术读取的数值单位       |
-| `disabled`   | `boolean` | `false`   | 禁止修改                     |
+| 属性         | 说明                         | 类型      | 默认值    |
+| ------------ | ---------------------------- | --------- | --------- |
+| `v-model`    | 当前数值                     | `number`  | 必填      |
+| `aria-label` | 可访问名称，建议填写具体用途 | `string`  | `'数值'`  |
+| `min / max`  | 数值范围                     | `number`  | `0 / 100` |
+| `step`       | 步长                         | `number`  | `1`       |
+| `unit`       | 辅助技术读取的数值单位       | `string`  | —         |
+| `disabled`   | 禁止修改                     | `boolean` | `false`   |
 
 ### 事件
 

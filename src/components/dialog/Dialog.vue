@@ -83,24 +83,24 @@ const iconMap = {
 
 const typeClasses: Record<DialogType, { iconBg: string, icon: string }> = {
   default: {
-    iconBg: 'bg-cp-fill-quaternary',
-    icon: 'text-cp-text-secondary',
+    iconBg: 'bg-z-fill-quaternary',
+    icon: 'text-z-text-secondary',
   },
   info: {
-    iconBg: 'bg-cp-info-container',
-    icon: 'text-cp-info',
+    iconBg: 'bg-z-info-container',
+    icon: 'text-z-info',
   },
   warning: {
-    iconBg: 'bg-cp-warning-container',
-    icon: 'text-cp-warning',
+    iconBg: 'bg-z-warning-container',
+    icon: 'text-z-warning',
   },
   danger: {
-    iconBg: 'bg-cp-error-container',
-    icon: 'text-cp-error',
+    iconBg: 'bg-z-error-container',
+    icon: 'text-z-error',
   },
   success: {
-    iconBg: 'bg-cp-success-container',
-    icon: 'text-cp-success',
+    iconBg: 'bg-z-success-container',
+    icon: 'text-z-success',
   },
 }
 
@@ -177,7 +177,7 @@ defineExpose({ focus: () => panel.value?.focus(), close: closeDialog })
 <template>
   <Teleport to="body">
     <Transition
-      name="cp-modal" persisted @after-leave="finishLeave"
+      name="z-modal" persisted @after-leave="finishLeave"
       @after-enter="open && emit('opened')"
     >
       <div
@@ -194,16 +194,16 @@ defineExpose({ focus: () => panel.value?.focus(), close: closeDialog })
           tabindex="-1"
           :aria-label="locale.dialog.close"
           :disabled="!closeOnClickModal || closing"
-          class="absolute inset-0 cursor-default border-0 bg-cp-bg-mask p-0"
+          class="absolute inset-0 cursor-default border-0 bg-z-bg-mask p-0"
           @click="closeDialog"
         />
         <section
           ref="panel"
-          class="cp-modal-panel relative grid max-h-[calc(100dvh-1.5rem)] w-full min-w-0 overflow-hidden rounded-cp-card bg-cp-modal-bg shadow-cp sm:max-h-[calc(100dvh-3rem)]"
+          class="z-modal-panel relative grid max-h-[calc(100dvh-1.5rem)] w-full min-w-0 overflow-hidden rounded-z-card bg-z-modal-bg shadow-z sm:max-h-[calc(100dvh-3rem)]"
           :class="[
             fullscreen ? 'h-full max-h-none! rounded-none!' : undefined,
             $slots.default ? 'grid-rows-[auto_minmax(0,1fr)_auto]' : 'grid-rows-[auto_auto]',
-            isDragging ? 'cp-modal-panel--dragging' : undefined,
+            isDragging ? 'z-modal-panel--dragging' : undefined,
           ]"
           :style="panelStyle"
           :role="role"
@@ -213,21 +213,21 @@ defineExpose({ focus: () => panel.value?.focus(), close: closeDialog })
           tabindex="-1"
         >
           <header
-            class="cp-modal-header relative grid shrink-0 gap-3 p-4 sm:gap-4 sm:p-6"
+            class="z-modal-header relative grid shrink-0 gap-3 p-4 sm:gap-4 sm:p-6"
             :class="[
               type === 'default'
                 ? 'grid-cols-[minmax(0,1fr)_28px]'
                 : 'grid-cols-[auto_minmax(0,1fr)_28px]',
               description || $slots.description ? 'items-start' : 'items-center',
-              draggable ? 'cp-modal-header--draggable' : undefined,
+              draggable ? 'z-modal-header--draggable' : undefined,
               $slots.default || $slots.footer ? 'pb-0 sm:pb-0' : undefined,
             ]"
             @pointerdown="handlePointerDown"
           >
             <span
               v-if="type !== 'default'"
-              class="inline-flex size-11 items-center justify-center rounded-cp"
-              :class="$slots.icon ? 'bg-cp-fill-quaternary' : typeClasses[type].iconBg"
+              class="inline-flex size-11 items-center justify-center rounded-z"
+              :class="$slots.icon ? 'bg-z-fill-quaternary' : typeClasses[type].iconBg"
             >
               <slot name="icon">
                 <component :is="iconMap[type]" :size="18" :class="typeClasses[type].icon" />
@@ -235,13 +235,13 @@ defineExpose({ focus: () => panel.value?.focus(), close: closeDialog })
             </span>
             <div class="min-w-0">
               <slot name="header" :title-id="titleId" :close="closeDialog">
-                <h2 :id="titleId" class="m-0 text-lg leading-6 font-heavy text-cp-text">
+                <h2 :id="titleId" class="m-0 text-lg leading-6 font-heavy text-z-text">
                   {{ title }}
                 </h2>
                 <p
                   v-if="description || $slots.description"
                   :id="descriptionId"
-                  class="mt-1 mb-0 text-cp leading-[1.45] font-semibold text-cp-text-secondary"
+                  class="mt-1 mb-0 text-z leading-[1.45] font-semibold text-z-text-secondary"
                 >
                   <slot name="description">
                     {{ description }}
@@ -283,48 +283,48 @@ defineExpose({ focus: () => panel.value?.focus(), close: closeDialog })
 </template>
 
 <style scoped>
-.cp-modal-enter-active,
-.cp-modal-leave-active {
+.z-modal-enter-active,
+.z-modal-leave-active {
   transition: opacity 180ms ease;
 }
 
-.cp-modal-enter-active .cp-modal-panel,
-.cp-modal-leave-active .cp-modal-panel {
+.z-modal-enter-active .z-modal-panel,
+.z-modal-leave-active .z-modal-panel {
   transition:
     opacity 180ms ease,
     transform 180ms ease;
 }
 
-.cp-modal-enter-from,
-.cp-modal-leave-to {
+.z-modal-enter-from,
+.z-modal-leave-to {
   opacity: 0;
 }
 
-.cp-modal-enter-from .cp-modal-panel {
+.z-modal-enter-from .z-modal-panel {
   opacity: 0;
   transform: translate3d(0, 8px, 0) scale(0.985);
 }
 
-.cp-modal-leave-to .cp-modal-panel {
+.z-modal-leave-to .z-modal-panel {
   opacity: 0;
   transform: translate3d(0, 4px, 0) scale(0.99);
 }
 
-.cp-modal-header--draggable {
+.z-modal-header--draggable {
   cursor: move;
   touch-action: none;
   user-select: none;
 }
 
-.cp-modal-panel--dragging .cp-modal-header {
+.z-modal-panel--dragging .z-modal-header {
   cursor: grabbing;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cp-modal-enter-active,
-  .cp-modal-leave-active,
-  .cp-modal-enter-active .cp-modal-panel,
-  .cp-modal-leave-active .cp-modal-panel {
+  .z-modal-enter-active,
+  .z-modal-leave-active,
+  .z-modal-enter-active .z-modal-panel,
+  .z-modal-leave-active .z-modal-panel {
     transition: none;
   }
 }
