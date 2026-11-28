@@ -1,12 +1,13 @@
 <script setup lang="ts" generic="Row extends object = Record<string, unknown>">
 import type { ResolvedTableColumn, TableEmits, TableProps } from './types'
 import { Triangle } from '@lucide/vue'
-import { useResizeObserver } from '@vueuse/core'
+import { useEventListener, useResizeObserver, useTimeoutFn } from '@vueuse/core'
 
-import { computed, nextTick, onMounted, shallowRef, useSlots, useTemplateRef, watch } from 'vue'
+import { computed, nextTick, onMounted, onUpdated, shallowRef, useSlots, useTemplateRef, watch } from 'vue'
 import { useLocale } from '../../locale/context'
 import { useComponentSize } from '../../shared/size'
 import Empty from '../empty/Empty.vue'
+import Popover from '../popover/Popover.vue'
 import Scrollbar from '../scrollbar/Scrollbar.vue'
 import { useTableColumnMotion } from './composables/useTableColumnMotion'
 import { useTableExpandMotion } from './composables/useTableExpandMotion'
@@ -14,7 +15,6 @@ import {
   alignClass,
   cellContentClass,
   cellDisplayValue,
-  cellTitle,
   cellValue,
   columnSortKey,
   columnStyle,
@@ -62,6 +62,38 @@ const expandMotion = useTableExpandMotion()
 const horizontalScrolled = shallowRef(false)
 const horizontalCanScrollRight = shallowRef(false)
 
+const overflowCell = shallowRef<HTMLElement>()
+const overflowText = shallowRef('')
+const { start: scheduleHide, stop: cancelHide } = useTimeoutFn(() => {
+  overflowCell.value = undefined
+}, 200, { immediate: false })
+
+function refreshTooltip() {
+  const cell = overflowCell.value
+  if (cell?.isConnected && cell.hasAttribute('data-overflow-tooltip') && !props.loading && cell.scrollWidth > cell.clientWidth)
+    overflowText.value = cell.textContent?.trim() ?? ''
+  else
+    overflowCell.value = undefined
+}
+function hoverCell(event: Event) {
+  const cell = event.target instanceof Element ? event.target.closest<HTMLElement>('[data-overflow-tooltip]') : null
+  if (!cell || cell.closest('table') !== tableRef.value || cell.scrollWidth <= cell.clientWidth) {
+    if (overflowCell.value)
+      scheduleHide()
+    return
+  }
+  cancelHide()
+  overflowCell.value = cell
+  refreshTooltip()
+}
+const tooltipContent = useTemplateRef<HTMLElement>('tooltipContent')
+useEventListener(tableRef, ['mouseover', 'focusin'], hoverCell)
+useEventListener(tableRef, ['mouseleave', 'focusout'], scheduleHide)
+useEventListener(tooltipContent, ['mouseenter', 'focusin'], cancelHide)
+useEventListener(tooltipContent, ['mouseleave', 'focusout'], scheduleHide)
+onUpdated(refreshTooltip)
+useResizeObserver(overflowCell, refreshTooltip)
+
 function updateScrollLayout() {
   scrollbarRef.value?.update()
   const wrap = scrollbarRef.value?.wrapRef
@@ -76,6 +108,7 @@ function updateScrollLayout() {
 }
 
 function handleTableScroll(payload: { scrollTop: number, scrollLeft: number }) {
+  overflowCell.value = undefined
   const wrap = scrollbarRef.value?.wrapRef
   if (!wrap)
     return
@@ -155,10 +188,6 @@ function stickyClass(column: ResolvedTableColumn<Row>, header = false) {
         : 'shadow-[-8px_0_14px_-14px_var(--z-color-shadow)]'
       : undefined,
   ]
-}
-
-function bodyCellTitle(column: ResolvedTableColumn<Row>, row: Row) {
-  return slots[column.key] ? undefined : cellTitle(column, row)
 }
 
 function columnSortDirection(column: ResolvedTableColumn<Row>) {
@@ -287,7 +316,7 @@ function sortButtonLabel(column: ResolvedTableColumn<Row>) {
                   :style="stickyStyle(column)"
                 >
                   <div class="grid min-h-[calc(var(--table-row-height)-var(--table-row-gap))] content-center" :data-column-motion="column.sticky ? undefined : column.key">
-                    <div :class="cellContentClass(column)" :title="bodyCellTitle(column, row)">
+                    <div :class="cellContentClass(column)" :data-overflow-tooltip="column.truncate && !slots[column.key] ? '' : undefined">
                       <slot
                         :name="column.key"
                         :row="row"
@@ -316,6 +345,20 @@ function sortButtonLabel(column: ResolvedTableColumn<Row>) {
           </tbody>
         </table>
       </Scrollbar>
+      <Popover
+        v-if="overflowCell"
+        :model-value="true"
+        :reference-element="overflowCell"
+        placement="top"
+        role="tooltip"
+        class="absolute"
+        @update:model-value="!$event && (overflowCell = undefined)"
+      >
+        <template #reference />
+        <div ref="tooltipContent" class="max-w-[min(24rem,calc(100vw-2rem))] px-3 py-2 text-z-sm wrap-anywhere">
+          {{ overflowText }}
+        </div>
+      </Popover>
       <div
         v-if="!hasRows"
         class="grid min-h-0 flex-1 place-items-center overflow-hidden px-4"

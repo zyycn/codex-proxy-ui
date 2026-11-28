@@ -46,7 +46,6 @@ const emit = defineEmits<{ open: [], opened: [], close: [], closed: [] }>()
 defineSlots<{ reference: (props: { open: boolean, close: () => void, toggle: () => void, id: string }) => unknown, default: (props: { open: boolean, close: () => void, toggle: () => void }) => unknown }>()
 const panelId = `z-popover-${useId()}`
 let previouslyFocused: HTMLElement | null = null
-let focusWasInside = false
 const open = defineModel<boolean>({ default: false })
 const attrs = useAttrs()
 
@@ -170,6 +169,8 @@ useEventListener(rootRef, 'click', (event) => {
 })
 useEventListener(rootRef, 'mouseenter', handleHoverEnter)
 useEventListener(rootRef, 'focusin', (event) => {
+  if (!open.value && event.target === previouslyFocused)
+    return
   // 鼠标点击保留的焦点会在窗口激活时恢复，只有键盘焦点需要打开悬停提示
   if (event.target instanceof Element && event.target.matches(':focus-visible'))
     handleHoverEnter()
@@ -193,25 +194,23 @@ useEventListener(viewportTarget, 'keydown', (event) => {
 })
 watch(open, (visible, previous) => {
   if (visible) {
-    focusWasInside = false
     previouslyFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null
     emit('open')
   }
   else if (previous) {
     emit('close')
+    restoreFocus()
   }
 }, { immediate: true })
 function restoreFocus() {
-  // 只归还浮层实际接管过的焦点，纯悬停或输入框失焦关闭不能再次触发宿主的 focus 打开
-  if ((popoverRef.value?.contains(document.activeElement) || (focusWasInside && document.activeElement === document.body)) && previouslyFocused?.isConnected)
-    previouslyFocused.focus()
+  // 退场前归还面板内的焦点，让触发器连续保持激活态；点到其他控件时保留其焦点
+  if (popoverRef.value?.contains(document.activeElement) && previouslyFocused?.isConnected)
+    previouslyFocused.focus({ preventScroll: true })
   previouslyFocused = null
-  focusWasInside = false
 }
 function freezeLeavePosition(element: Element) {
   if (!(element instanceof HTMLElement))
     return
-  focusWasInside = element.contains(document.activeElement)
   const rect = element.getBoundingClientRect()
   leavingStyle.set(element, element.style.cssText)
   // 退场时外部锚点可能被清空或移除，冻结实际坐标后只做透明度过渡
@@ -234,12 +233,6 @@ function restorePosition(element: Element) {
     leavingStyle.delete(element)
   }
 }
-function finishLeave() {
-  if (open.value)
-    return
-  restoreFocus()
-  emit('closed')
-}
 defineExpose({ open: openPopover, close: closePopover, focus: () => (props.referenceElement ?? rootRef.value?.querySelector<HTMLElement>('button, [tabindex]'))?.focus(), updatePosition: updatePopoverPosition })
 onBeforeUnmount(() => {
   clearHoverOpenTimer()
@@ -259,7 +252,7 @@ onBeforeUnmount(() => {
         @before-enter="restorePosition"
         @before-leave="freezeLeavePosition"
         @leave-cancelled="restorePosition"
-        @after-leave="finishLeave"
+        @after-leave="!open && emit('closed')"
       >
         <div
           v-if="open"

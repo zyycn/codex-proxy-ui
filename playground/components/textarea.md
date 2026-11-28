@@ -58,7 +58,7 @@ import TextareaAutosizeDemo from '../examples/TextareaAutosizeDemo.vue'
 | `resize`         | 拖动方向，autosize 时关闭拖动    | `'none' \| 'both' \| 'horizontal' \| 'vertical'`    | `'vertical'` |
 | `disabled`       | 禁用输入                         | `boolean`                                           | `false`      |
 
-原生属性与 ARIA 属性传给 textarea，外层接收 class、style。输入法组合完成后更新模型
+原生属性与 ARIA 属性传给 textarea，外层接收 class、style。自动填充默认关闭，可用 `autocomplete` 显式开启。输入法组合完成后更新模型
 
 ### 事件
 

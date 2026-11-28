@@ -204,13 +204,6 @@ export function cellDisplayValue<Row extends TableRow>(column: TableColumn<Row>,
   return isEmptyCellValue(value) ? (column.emptyText ?? '—') : value
 }
 
-export function cellTitle<Row extends TableRow>(column: ResolvedTableColumn<Row>, row: Row) {
-  if (!column.truncate)
-    return undefined
-  const value = cellDisplayValue(column, row)
-  return typeof value === 'string' || typeof value === 'number' ? String(value) : undefined
-}
-
 export function cellContentClass<Row extends TableRow>(column: ResolvedTableColumn<Row>) {
   if (column.kind === 'selection' || column.kind === 'expander') {
     return [

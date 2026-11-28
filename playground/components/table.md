@@ -9,7 +9,7 @@ import TableToolsDemo from '../examples/TableToolsDemo.vue'
 
 ## 基础用法
 
-通过 `columns` 定义列，使用 `data` 提供行数据。
+通过 `columns` 定义列，使用 `data` 提供行数据。默认文本单元格发生截断时，悬停可查看完整内容。
 
 <DemoExample wide>
 

@@ -125,14 +125,14 @@ useEventListener(controlRef, 'click', (event) => {
   else void openMenu()
 })
 const sizeConfig: Record<SelectSize, { option: string, icon: number }> = {
-  small: { option: 'h-8 px-2.5 text-xs', icon: 14 },
-  default: { option: 'h-8.5 px-3 text-z', icon: 16 },
-  large: { option: 'h-10 px-3.5 text-z-lg', icon: 17 },
+  small: { option: 'min-h-8 px-2.5 text-xs', icon: 14 },
+  default: { option: 'min-h-8.5 px-3 text-z', icon: 16 },
+  large: { option: 'min-h-10 px-3.5 text-z-lg', icon: 17 },
 }
 
 function optionClasses(option: SelectOption<Value>, index: number) {
   return [
-    'flex w-full shrink-0 touch-manipulation items-center gap-2 rounded-z-sm border-0 px-3 text-left font-emphasis leading-none outline-none transition-colors motion-reduce:transition-none',
+    'flex w-full shrink-0 touch-manipulation items-center gap-2 rounded-z-sm border-0 px-3 py-1 text-left font-emphasis leading-snug outline-none transition-colors motion-reduce:transition-none',
     sizeConfig[componentSize.value].option,
     isOptionDisabled(option)
       ? 'cursor-not-allowed bg-transparent text-z-text-disabled'
@@ -216,7 +216,6 @@ defineExpose({ focus: () => triggerRef.value?.focus(), blur: () => triggerRef.va
         </span>
         <span
           v-if="selectedOption?.description && !(filterable && open)"
-          :title="selectedOption.description"
           class="min-w-0 flex-1 truncate font-normal"
           :class="disabled ? 'text-z-text-disabled' : 'text-z-text-tertiary'"
         >
@@ -298,11 +297,10 @@ defineExpose({ focus: () => triggerRef.value?.focus(), blur: () => triggerRef.va
                   @keydown.esc="handleEscape"
                 >
                   <slot name="option" :option="option" :index="index" :selected="selectedValues.includes(option.value)" :disabled="isOptionDisabled(option)">
-                    <span class="min-w-0 truncate" :class="option.description ? 'max-w-1/2 shrink-0' : 'flex-1'">{{ option.label }}</span>
+                    <span class="min-w-0 wrap-anywhere" :class="option.description ? 'max-w-1/2 shrink-0' : 'flex-1'">{{ option.label }}</span>
                     <span
                       v-if="option.description"
-                      :title="option.description"
-                      class="min-w-0 flex-1 truncate font-normal"
+                      class="min-w-0 flex-1 font-normal wrap-anywhere"
                       :class="isOptionDisabled(option) ? 'text-z-text-disabled' : 'text-z-text-tertiary'"
                     >
                       {{ option.description }}

@@ -98,13 +98,14 @@ function syncAutofill(event: AnimationEvent) {
 <template>
   <div v-bind="rootAttrs" class="z-input min-w-0">
     <span class="group/input relative inline-flex w-full items-center gap-2" :class="containerClasses">
-      <span v-if="$slots.prefix" class="inline-flex shrink-0 text-(color:--field-affix)">
+      <span v-if="$slots.prefix" class="inline-flex shrink-0 text-(--field-affix)">
         <slot name="prefix" />
       </span>
       <input
-        v-bind="controlAttrs"
         :id="controlId"
         ref="input"
+        autocomplete="off"
+        v-bind="controlAttrs"
         :value="model"
         class="z-input__field"
         :class="inputFieldClass"
@@ -123,7 +124,7 @@ function syncAutofill(event: AnimationEvent) {
         @focus="emit('focus', $event)"
         @blur="emit('blur', $event); validate('blur')"
       >
-      <span v-if="$slots.suffix" class="inline-flex shrink-0 text-(color:--field-affix)">
+      <span v-if="$slots.suffix" class="inline-flex shrink-0 text-(--field-affix)">
         <slot name="suffix" />
       </span>
       <button

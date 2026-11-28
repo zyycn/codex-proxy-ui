@@ -45,7 +45,7 @@ async function remove(value: Value, event: MouseEvent) {
       :class="inputTagClass"
       @close="remove(option.value, $event)"
     >
-      <span class="block max-w-48 truncate" :title="option.label">{{ option.label }}</span>
+      <span class="block max-w-48 truncate">{{ option.label }}</span>
     </Tag>
     <TagOverflow
       v-if="hidden.length"
@@ -57,7 +57,6 @@ async function remove(value: Value, event: MouseEvent) {
       :more-label="locale.select.more(hidden.length)"
       :panel-label="locale.select.remaining"
       :close-label="locale.select.remove"
-      :fallback-title="hidden.map(option => option.label).join('、')"
       @remove="emit('remove', $event)"
       @focus-control="emit('focusControl')"
     />

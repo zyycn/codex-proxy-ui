@@ -398,7 +398,6 @@ function normalizedInputColor() {
           role="radio"
           :aria-label="color"
           :aria-checked="isPresetSelected(color)"
-          :title="color"
           @click="choosePreset(color)"
         >
           <Check

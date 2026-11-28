@@ -208,13 +208,12 @@ export function useDatePicker(props: Readonly<DatePickerProps>, model: Ref<DateP
     }
   }
 
-  function updateTime(value: string, index: number) {
-    const parsed = parseDate(value, value.length === 5 ? 'HH:mm' : 'HH:mm:ss', calendarLocale.value)
-    if (!parsed || blocked.value)
+  function updateTime(value: Dayjs, index: number) {
+    if (blocked.value)
       return
     const date = draft.value[index] ?? anchors.value[index]!
     draft.value = Array.from({ length: Math.max(draft.value.length, index + 1) }, (_, i) =>
-      i === index ? withTime(date, parsed) : draft.value[i] ?? withTime(anchors.value[i]!, undefined))
+      i === index ? withTime(date, value) : draft.value[i] ?? withTime(anchors.value[i]!, undefined))
     if (valid(draft.value) && !selecting.value)
       publish(draft.value)
     resetInput()

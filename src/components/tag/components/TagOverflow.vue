@@ -13,7 +13,6 @@ const props = withDefaults(defineProps<{
   moreLabel: string
   panelLabel: string
   closeLabel?: (label: string) => string
-  fallbackTitle?: string
   disabled?: boolean
   readonly?: boolean
   blocked?: boolean
@@ -105,13 +104,13 @@ watch(() => [props.blocked, props.disabled, props.tooltip, props.items.length], 
             :disabled="disabled"
             @close="remove(option.value, $event)"
           >
-            <span class="block max-w-56 truncate" :title="option.label">{{ option.label }}</span>
+            <span class="block max-w-56 wrap-anywhere">{{ option.label }}</span>
           </Tag>
         </div>
       </Scrollbar>
     </div>
   </Popover>
-  <Tag v-else-if="items.length" class="shrink-0 tabular-nums" :size="size" :class="inputTagClass" :disabled="disabled" :title="fallbackTitle">
+  <Tag v-else-if="items.length" class="shrink-0 tabular-nums" :size="size" :class="inputTagClass" :disabled="disabled">
     +{{ items.length }}
   </Tag>
 </template>

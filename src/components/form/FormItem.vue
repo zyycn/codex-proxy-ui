@@ -155,8 +155,9 @@ provide(formFieldKey, {
         {{ description }}
       </p>
       <slot />
+      <!-- 第一行错误沿用字段间距，多行才撑高布局。 -->
       <Transition name="z-zoom-in-top">
-        <p v-if="showError" :id="errorId" :title="validateMessage" class="absolute top-full left-0 mt-1.25 mb-0 w-full truncate text-xs leading-none font-normal text-z-error-text" aria-live="polite">
+        <p v-if="showError" :id="errorId" class="mt-1.25 mb-[calc(-1em-1.25*var(--spacing))] w-full text-xs leading-none wrap-anywhere font-normal text-z-error-text" aria-live="polite">
           {{ validateMessage }}
         </p>
       </Transition>

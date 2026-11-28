@@ -180,9 +180,18 @@ watch(() => props.view, value => mode.value = value)
         <span v-if="showWeekNumber" role="columnheader" class="py-1">{{ locale.datePicker.week }}</span>
         <span v-for="(day, index) in weekdays" :key="index" role="columnheader" class="py-1">{{ day }}</span>
       </div>
-      <div v-for="(row, index) in rows" :key="index" role="row" class="grid py-0.5" :style="{ gridTemplateColumns: `repeat(${columns + (mode === 'date' && showWeekNumber ? 1 : 0)}, minmax(0, 1fr))` }">
+      <div v-for="(row, index) in rows" :key="index" role="row" class="grid" :class="mode === 'date' ? 'py-0.5' : 'py-1.5'" :style="{ gridTemplateColumns: `repeat(${columns + (mode === 'date' && showWeekNumber ? 1 : 0)}, minmax(0, 1fr))` }">
         <span v-if="mode === 'date' && showWeekNumber" role="rowheader" class="flex items-center justify-center text-z-xs text-z-text-quaternary">{{ row[0]?.dayjs.week() }}</span>
-        <div v-for="cell in row" :key="cell.timestamp" role="gridcell" :aria-selected="cell.isSelected || cell.inRange" :aria-disabled="cell.disabled" :class="[cell.inRange && 'bg-z-control-item-bg-active', cell.start && 'rounded-l-z-sm', cell.end && 'rounded-r-z-sm', cell.customClass]" class="flex items-center justify-center">
+        <div
+          v-for="cell in row" :key="cell.timestamp" role="gridcell" :aria-selected="cell.isSelected || cell.inRange" :aria-disabled="cell.disabled"
+          class="relative flex items-center justify-center"
+          :class="[
+            cell.inRange && 'before:pointer-events-none before:absolute before:inset-0 before:bg-z-control-item-bg-active',
+            cell.start && 'before:left-1/2',
+            cell.end && 'before:right-1/2',
+            cell.customClass,
+          ]"
+        >
           <button
             type="button"
             :data-date="cell.timestamp"
@@ -190,9 +199,9 @@ watch(() => props.view, value => mode.value = value)
             :disabled="cell.disabled"
             :aria-label="cell.dayjs.format(mode === 'date' ? 'YYYY-MM-DD' : mode === 'month' ? 'YYYY-MM' : mode === 'year' ? 'YYYY' : 'YYYY-[Q]Q')"
             :aria-current="cell.type === 'today' ? 'date' : undefined"
-            class="inline-flex items-center justify-center rounded-z-sm border-0 bg-transparent p-0 text-z-xs tabular-nums outline-none transition-colors focus-visible:ring-2 focus-visible:ring-z-control-outline disabled:cursor-not-allowed disabled:text-z-text-disabled"
+            class="relative inline-flex items-center justify-center rounded-z-sm border-0 bg-transparent p-0 text-z-xs tabular-nums outline-none transition-colors focus-visible:ring-2 focus-visible:ring-z-control-outline disabled:cursor-not-allowed disabled:text-z-text-disabled"
             :class="[
-              mode === 'date' ? 'size-8' : 'my-1 h-10 w-full',
+              mode === 'date' ? 'size-8' : 'h-10 w-full',
               cell.isSelected || cell.start || cell.end ? 'bg-z-primary! font-emphasis text-white' : cell.type === 'today' ? 'font-emphasis text-z-primary' : cell.type === 'prev-month' || cell.type === 'next-month' ? 'text-z-text-quaternary' : 'text-z-text',
               !cell.disabled && !cell.isSelected && !cell.start && !cell.end && 'hover:bg-z-fill-secondary',
             ]"

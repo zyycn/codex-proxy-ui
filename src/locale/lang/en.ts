@@ -88,7 +88,7 @@ const locale: UiLocale = {
     startLabel: label => `${label} · Start`,
     endLabel: label => `${label} · End`,
     clear: 'Clear date',
-    time: 'Time',
+    time: 'Select time',
     startTime: 'Start time',
     endTime: 'End time',
     previousYear: 'Previous year',

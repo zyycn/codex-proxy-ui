@@ -103,7 +103,7 @@ import InputPasswordDemo from '../examples/InputPasswordDemo.vue'
 | `size`                                 | 组件尺寸                     | `'small' \| 'default' \| 'large'` | `'default'` |
 | `disabled / clearable / show-password` | 禁用、清空按钮、密码显隐按钮 | `boolean`                         | `false`     |
 
-`id`、`name`、`required`、`readonly`、`autocomplete`、ARIA 属性传给实际 input；`class`、`style` 作用于外层。输入法组合期间保留草稿，组合完成后更新模型
+`id`、`name`、`required`、`readonly`、`autocomplete`、ARIA 属性传给实际 input；`class`、`style` 作用于外层。自动填充默认关闭，可用 `autocomplete` 显式开启。输入法组合期间保留草稿，组合完成后更新模型
 
 ### 事件
 

@@ -50,7 +50,7 @@ import DatePickerTimeDemo from '../examples/DatePickerTimeDemo.vue'
 
 ## 日期时间
 
-设置 `type="datetime"`，可同时选择日期和时间。
+设置 `type="datetime"`，可同时选择日期和时间。直接输入时间，或点击时钟，在面板中滚动选择时、分、秒。日期时间范围为空时，两端分别提示开始时间和结束时间
 
 <DemoExample>
 
@@ -99,7 +99,7 @@ import DatePickerTimeDemo from '../examples/DatePickerTimeDemo.vue'
 
 默认展示格式：日期 `YYYY-MM-DD`、月份 `YYYY-MM`、年份 `YYYY`、季度 `YYYY-[Q]Q`、日期时间 `YYYY-MM-DD HH:mm:ss`。周格式随语言包变化，英文为 `gggg [Week] ww`，简体和繁体中文为 `gggg [第] ww [周]`
 
-原生 `id / name` 接收字符串，范围结束输入框 ID 自动追加 `-end`。时间通过原生时间输入控件编辑
+原生 `id / name` 接收字符串，范围结束输入框 ID 自动追加 `-end`
 
 ### 事件
 

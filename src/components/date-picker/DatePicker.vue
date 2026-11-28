@@ -9,10 +9,10 @@ import { clearButtonClass } from '../../shared/utils/clear-button'
 import Button from '../button/Button.vue'
 import { useFormField } from '../form/composables/useFormField'
 import { formFieldKey } from '../form/context'
-import Input from '../input/Input.vue'
 import { getInputClasses, inputFieldClass } from '../input/styles'
 import Popover from '../popover/Popover.vue'
 import DatePickerCalendar from './components/DatePickerCalendar.vue'
+import DatePickerTimeField from './components/DatePickerTimeField.vue'
 import { useDatePicker } from './composables/useDatePicker'
 
 defineOptions({ inheritAttrs: false })
@@ -144,9 +144,9 @@ async function keydown(event: KeyboardEvent) {
   <Popover v-bind="rootAttrs" v-model="open" class="z-date-picker" transition="z-slide-fade" :data-type="type" :disabled="blocked" :placement="placement" :offset="10" :teleported="teleported" @open="restoringFocus = false" @close="restoringFocus = true" @closed="restoringFocus = false">
     <template #reference="{ id }">
       <div ref="inputRoot" class="relative inline-flex w-full items-center gap-2" :class="inputClasses">
-        <component :is="prefixIcon || (time ? Clock : CalendarDays)" class="size-4 shrink-0 text-(color:--field-affix)" />
+        <component :is="prefixIcon || (time ? Clock : CalendarDays)" class="size-4 shrink-0 text-(--field-affix)" />
         <template v-for="(placeholder, index) in fields" :key="index">
-          <span v-if="index" class="shrink-0 text-z-xs text-[color:var(--field-affix-state,var(--z-color-text-tertiary))]"><slot name="range-separator">{{ rangeSeparator }}</slot></span>
+          <span v-if="index" class="shrink-0 text-z-xs text-(--field-affix-state,var(--z-color-text-tertiary))"><slot name="range-separator">{{ rangeSeparator }}</slot></span>
           <input
             :id="index === 0 ? controlId : controlId ? `${controlId}-end` : undefined"
             ref="inputs"
@@ -180,8 +180,8 @@ async function keydown(event: KeyboardEvent) {
     </template>
     <div ref="panel" role="dialog" tabindex="-1" :aria-label="controlLabel" class="relative max-h-[min(36rem,80vh)] max-w-[calc(100vw-1rem)] overflow-auto" :class="popperClass" :style="popperStyle">
       <div class="flex flex-wrap">
-        <div v-if="shortcuts.length" class="flex w-full flex-wrap gap-1 p-2 sm:w-28 sm:flex-col">
-          <Button v-for="(item, index) in shortcuts" :key="index" variant="text" size="small" class="justify-start!" @click="shortcut(item)">
+        <div v-if="shortcuts.length" class="flex w-full flex-wrap gap-1 p-2 sm:w-28 sm:flex-col sm:py-3">
+          <Button v-for="(item, index) in shortcuts" :key="index" variant="text" size="small" class="justify-start! sm:h-7!" @click="shortcut(item)">
             {{ item.text }}
           </Button>
         </div>
@@ -223,7 +223,13 @@ async function keydown(event: KeyboardEvent) {
         </div>
       </div>
       <div v-if="time" class="flex flex-wrap gap-3 px-3 py-2">
-        <Input v-for="(_, index) in fields" :key="index" :model-value="draft[index]?.format('HH:mm:ss') ?? ''" type="time" step="1" size="small" class="min-w-32 flex-1" :aria-label="range ? index === 0 ? locale.datePicker.startTime : locale.datePicker.endTime : locale.datePicker.time" @change="updateTime($event, index)" />
+        <DatePickerTimeField
+          v-for="(_, index) in fields" :key="index"
+          :value="(draft[index] ?? (selecting ? draft[0] : undefined))?.format('HH:mm:ss') ?? ''"
+          :disabled="range && selecting" :locked="index === 1 && !draft[0]" :editable="editable"
+          :label="range ? index === 0 ? locale.datePicker.startTime : locale.datePicker.endTime : locale.datePicker.time"
+          :align-end="index === 1" @change="updateTime($event, index)"
+        />
       </div>
       <div v-if="needsConfirm && showFooter" class="flex justify-end p-2">
         <Button v-if="showConfirm" size="small" :disabled="!canConfirm" @click="confirm">

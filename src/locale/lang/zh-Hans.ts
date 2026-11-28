@@ -88,7 +88,7 @@ const locale: UiLocale = {
     startLabel: label => `${label} · 开始`,
     endLabel: label => `${label} · 结束`,
     clear: '清空日期',
-    time: '时间',
+    time: '选择时间',
     startTime: '开始时间',
     endTime: '结束时间',
     previousYear: '上一年',

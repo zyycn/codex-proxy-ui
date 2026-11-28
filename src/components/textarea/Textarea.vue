@@ -97,9 +97,10 @@ defineExpose({ focus: () => textareaRef.value?.focus(), blur: () => textareaRef.
 <template>
   <div v-bind="rootAttrs" class="z-textarea min-w-0">
     <textarea
-      v-bind="controlAttrs"
       :id="controlId"
       ref="textarea"
+      autocomplete="off"
+      v-bind="controlAttrs"
       :value="model"
       class="z-scrollbar w-full font-emphasis leading-(--field-row) placeholder:font-normal placeholder:text-z-text-quaternary"
       :class="getInputClasses(componentSize, disabled, invalid)"
