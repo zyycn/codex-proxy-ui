@@ -36,14 +36,16 @@ const semanticClasses: Record<Exclude<ButtonType, 'default'>, Record<ButtonVaria
 export function buttonSurface(type: ButtonType, variant: ButtonVariant, icon = false) {
   if (type !== 'default')
     return semanticClasses[type][variant]
-  if (variant === 'solid') {
-    return icon
-      ? 'bg-z-icon-button-secondary-bg text-z-text-secondary shadow-z-tertiary hover:bg-z-icon-button-secondary-hover-bg hover:text-z-text active:bg-z-icon-button-secondary-active-bg'
-      : 'bg-z-button-secondary-bg text-z-text shadow-z-tertiary hover:bg-z-button-secondary-hover-bg active:bg-z-button-secondary-active-bg'
-  }
-  if (variant === 'plain')
-    return 'bg-z-fill-tertiary text-z-text-secondary shadow-none hover:bg-z-bg-text-hover hover:text-z-text active:bg-z-fill-secondary aria-pressed:bg-z-bg-text-active'
   if (variant === 'link')
     return 'bg-transparent text-z-text-secondary shadow-none hover:text-z-text hover:underline'
-  return 'bg-transparent text-z-text-secondary shadow-none hover:bg-z-fill-quaternary hover:text-z-text active:bg-z-fill-tertiary'
+
+  const feedback = icon
+    ? 'hover:bg-z-icon-button-secondary-hover-bg active:bg-z-icon-button-secondary-active-bg'
+    : 'hover:bg-z-button-secondary-hover-bg active:bg-z-button-secondary-active-bg'
+  const background = icon ? 'bg-z-icon-button-secondary-bg' : 'bg-z-button-secondary-bg'
+  if (variant === 'solid')
+    return [feedback, background, 'shadow-z-tertiary', icon ? 'text-z-text-secondary hover:text-z-text' : 'text-z-text']
+  if (variant === 'plain')
+    return [feedback, background, 'text-z-text-secondary shadow-none hover:text-z-text aria-pressed:bg-z-bg-text-active']
+  return [feedback, 'bg-transparent text-z-text-secondary shadow-none hover:text-z-text']
 }

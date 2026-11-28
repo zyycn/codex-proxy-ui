@@ -176,10 +176,13 @@ export interface ThemeShadowMap {
 }
 
 /** 中性填充的派生中间值，不直接暴露为全局 CSS Token。 */
-export interface ThemeFillMap {
+export interface ThemeControlFills {
   controlBg: string
   controlHoverBg: string
   controlActiveBg: string
+}
+
+export interface ThemeFillMap extends ThemeControlFills {
   contentBg: string
   contentStripeBg: string
   contentHoverBg: string
@@ -190,6 +193,7 @@ export interface ThemeComponentMap {
   menuItemSelectedBgImage: string
   menuItemSelectedShadow: string
   inputBg: string
+  inputEdgeColor: string
   inputTagBg: string
   inputHoverBg: string
   inputActiveBg: string

@@ -1,8 +1,9 @@
 import type { CSSProperties, Ref } from 'vue'
 import type { PopoverPlacement, PopoverSide } from '../types'
-import { useEventListener, useResizeObserver, whenever } from '@vueuse/core'
+import { whenever } from '@vueuse/core'
 import { clamp } from 'es-toolkit'
 import { computed, nextTick, shallowRef, useId, watch } from 'vue'
+import { fitFloatingPanel, supportsAnchorPosition, useFloatingPositionUpdates, viewportPadding } from '../../../shared/floating-position'
 
 interface PopoverPoint {
   left: number
@@ -25,12 +26,10 @@ export function usePopoverPosition(
   const popoverPlacement = shallowRef<PopoverPlacement>(props.placement)
   const arrowEdge = computed(() => popoverArrowEdge(popoverPlacement.value))
   const referenceElement = computed(() => props.referenceElement ?? rootRef.value)
-  const viewportTarget = computed(() => (open.value && typeof window !== 'undefined' ? window : null))
   const anchorName = `--z-popover-${useId()}`
-  const nativeAnchor = typeof CSS !== 'undefined' && CSS.supports('top', 'anchor(bottom)')
 
   watch(referenceElement, (element, _, onCleanup) => {
-    if (!nativeAnchor || !element)
+    if (!supportsAnchorPosition || !element)
       return
 
     // 外部锚点可能已被其他浮层使用，保留原有名称并在切换或卸载时移除自己的名称
@@ -50,13 +49,10 @@ export function usePopoverPosition(
     if (!open.value || !referenceElement.value)
       return
 
-    const viewportPadding = 8
     const triggerRect = referenceElement.value.getBoundingClientRect()
     const panelRect = popoverRef.value?.getBoundingClientRect()
     const panelWidth = panelRect?.width ?? 0
     const panelHeight = panelRect?.height ?? 0
-    const maxLeft = Math.max(viewportPadding, window.innerWidth - panelWidth - viewportPadding)
-    const maxTop = Math.max(viewportPadding, window.innerHeight - panelHeight - viewportPadding)
     const position = choosePopoverPosition({
       placement: props.placement,
       triggerRect,
@@ -66,18 +62,8 @@ export function usePopoverPosition(
       viewportPadding,
     })
     popoverPlacement.value = position.placement
-    const left = clamp(position.point.left, viewportPadding, maxLeft)
-    const top = clamp(position.point.top, viewportPadding, maxTop)
-
-    popoverStyle.value = {
-      positionAnchor: nativeAnchor ? anchorName : undefined,
-      positionVisibility: nativeAnchor ? 'anchors-visible' : undefined,
-      // 相对锚点保留翻转和边界修正，滚动跟随由浏览器完成，无需等待滚动回调
-      // 锚点先于退场钩子卸载时，用最近一次测量值回退，避免 anchor() 退化为 auto
-      left: nativeAnchor ? `calc(anchor(left, ${triggerRect.left}px) + ${left - triggerRect.left}px)` : `${left}px`,
-      top: nativeAnchor ? `calc(anchor(top, ${triggerRect.top}px) + ${top - triggerRect.top}px)` : `${top}px`,
-      maxWidth: `calc(100vw - ${viewportPadding * 2}px)`,
-    }
+    const { left, top, style } = fitFloatingPanel(triggerRect, anchorName, { ...position.point, width: panelWidth, height: panelHeight })
+    popoverStyle.value = style
     popoverArrowStyle.value = popoverArrowPosition({
       placement: position.placement,
       triggerRect,
@@ -102,9 +88,7 @@ export function usePopoverPosition(
     },
   )
 
-  useEventListener(viewportTarget, 'resize', updatePopoverPosition)
-  useEventListener(viewportTarget, 'scroll', updatePopoverPosition, { capture: true, passive: true })
-  useResizeObserver([referenceElement, popoverRef], updatePopoverPosition)
+  useFloatingPositionUpdates(open, referenceElement, popoverRef, updatePopoverPosition)
 
   return { popoverStyle, popoverArrowStyle, popoverPlacement, arrowEdge, updatePopoverPosition }
 }

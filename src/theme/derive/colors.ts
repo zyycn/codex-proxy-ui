@@ -3,6 +3,7 @@ import type {
   PresetColorRoleMap,
   ThemeAliasMap,
   ThemeColorRoleRecipe,
+  ThemeControlFills,
   ThemeDataMap,
   ThemeFillMap,
   ThemeLinkMap,
@@ -16,6 +17,7 @@ import type {
   ThemeSemanticMap,
   ThemeSurfaceMap,
 } from '../types'
+import { FastColor } from '@ant-design/fast-color'
 import { normalizeHexColor } from '../../shared/utils/color'
 import {
   compositeOnBackground,
@@ -90,7 +92,7 @@ export function deriveLightThemeFillMap(background: string, colorText: string): 
   return fills
 }
 
-function themeTextBackgrounds(surfaces: ThemeSurfaceMap, fills: ThemeFillMap | null, primary: ThemePrimaryMap): string[] {
+export function deriveThemeTextBackgrounds(surfaces: ThemeSurfaceMap, fills: ThemeFillMap | null, primary: ThemePrimaryMap, controlFills: ThemeControlFills): string[] {
   const hosts = [surfaces.colorBgLayout, surfaces.colorBgContainer, surfaces.colorBgElevated]
   const backgrounds = [
     ...hosts,
@@ -100,16 +102,18 @@ function themeTextBackgrounds(surfaces: ThemeSurfaceMap, fills: ThemeFillMap | n
     surfaces.colorFillTertiary,
     surfaces.colorFillQuaternary,
   ]
+  const controls = [controlFills.controlBg, controlFills.controlHoverBg, controlFills.controlActiveBg]
+  const controlHosts = fills ? hosts : [...hosts, surfaces.colorFillQuaternary, surfaces.colorFillTertiary, surfaces.colorFillSecondary]
+  // 在实际表面上合成控件的各态填充，再检查文字对比度。
+  const controlBackgrounds = controlHosts.flatMap(host => controls.map(fill => compositeOnBackground(fill, host)))
   if (!fills)
-    return backgrounds
+    return [...backgrounds, ...controlBackgrounds]
 
   return [
     ...backgrounds,
     primary.colorPrimaryContainer,
     primary.colorPrimaryContainerHover,
-    // 透明控件在页面、卡片和浮层上颜色不同，不能把带 Alpha 的值当作实色校正。
-    ...hosts.flatMap(background => [fills.controlBg, fills.controlHoverBg, fills.controlActiveBg]
-      .map(fill => compositeOnBackground(fill, background))),
+    ...controlBackgrounds,
     ...[fills.contentBg, fills.contentStripeBg, fills.contentHoverBg]
       .map(fill => compositeOnBackground(fill, surfaces.colorBgContainer)),
   ]
@@ -123,13 +127,7 @@ export function deriveThemeSurfaceMap(
   return SURFACE_MAP_DERIVERS[theme](background, colorText)
 }
 
-export function ensureThemeSurfaceContrast(
-  surfaces: ThemeSurfaceMap,
-  fills: ThemeFillMap | null,
-  primary: ThemePrimaryMap,
-): ThemeSurfaceMap {
-  const backgrounds = themeTextBackgrounds(surfaces, fills, primary)
-
+export function ensureThemeSurfaceContrast(surfaces: ThemeSurfaceMap, backgrounds: string[]): ThemeSurfaceMap {
   // 辅助文字仍用于正常信息；按最深/最亮填充面保留可读的三级梯度。
   return {
     ...surfaces,
@@ -198,12 +196,10 @@ export function deriveThemeSemanticMap(
   theme: ThemeScheme,
   surfaces: ThemeSurfaceMap,
   seedTokens: ThemeSeedTokens,
-  fills: ThemeFillMap | null,
-  primary: ThemePrimaryMap,
+  textBackgrounds: string[],
 ): ThemeSemanticMap {
   const recipe = THEME_COLOR_ROLE_RECIPES[theme].semantic
   const containerBg = surfaces.colorBgContainer
-  const textBackgrounds = themeTextBackgrounds(surfaces, fills, primary)
 
   return {
     info: deriveColorRoleMap(
@@ -435,11 +431,13 @@ function deriveNeutralLightSurfaceMap(
     LIGHT_SURFACE_ANCHORS.colorBorder,
     mix(background, colorText, 0.145),
   )
+  const surfaceTone = new FastColor(background).toHsl()
+  const elevated = new FastColor({ ...surfaceTone, l: Math.min(1, surfaceTone.l + 0.025) })
 
   return {
     colorBgLayout: colorFillQuaternary,
     colorBgContainer: background,
-    colorBgElevated: background,
+    colorBgElevated: elevated.toHexString().toUpperCase(),
     colorBgSpotlight: adaptiveTone(
       LIGHT_SURFACE_ANCHORS.colorBgSpotlight,
       mix(colorText, BLACK, 0.08),

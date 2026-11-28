@@ -2,6 +2,7 @@ import type {
   FunctionalColorMap,
   ThemeComponentMap,
   ThemeComponentOverrides,
+  ThemeControlFills,
   ThemeDimensionMap,
   ThemeFillMap,
   ThemePresetId,
@@ -26,7 +27,7 @@ import {
   WHITE,
 } from '../core/constants'
 
-type SurfaceComponentMap = Omit<ThemeComponentMap, `buttonPrimary${string}` | `switchUnchecked${string}` | 'tableRowSelectedHoverBg' | 'inputBg' | 'inputTagBg'>
+type SurfaceComponentMap = Omit<ThemeComponentMap, `button${string}` | `iconButton${string}` | `switchUnchecked${string}` | 'tableRowSelectedHoverBg' | 'inputBg' | 'inputEdgeColor' | 'inputTagBg' | 'inputHoverBg' | 'inputActiveBg'>
 
 const SHADOW_MAP_DERIVERS = {
   light: deriveLightShadowMap,
@@ -107,22 +108,34 @@ export function deriveThemeComponentMap(
   error: FunctionalColorMap,
   shadowStrength: number,
   preset: ThemePresetId,
-  inputBgOverride?: string,
+  controlFills: ThemeControlFills,
+  inputBg = controlFills.controlBg,
 ): ThemeComponentMap {
   // 明暗模式共用组件合同，各自保留适合宿主表面的填充配方。
   const components = fills
     ? deriveLightComponentMap(surfaces, fills, primary, error, shadowStrength)
     : deriveDarkComponentMap(surfaces, primary, error, shadowStrength)
-  const inputBg = inputBgOverride ?? fills?.controlBg ?? mix(surfaces.colorBgContainer, surfaces.colorFillSecondary, 0.375)
   // 先把输入框的透明填充合成为实色，再仅降低明度，浮层中的标签不会因底层表面不同而变色。
-  const inputTone = new FastColor(compositeOnBackground(inputBg, surfaces.colorBgContainer)).toHsl()
+  const inputOnContainer = compositeOnBackground(inputBg, surfaces.colorBgContainer)
+  const inputTone = new FastColor(inputOnContainer).toHsl()
   const inputTagBg = new FastColor({ ...inputTone, l: Math.max(0, inputTone.l - (fills ? 0.04 : 0.02)) }).toHexString().toUpperCase()
   const buttonPrimaryBg = ensureContrast(primary.colorPrimary, primary.colorTextLightSolid, 4.5)
+  const inputInteractionBg = fills ? surfaces.colorBgContainer : controlFills.controlHoverBg
   // 关闭态复用主题的中性轮廓色，与卡片区分但不额外加深。
   const switchUncheckedBg = surfaces.colorBorder
   return {
     ...components,
+    buttonSecondaryBg: controlFills.controlBg,
+    buttonSecondaryHoverBg: controlFills.controlHoverBg,
+    buttonSecondaryActiveBg: controlFills.controlActiveBg,
+    iconButtonSecondaryBg: controlFills.controlBg,
+    iconButtonSecondaryHoverBg: controlFills.controlHoverBg,
+    iconButtonSecondaryActiveBg: controlFills.controlActiveBg,
     inputBg,
+    // 暗色控件在卡片上边缘与填充同色，放在相同色阶的嵌套面板上仍有轮廓。
+    inputEdgeColor: fills ? 'transparent' : inputOnContainer,
+    inputHoverBg: inputInteractionBg,
+    inputActiveBg: inputInteractionBg,
     inputTagBg,
     ...(preset === 'soft' ? deriveSoftSurfaceMap(surfaces, shadowStrength, fills === null) : {}),
     switchUncheckedBg,
@@ -144,7 +157,6 @@ function deriveDarkComponentMap(
   error: FunctionalColorMap,
   shadowStrength: number,
 ): SurfaceComponentMap {
-  const inputInteractionBg = mix(surfaces.colorBgContainer, surfaces.colorFillSecondary, 0.69)
   // 悬停与聚焦共用反馈；装饰阴影关闭时仍保留可见外圈。
   const inputInteractionShadow = [
     `0 0 0 3px ${primary.colorPrimaryContainerHover}`,
@@ -154,17 +166,9 @@ function deriveDarkComponentMap(
   ].filter(Boolean).join(', ')
 
   return {
-    buttonSecondaryBg: surfaces.colorFillTertiary,
-    buttonSecondaryHoverBg: surfaces.colorBgTextActive,
-    buttonSecondaryActiveBg: surfaces.colorBgTextActive,
-    iconButtonSecondaryBg: surfaces.colorBgContainer,
-    iconButtonSecondaryHoverBg: surfaces.colorBgTextHover,
-    iconButtonSecondaryActiveBg: surfaces.colorBgTextActive,
     menuItemSelectedBg: surfaces.colorBgTextHover,
     menuItemSelectedBgImage: 'none',
     menuItemSelectedShadow: 'none',
-    inputHoverBg: inputInteractionBg,
-    inputActiveBg: inputInteractionBg,
     inputErrorActiveBg: error.container,
     brandMarkBg: surfaces.colorBgElevated,
     cardBg: surfaces.colorBgContainer,
@@ -200,14 +204,6 @@ function deriveLightComponentMap(
 ): SurfaceComponentMap {
   const inputInteractionShadow = `0 0 0 3px ${withAlpha(primary.colorPrimary, 0.16)}`
   return {
-    buttonSecondaryBg: fills.controlBg,
-    buttonSecondaryHoverBg: fills.controlHoverBg,
-    buttonSecondaryActiveBg: fills.controlActiveBg,
-    iconButtonSecondaryBg: fills.controlBg,
-    iconButtonSecondaryHoverBg: fills.controlHoverBg,
-    iconButtonSecondaryActiveBg: fills.controlActiveBg,
-    inputHoverBg: surfaces.colorBgContainer,
-    inputActiveBg: surfaces.colorBgContainer,
     inputErrorActiveBg: error.container,
     inputShadow: 'none',
     inputHoverShadow: inputInteractionShadow,
@@ -232,7 +228,7 @@ function deriveLightComponentMap(
     layoutSiderBgImage: 'none',
     cardShadow: scaleShadowAlpha(`0 10px 22px -18px ${withAlpha(LIGHT_SHADOW_BASE, 0.08)}`, shadowStrength),
     // 面板与容器同色时，短阴影也能分开上沿和两侧。
-    popoverShadow: scaleShadowAlpha(`0 1px 6px -1px ${withAlpha(LIGHT_SHADOW_BASE, 0.09)}, 0 8px 20px -10px ${withAlpha(LIGHT_SHADOW_BASE, 0.08)}`, shadowStrength),
+    popoverShadow: scaleShadowAlpha(`0 1px 6px -1px ${withAlpha(LIGHT_SHADOW_BASE, 0.07)}, 0 6px 16px -9px ${withAlpha(LIGHT_SHADOW_BASE, 0.05)}`, shadowStrength),
     layoutSiderShadow: scaleShadowAlpha(`2px 0 12px -12px ${withAlpha(LIGHT_SHADOW_BASE, 0.027)}`, shadowStrength),
     scrollbarThumbBg: mix(surfaces.colorBgLayout, surfaces.colorTextSecondary, 0.2),
     scrollbarThumbHoverBg: mix(surfaces.colorBgLayout, surfaces.colorTextSecondary, 0.34),

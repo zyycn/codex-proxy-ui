@@ -7,6 +7,8 @@ const sizeClasses: Record<ComponentSize, string> = {
   large: '[--field-inline:1rem] [--field-row:1.5rem] [--field-height:var(--z-control-height-lg)] text-z-lg',
 }
 
+export const inputSurfaceClass = 'bg-(--z-input-bg) inset-ring inset-ring-(--z-input-edge-color)'
+
 export function getInputClasses(size: ComponentSize, disabled: boolean, invalid: boolean, { open = false, inset = 'text', trailing = false }: { open?: boolean, inset?: 'text' | 'item', trailing?: boolean } = {}) {
   return [
     sizeClasses[size],
@@ -26,7 +28,7 @@ export function getInputClasses(size: ComponentSize, disabled: boolean, invalid:
           ]
         : open
           ? 'bg-(--z-input-active-bg) text-z-text shadow-z-input-active'
-          : 'bg-(--z-input-bg) text-z-text shadow-z-input hover:not-focus-within:bg-(--z-input-hover-bg) hover:not-focus-within:shadow-z-input-hover focus-within:bg-(--z-input-active-bg) focus-within:shadow-z-input-active',
+          : [inputSurfaceClass, 'text-z-text shadow-z-input hover:inset-ring-0 focus-within:inset-ring-0 hover:not-focus-within:bg-(--z-input-hover-bg) hover:not-focus-within:shadow-z-input-hover focus-within:bg-(--z-input-active-bg) focus-within:shadow-z-input-active'],
   ]
 }
 

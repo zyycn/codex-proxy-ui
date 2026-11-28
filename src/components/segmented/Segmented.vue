@@ -7,6 +7,7 @@ import { clamp } from 'es-toolkit'
 import { computed, nextTick, shallowRef, useAttrs, useTemplateRef, watch } from 'vue'
 import { useComponentSize } from '../../shared/size'
 import { useFormField } from '../form/composables/useFormField'
+import { inputSurfaceClass } from '../input/styles'
 
 export interface SegmentedOption {
   label: string
@@ -42,22 +43,47 @@ defineExpose({ focus: () => rootRef.value?.querySelector<HTMLButtonElement>('[ta
 const model = defineModel<string>({ required: true })
 
 const activeIndex = computed(() => props.options.findIndex(option => option.value === model.value))
+const tabStop = computed(() => {
+  if (props.disabled)
+    return -1
+  if (activeIndex.value >= 0 && !props.options[activeIndex.value]?.disabled)
+    return activeIndex.value
+  return props.options.findIndex(option => !option.disabled)
+})
 const optionCount = computed(() => clamp(props.options.length, 1, Number.POSITIVE_INFINITY))
 const gridStyle = computed(() => ({
   gridTemplateColumns: `repeat(${optionCount.value}, minmax(max-content, 1fr))`,
 }))
-const indicatorStyle = shallowRef<{ width: string, transform: string }>()
+const indicatorStyle = shallowRef<{ width: string, transform: string, transitionProperty?: 'none' }>()
+let interactionTarget: string | undefined
 
-// 标签宽度会随语言和容器变化，滑块始终跟随实际选项尺寸
-function updateIndicator() {
+function updateIndicator(animate = false) {
   const option = rootRef.value?.querySelectorAll<HTMLButtonElement>('[role="radio"]')[activeIndex.value]
-  indicatorStyle.value = option
-    ? { width: `${option.offsetWidth}px`, transform: `translateX(${option.offsetLeft}px)` }
-    : undefined
+  if (!option?.offsetWidth) {
+    indicatorStyle.value = undefined
+    return
+  }
+
+  const width = `${option.offsetWidth}px`
+  const transform = `translateX(${option.offsetLeft}px)`
+  const previous = indicatorStyle.value
+  // 重复的尺寸通知不应打断正在进行的切换动画。
+  if (previous?.width === width && previous.transform === transform)
+    return
+  indicatorStyle.value = {
+    width,
+    transform,
+    transitionProperty: animate && previous ? undefined : 'none',
+  }
 }
 
-watch([activeIndex, () => props.options, rootRef], updateIndicator, { flush: 'post' })
-useResizeObserver(() => [rootRef.value, ...(optionRefs.value ?? [])], updateIndicator)
+watch([model, activeIndex, () => props.options, rootRef], ([value], [previous]) => {
+  const changed = value !== previous
+  updateIndicator(changed && value === interactionTarget)
+  if (changed)
+    interactionTarget = undefined
+}, { flush: 'post' })
+useResizeObserver(() => [rootRef.value, ...(optionRefs.value ?? [])], () => updateIndicator())
 
 const rootClasses: Record<ComponentSize, string> = {
   small: 'h-z-control-sm min-h-z-control-sm',
@@ -78,6 +104,8 @@ function selectOption(index: number) {
   const option = props.options[index]
   if (props.disabled || !option || option.disabled || option.value === model.value)
     return
+  // 路由等受控场景会稍后回写选中值，等目标生效时才播放动画。
+  interactionTarget = option.value
   model.value = option.value
   emit('change', option.value)
   validate('change')
@@ -118,7 +146,7 @@ async function handleKeydown(event: KeyboardEvent, index: number) {
     ref="root"
     tabindex="-1"
     class="relative inline-grid min-w-0 max-w-full items-stretch overflow-x-auto rounded-z p-0.75 scrollbar-none [&::-webkit-scrollbar]:hidden [&::-webkit-scrollbar]:size-0"
-    :class="[rootClasses[componentSize], invalid && !disabled ? 'bg-z-error-container' : 'bg-(--z-input-bg)']"
+    :class="[rootClasses[componentSize], invalid && !disabled ? 'bg-z-error-container' : inputSurfaceClass]"
     :style="gridStyle"
     role="radiogroup"
     :aria-label="ariaLabel"
@@ -148,7 +176,7 @@ async function handleKeydown(event: KeyboardEvent, index: number) {
       role="radio"
       :aria-checked="model === option.value"
       :aria-label="display === 'icon' ? option.label : undefined"
-      :tabindex="model === option.value || (activeIndex < 0 && index === 0) ? 0 : -1"
+      :tabindex="index === tabStop ? 0 : -1"
       :disabled="disabled || option.disabled"
       @click="selectOption(index)"
       @keydown="handleKeydown($event, index)"

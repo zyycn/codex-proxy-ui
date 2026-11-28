@@ -23,6 +23,7 @@ import {
   deriveThemePrimaryMap,
   deriveThemeSemanticMap,
   deriveThemeSurfaceMap,
+  deriveThemeTextBackgrounds,
   ensureThemeSurfaceContrast,
 } from '../derive/colors'
 import {
@@ -30,6 +31,7 @@ import {
   deriveThemeDimensionMap,
   deriveThemeShadowMap,
 } from '../derive/components'
+import { withAlpha } from './color'
 import {
   DEFAULT_SEED_DIMENSIONS,
   defaultThemeCustomization,
@@ -123,10 +125,17 @@ function deriveThemeMap(
   const fills = name === 'light' ? deriveLightThemeFillMap(background, seedTokens.colorTextBase) : null
   const baseSurfaces = deriveThemeSurfaceMap(name, background, seedTokens.colorTextBase)
   const primary = deriveThemePrimaryMap(seed, name, baseSurfaces.colorBgContainer)
-  const surfaces = ensureThemeSurfaceContrast(baseSurfaces, fills, primary)
+  // 沿用容器上原有的色阶与混合比例，换到斑马纹或面板时由实际底色参与合成。
+  const controlFills = fills ?? {
+    controlBg: withAlpha(baseSurfaces.colorFillSecondary, 0.375),
+    controlHoverBg: withAlpha(baseSurfaces.colorFillSecondary, 0.69),
+    controlActiveBg: withAlpha(baseSurfaces.colorFillSecondary, 0.90),
+  }
+  const textBackgrounds = deriveThemeTextBackgrounds(baseSurfaces, fills, primary, controlFills)
+  const surfaces = ensureThemeSurfaceContrast(baseSurfaces, textBackgrounds)
   const aliases = deriveThemeAliasMap(surfaces)
   const link = deriveThemeLinkMap(seedTokens.colorLink, name, surfaces.colorBgContainer)
-  const semantics = deriveThemeSemanticMap(name, surfaces, seedTokens, fills, primary)
+  const semantics = deriveThemeSemanticMap(name, surfaces, seedTokens, textBackgrounds)
 
   return {
     surfaces,
@@ -144,6 +153,7 @@ function deriveThemeMap(
       semantics.error,
       seedTokens.shadowStrength,
       preset,
+      controlFills,
       customization.tokenOverrides?.['input-bg'],
     ),
     dimensions: deriveThemeDimensionMap(seedTokens, customization.component),
