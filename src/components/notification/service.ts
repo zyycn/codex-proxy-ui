@@ -1,77 +1,109 @@
-import type { NotificationConfig, NotificationHandle, NotificationMessage, NotificationOptions, NotificationService } from './types'
-import { h, render } from 'vue'
-import NotificationList from './components/NotificationList.vue'
+import type { AppContext, ShallowRef, VNode } from 'vue'
+import type { NotificationConfig, NotificationOptions, NotificationParams, NotificationPosition, NotificationService, NotificationType } from './types'
+import { h, isVNode, render, shallowRef } from 'vue'
+import NotificationItem from './components/NotificationItem.vue'
 
+const gap = 16
 let nextId = 0
 
+interface Entry {
+  target: HTMLElement
+  position: NotificationPosition
+  options: NotificationOptions
+  offset: ShallowRef<number>
+  container: HTMLElement
+  close: () => void
+}
+
+function normalize(input: NotificationParams): NotificationOptions {
+  return typeof input === 'string' || isVNode(input) ? { message: input } : input
+}
+
 export function createNotification(config: NotificationConfig = {}): NotificationService {
-  let messages: NotificationMessage[] = []
-  const timers = new Map<string, ReturnType<typeof setTimeout>>()
-  let container: HTMLElement | null = null
+  const entries = new Set<Entry>()
 
-  function renderMessages() {
-    if (!container) {
-      container = document.createElement('div')
-      document.body.append(container)
+  function updateOffsets(position: NotificationPosition = 'top-right') {
+    const distances = new Map<HTMLElement, number>()
+    for (const entry of entries) {
+      if (entry.position !== position)
+        continue
+      const distance = distances.get(entry.target) ?? gap
+      entry.offset.value = distance + (entry.options.offset ?? 0)
+      const element = entry.container.firstElementChild as HTMLElement | null
+      distances.set(entry.target, distance + (element?.offsetHeight ?? 0) + gap)
     }
-    render(h(NotificationList, { messages, locale: config.locale, onClose: close, onEmpty: destroyContainer }), container)
   }
 
-  function destroyContainer() {
-    if (messages.length || !container)
-      return
-
-    const element = container
-    container = null
-    render(null, element)
-    element.remove()
-  }
-
-  function close(id: string) {
-    const timer = timers.get(id)
-    if (timer !== undefined) {
-      clearTimeout(timer)
-      timers.delete(id)
-    }
-    messages = messages.filter(message => message.id !== id)
-    if (container)
-      renderMessages()
-  }
-
-  function closeAll() {
-    for (const timer of timers.values())
-      clearTimeout(timer)
-    timers.clear()
-    messages = []
-    if (container)
-      renderMessages()
-  }
-
-  function showNotification(options: NotificationOptions): NotificationHandle {
+  function showNotification(input: NotificationParams = {}, context?: AppContext | null) {
     if (typeof document === 'undefined')
       return { close() {} }
 
-    const type = options.type ?? 'info'
+    const options = normalize(input)
+    const position = options.position ?? 'top-right'
+    const target = (typeof options.appendTo === 'string' ? document.querySelector<HTMLElement>(options.appendTo) : options.appendTo) ?? document.body
     if (options.deduplicate) {
-      const existing = messages.find(message => message.type === type && message.message === options.message && message.title === options.title)
-      if (existing)
-        return { close: () => close(existing.id) }
+      for (const entry of entries) {
+        if (entry.position === position && entry.target === target && (entry.options.type ?? 'info') === (options.type ?? 'info')
+          && entry.options.message === options.message && entry.options.title === options.title) {
+          return { close: entry.close }
+        }
+      }
     }
-    const id = `z-notification-${++nextId}`
-    const duration = options.duration ?? 3000
-    messages = [...messages, { ...options, type, id }]
-    renderMessages()
-    if (duration > 0)
-      timers.set(id, setTimeout(close, duration, id))
-    return { close: () => close(id) }
+
+    const container = document.createElement('div')
+    const visible = shallowRef(true)
+    const offset = shallowRef(0)
+    const entry: Entry = {
+      target,
+      position,
+      container,
+      options,
+      offset,
+      close() {
+        if (!entries.delete(entry))
+          return
+        visible.value = false
+        updateOffsets(position)
+      },
+    }
+    const vnode: VNode = h(NotificationItem, {
+      id: `z-notification-${++nextId}`,
+      options,
+      visible,
+      offset,
+      position,
+      locale: config.locale,
+      onDismiss: entry.close,
+      onResize: () => updateOffsets(position),
+      onLeaving: () => options.onClose?.(vnode),
+      onDestroy: () => {
+        render(null, container)
+        container.remove()
+      },
+    })
+    vnode.appContext = context ?? null
+    entries.add(entry)
+    updateOffsets(position)
+    target.append(container)
+    render(vnode, container)
+    return { close: entry.close }
+  }
+
+  function typed(type: NotificationType) {
+    return (input: NotificationParams = {}, context?: AppContext | null) => showNotification({ ...normalize(input), type }, context)
   }
 
   return Object.assign(showNotification, {
-    success: (options: NotificationOptions): NotificationHandle => showNotification({ ...options, type: 'success' }),
-    error: (options: NotificationOptions): NotificationHandle => showNotification({ ...options, type: 'error' }),
-    warning: (options: NotificationOptions): NotificationHandle => showNotification({ ...options, type: 'warning' }),
-    info: (options: NotificationOptions): NotificationHandle => showNotification({ ...options, type: 'info' }),
-    closeAll,
+    primary: typed('primary'),
+    success: typed('success'),
+    error: typed('error'),
+    warning: typed('warning'),
+    info: typed('info'),
+    closeAll() {
+      for (const entry of entries)
+        entry.close()
+    },
+    updateOffsets,
   })
 }
 

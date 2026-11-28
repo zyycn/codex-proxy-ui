@@ -34,6 +34,7 @@ import DialogDemo from '../examples/DialogDemo.vue'
 | `title`                                                     | 对话框标题                         | `string`                                                    | 必填        |
 | `description`                                               | 标题说明                           | `string`                                                    | —           |
 | `width`                                                     | 数字为 px；受视口宽度限制          | `number \| string`                                          | `'36rem'`   |
+| `destroy-on-close`                                          | 退场后卸载插槽内容                 | `boolean`                                                   | `false`     |
 | `fullscreen`                                                | 全屏显示                           | `boolean`                                                   | `false`     |
 | `type`                                                      | 标题图标语义                       | `'default' \| 'info' \| 'warning' \| 'danger' \| 'success'` | `'default'` |
 | `show-close / close-on-click-modal / close-on-press-escape` | 关闭按钮、遮罩、Escape 的独立策略  | `boolean`                                                   | `true`      |
@@ -41,17 +42,21 @@ import DialogDemo from '../examples/DialogDemo.vue'
 | `draggable`                                                 | 拖动标题，全屏时关闭拖动           | `boolean`                                                   | `true`      |
 | `role`                                                      | 无障碍角色                         | `'dialog' \| 'alertdialog'`                                 | `'dialog'`  |
 
-关闭按钮、遮罩、Escape 以及实例或 header 插槽的 `close()` 都经过 `before-close`，等待期间阻止重复关闭。调用方直接修改模型不经过回调
+关闭按钮、遮罩、Escape 以及实例、header 或 footer 插槽的 `close()` 都经过 `before-close`，等待期间阻止重复关闭。调用方直接修改模型不经过回调
 
 ### 事件
 
-- `update:modelValue(value: boolean)`：用户关闭请求通过后更新模型
+- 组件内发起关闭时，先触发 `close`，退场完成触发 `closed`，随后通过 `update:modelValue(false)` 回写模型
 - `open / close`：打开 / 关闭开始
-- `opened / closed`：入场 / 退场完成，退出完成后卸载插槽内容；退出中重新打开不会触发 closed
+- `opened / closed` 对应入场和退场完成。退场被重新打开打断时跳过 `closed`
+
+初始模型为 `true` 时也执行入场过渡。内容在首次打开时挂载，默认保留到组件卸载。需要在每次退出后释放表单或图表时，启用 `destroy-on-close`
 
 ### 插槽
 
-`default`、`footer`、`description`、`icon`
+`default`、`description`、`icon`
+
+- `footer({ close })` 提供带关闭守卫的页脚操作
 
 - `header({ titleId, close })`：自定义标题内容，关联 titleId 保留可访问名称
 

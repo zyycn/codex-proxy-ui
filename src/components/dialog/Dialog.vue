@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { AlertCircle, AlertTriangle, CheckCircle2, Info, X } from '@lucide/vue'
 import { useResizeObserver } from '@vueuse/core'
-import { computed, nextTick, onBeforeUnmount, shallowRef, useId, useTemplateRef, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, useId, useTemplateRef, watch } from 'vue'
 import { useLocale } from '../../locale/context'
 
 import IconButton from '../icon-button/IconButton.vue'
@@ -16,6 +16,7 @@ const props = withDefaults(
     description?: string
     width?: string | number
     fullscreen?: boolean
+    destroyOnClose?: boolean
     type?: DialogType
     showClose?: boolean
     closeOnClickModal?: boolean
@@ -38,13 +39,14 @@ const props = withDefaults(
 
 const emit = defineEmits<{ open: [], opened: [], close: [], closed: [] }>()
 
-defineSlots<{ default?: () => unknown, footer?: () => unknown, icon?: () => unknown, description?: () => unknown, header?: (props: { titleId: string, close: () => Promise<void> }) => unknown }>()
+defineSlots<{ default?: () => unknown, footer?: (props: { close: () => Promise<void> }) => unknown, icon?: () => unknown, description?: () => unknown, header?: (props: { titleId: string, close: () => Promise<void> }) => unknown }>()
 
 const locale = useLocale()
 
 type DialogType = 'default' | 'info' | 'warning' | 'danger' | 'success'
 
 const open = defineModel<boolean>({ default: false })
+const visible = shallowRef(false)
 const rendered = shallowRef(false)
 const panel = useTemplateRef<HTMLElement>('panel')
 const titleId = useId()
@@ -54,7 +56,7 @@ const { cancelDrag, constrainPosition, handlePointerDown, isDragging, resetPosit
   () => props.draggable && !props.fullscreen,
 )
 const { rememberFocus, focusInitial, handleKeydown, restoreFocus } = useModalFocus(panel, {
-  isOpen: () => open.value,
+  isOpen: () => visible.value,
   onEscape: () => {
     if (!props.closeOnPressEscape)
       return false
@@ -62,10 +64,11 @@ const { rememberFocus, focusInitial, handleKeydown, restoreFocus } = useModalFoc
   },
 })
 let ownsScrollLock = false
+let entered = false
 
 // 内容分段可能在弹窗打开期间改变面板高度；拖拽偏移必须随尺寸重新约束到视口内。
 useResizeObserver(panel, () => {
-  if (open.value)
+  if (visible.value)
     constrainPosition()
 })
 
@@ -105,13 +108,15 @@ const typeClasses: Record<DialogType, { iconBg: string, icon: string }> = {
 }
 
 async function closeDialog() {
-  if (closing.value || !open.value)
+  if (closing.value || !visible.value)
     return
   const request = ++closeRequest
   closing.value = true
   try {
-    if (await props.beforeClose?.() !== false && request === closeRequest)
-      open.value = false
+    if (props.beforeClose && await props.beforeClose() === false)
+      return
+    if (request === closeRequest)
+      setVisible(false)
   }
   finally {
     if (request === closeRequest)
@@ -120,14 +125,17 @@ async function closeDialog() {
 }
 
 function finishLeave() {
-  if (open.value || !rendered.value)
+  if (visible.value || !ownsScrollLock)
     return
-  // 保留子组件到退场完成，避免 Teleport 内容先卸载导致面板收缩。
-  rendered.value = false
+  entered = false
   resetPosition()
   releaseScrollLock()
   restoreFocus()
   emit('closed')
+  if (open.value)
+    open.value = false
+  if (props.destroyOnClose)
+    rendered.value = false
 }
 
 function acquireScrollLock() {
@@ -144,31 +152,39 @@ function releaseScrollLock() {
   unlockBodyScroll()
 }
 
-watch(
-  open,
-  async (isOpen) => {
+function setVisible(value: boolean) {
+  if (value === visible.value)
+    return
+
+  visible.value = value
+  if (value) {
+    if (!ownsScrollLock)
+      rememberFocus()
+    rendered.value = true
+    acquireScrollLock()
+    emit('open')
+    void nextTick(focusInitial)
+  }
+  else {
+    cancelDrag()
+    emit('close')
+    // 同一轮渲染内打开又关闭时，Vue 不会启动过渡或派发 after-leave。
+    if (!entered)
+      finishLeave()
+  }
+}
+
+// 初始模型也在挂载后生效，让按需创建的弹窗走相同的入场过渡。
+onMounted(() => {
+  watch(open, (value) => {
     closeRequest++
     closing.value = false
-    if (isOpen) {
-      if (!rendered.value) {
-        rememberFocus()
-      }
-      emit('open')
-      rendered.value = true
-      acquireScrollLock()
-      await nextTick()
-      focusInitial()
-      return
-    }
-
-    if (rendered.value)
-      emit('close')
-    cancelDrag()
-  },
-  { immediate: true },
-)
+    setVisible(value)
+  }, { immediate: true })
+})
 
 onBeforeUnmount(() => {
+  closeRequest++
   releaseScrollLock()
 })
 defineExpose({ focus: () => panel.value?.focus(), close: closeDialog })
@@ -177,13 +193,13 @@ defineExpose({ focus: () => panel.value?.focus(), close: closeDialog })
 <template>
   <Teleport to="body">
     <Transition
-      name="z-modal" persisted @after-leave="finishLeave"
-      @after-enter="open && emit('opened')"
+      name="z-modal" persisted @before-enter="entered = true" @after-leave="finishLeave"
+      @after-enter="visible && emit('opened')"
     >
       <div
         v-if="rendered"
-        v-show="open"
-        :inert="!open"
+        v-show="visible"
+        :inert="!visible"
         class="fixed inset-0 z-50 grid grid-cols-1 place-items-center overflow-hidden p-3 sm:p-6"
         role="presentation"
         :class="fullscreen ? 'p-0!' : undefined"
@@ -274,7 +290,7 @@ defineExpose({ focus: () => panel.value?.focus(), close: closeDialog })
             class="flex shrink-0 flex-wrap justify-end gap-2 px-4 pb-4 sm:gap-3 sm:px-6 sm:pb-6"
             :class="!$slots.default ? 'pt-4 sm:pt-6' : undefined"
           >
-            <slot name="footer" />
+            <slot name="footer" :close="closeDialog" />
           </footer>
         </section>
       </div>

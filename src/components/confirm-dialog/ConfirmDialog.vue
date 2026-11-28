@@ -8,6 +8,7 @@ const props = withDefaults(
     title: string
     description?: string
     destructive?: boolean
+    destroyOnClose?: boolean
     confirmText?: string
     cancelText?: string
     loading?: boolean
@@ -32,10 +33,10 @@ const emit = defineEmits<{
 const locale = useLocale()
 
 const open = defineModel<boolean>({ default: false })
-function handleCancel() {
+function handleCancel(close: () => Promise<void>) {
   if (props.loading)
     return
-  open.value = false
+  void close()
   emit('cancel')
 }
 
@@ -54,6 +55,7 @@ function handleConfirm() {
     width="28rem"
     :type="destructive ? 'danger' : 'warning'"
     role="alertdialog"
+    :destroy-on-close="destroyOnClose"
     :show-close="!loading"
     :close-on-click-modal="!loading"
     :close-on-press-escape="!loading"
@@ -68,8 +70,8 @@ function handleConfirm() {
       </div>
     </template>
 
-    <template #footer>
-      <Button :disabled="loading" @click="handleCancel">
+    <template #footer="{ close }">
+      <Button :disabled="loading" @click="handleCancel(close)">
         {{ cancelText ?? locale.common.cancel }}
       </Button>
       <Button
